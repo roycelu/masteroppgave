@@ -1,0 +1,278 @@
+[0.000000] (-) TimerEvent: {}
+[0.000205] (drone_interfaces) JobQueued: {'identifier': 'drone_interfaces', 'dependencies': OrderedDict()}
+[0.000784] (drone_interfaces) JobStarted: {'identifier': 'drone_interfaces'}
+[0.010817] (drone_interfaces) JobProgress: {'identifier': 'drone_interfaces', 'progress': 'cmake'}
+[0.011490] (drone_interfaces) JobProgress: {'identifier': 'drone_interfaces', 'progress': 'build'}
+[0.012423] (drone_interfaces) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces', '--', '-j8', '-l8'], 'cwd': '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('SDKMAN_VERSION', '5.16.0'), ('LANGUAGE', 'en_US:'), ('USER', 'royce'), ('LC_TIME', 'nb_NO.UTF-8'), ('XDG_SESSION_TYPE', 'wayland'), ('GIT_ASKPASS', '/usr/share/code/resources/app/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/royce'), ('CHROME_DESKTOP', 'code-url-handler.desktop'), ('OLDPWD', '/home/royce/prosjektoppgave'), ('TERM_PROGRAM_VERSION', '1.71.2'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/code.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GRADLE_HOME', '/home/royce/.sdkman/candidates/gradle/current'), ('GTK_MODULES', 'gail:atk-bridge'), ('VSCODE_GIT_ASKPASS_MAIN', '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('VSCODE_GIT_ASKPASS_NODE', '/usr/share/code/code'), ('MANAGERPID', '1020'), ('SYSTEMD_EXEC_PID', '1165'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '11580'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/royce/prosjektoppgave/ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'royce'), ('SDKMAN_CANDIDATES_API', 'https://api.sdkman.io/2'), ('JOURNAL_STREAM', '8:22339'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'royce'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '1'), ('PATH', '/home/royce/.local/bin:/home/royce/.sdkman/candidates/gradle/current/bin:/opt/ros/humble/bin:/home/royce/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/royce:@/tmp/.ICE-unix/1142,unix/royce:/tmp/.ICE-unix/1142'), ('SDKMAN_CANDIDATES_DIR', '/home/royce/.sdkman/candidates'), ('INVOCATION_ID', 'a0a79957ec9e4ef7bb14ed6844b4f24a'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'x11'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'Unity'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.29EGT1'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-cc600ca290.sock'), ('SDKMAN_DIR', '/home/royce/.sdkman'), ('SDKMAN_PLATFORM', 'linuxx64'), ('TERM_PROGRAM', 'vscode'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('ROS_DOMAIN_ID', '7'), ('AMENT_PREFIX_PATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces:/opt/ros/humble'), ('ORIGINAL_XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', '--ms-enable-electron-run-as-node'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'en_US.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('PX4_SOURCE_DIR', '/home/royce/px4_ws/PX4-Autopilot'), ('CMAKE_PREFIX_PATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces:/opt/ros/humble')]), 'shell': False}
+[0.044720] (drone_interfaces) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.2 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099277] (-) TimerEvent: {}
+[0.180315] (drone_interfaces) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[0.181916] (drone_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.184534] (drone_interfaces) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.3 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.199389] (-) TimerEvent: {}
+[0.218642] (drone_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.299500] (-) TimerEvent: {}
+[0.399848] (-) TimerEvent: {}
+[0.500139] (-) TimerEvent: {}
+[0.583181] (drone_interfaces) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)\n'}
+[0.600235] (-) TimerEvent: {}
+[0.700543] (-) TimerEvent: {}
+[0.760604] (drone_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.800692] (-) TimerEvent: {}
+[0.901023] (-) TimerEvent: {}
+[0.998601] (drone_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.001115] (-) TimerEvent: {}
+[1.019991] (drone_interfaces) StdoutLine: {'line': b'-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)\n'}
+[1.044118] (drone_interfaces) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[1.044323] (drone_interfaces) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10\n'}
+[1.044421] (drone_interfaces) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so\n'}
+[1.064237] (drone_interfaces) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.4 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[1.073816] (drone_interfaces) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[1.074221] (drone_interfaces) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.074576] (drone_interfaces) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[1.075466] (drone_interfaces) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.077302] (drone_interfaces) StdoutLine: {'line': b'-- Configuring done\n'}
+[1.101234] (-) TimerEvent: {}
+[1.111153] (drone_interfaces) StdoutLine: {'line': b'-- Generating done\n'}
+[1.114211] (drone_interfaces) StdoutLine: {'line': b'-- Build files have been written to: /home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces\n'}
+[1.137245] (drone_interfaces) StdoutLine: {'line': b'[  3%] \x1b[34m\x1b[1mGenerating C code for ROS interfaces\x1b[0m\n'}
+[1.145780] (drone_interfaces) StdoutLine: {'line': b'[  6%] \x1b[34m\x1b[1mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[1.154498] (drone_interfaces) StdoutLine: {'line': b'[  6%] Built target ament_cmake_python_copy_drone_interfaces\n'}
+[1.201337] (-) TimerEvent: {}
+[1.301703] (-) TimerEvent: {}
+[1.402160] (-) TimerEvent: {}
+[1.436202] (drone_interfaces) StdoutLine: {'line': b'running egg_info\n'}
+[1.437560] (drone_interfaces) StdoutLine: {'line': b'writing drone_interfaces.egg-info/PKG-INFO\n'}
+[1.438128] (drone_interfaces) StdoutLine: {'line': b'writing dependency_links to drone_interfaces.egg-info/dependency_links.txt\n'}
+[1.438358] (drone_interfaces) StdoutLine: {'line': b'writing top-level names to drone_interfaces.egg-info/top_level.txt\n'}
+[1.440544] (drone_interfaces) StdoutLine: {'line': b"reading manifest file 'drone_interfaces.egg-info/SOURCES.txt'\n"}
+[1.441153] (drone_interfaces) StdoutLine: {'line': b"writing manifest file 'drone_interfaces.egg-info/SOURCES.txt'\n"}
+[1.477424] (drone_interfaces) StdoutLine: {'line': b'[  6%] Built target ament_cmake_python_build_drone_interfaces_egg\n'}
+[1.502266] (-) TimerEvent: {}
+[1.602607] (-) TimerEvent: {}
+[1.611937] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_generator_c\x1b[0m\n'}
+[1.622270] (drone_interfaces) StdoutLine: {'line': b'[  6%] Built target drone_interfaces__cpp\n'}
+[1.622730] (drone_interfaces) StdoutLine: {'line': b'[  9%] \x1b[32mBuilding C object CMakeFiles/drone_interfaces__rosidl_generator_c.dir/rosidl_generator_c/drone_interfaces/action/detail/drone__functions.c.o\x1b[0m\n'}
+[1.634177] (drone_interfaces) StdoutLine: {'line': b'[ 19%] \x1b[34m\x1b[1mGenerating C++ introspection for ROS interfaces\x1b[0m\n'}
+[1.634555] (drone_interfaces) StdoutLine: {'line': b'[ 19%] \x1b[34m\x1b[1mGenerating C++ type support for eProsima Fast-RTPS\x1b[0m\n'}
+[1.634689] (drone_interfaces) StdoutLine: {'line': b'[ 19%] \x1b[34m\x1b[1mGenerating C++ type support dispatch for ROS interfaces\x1b[0m\n'}
+[1.702704] (-) TimerEvent: {}
+[1.803261] (-) TimerEvent: {}
+[1.824314] (drone_interfaces) StdoutLine: {'line': b'[ 22%] \x1b[32m\x1b[1mLinking C shared library libdrone_interfaces__rosidl_generator_c.so\x1b[0m\n'}
+[1.875669] (drone_interfaces) StdoutLine: {'line': b'[ 22%] Built target drone_interfaces__rosidl_generator_c\n'}
+[1.892760] (drone_interfaces) StdoutLine: {'line': b'[ 25%] \x1b[34m\x1b[1mGenerating C type support dispatch for ROS interfaces\x1b[0m\n'}
+[1.903950] (-) TimerEvent: {}
+[1.905131] (drone_interfaces) StdoutLine: {'line': b'[ 29%] \x1b[34m\x1b[1mGenerating C type support for eProsima Fast-RTPS\x1b[0m\n'}
+[1.905792] (drone_interfaces) StdoutLine: {'line': b'[ 32%] \x1b[34m\x1b[1mGenerating C introspection for ROS interfaces\x1b[0m\n'}
+[2.004041] (-) TimerEvent: {}
+[2.104365] (-) TimerEvent: {}
+[2.115935] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_cpp\x1b[0m\n'}
+[2.146746] (drone_interfaces) StdoutLine: {'line': b'[ 35%] \x1b[32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/drone_interfaces/action/drone__type_support.cpp.o\x1b[0m\n'}
+[2.204466] (-) TimerEvent: {}
+[2.210164] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_introspection_cpp\x1b[0m\n'}
+[2.248698] (drone_interfaces) StdoutLine: {'line': b'[ 38%] \x1b[32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/drone_interfaces/action/detail/drone__type_support.cpp.o\x1b[0m\n'}
+[2.304599] (-) TimerEvent: {}
+[2.361924] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_c\x1b[0m\n'}
+[2.371614] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_fastrtps_cpp\x1b[0m\n'}
+[2.387405] (drone_interfaces) StdoutLine: {'line': b'[ 41%] \x1b[32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/drone_interfaces/action/drone__type_support.cpp.o\x1b[0m\n'}
+[2.395871] (drone_interfaces) StdoutLine: {'line': b'[ 45%] \x1b[32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/drone_interfaces/action/detail/dds_fastrtps/drone__type_support.cpp.o\x1b[0m\n'}
+[2.405225] (-) TimerEvent: {}
+[2.474309] (drone_interfaces) StdoutLine: {'line': b'[ 48%] \x1b[32m\x1b[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_c.so\x1b[0m\n'}
+[2.505463] (-) TimerEvent: {}
+[2.596212] (drone_interfaces) StdoutLine: {'line': b'[ 48%] Built target drone_interfaces__rosidl_typesupport_c\n'}
+[2.605668] (-) TimerEvent: {}
+[2.651203] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_introspection_c\x1b[0m\n'}
+[2.670526] (drone_interfaces) StdoutLine: {'line': b'[ 51%] \x1b[32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/drone_interfaces/action/detail/drone__type_support.c.o\x1b[0m\n'}
+[2.670985] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_fastrtps_c\x1b[0m\n'}
+[2.691545] (drone_interfaces) StdoutLine: {'line': b'[ 54%] \x1b[32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/drone_interfaces/action/detail/drone__type_support_c.cpp.o\x1b[0m\n'}
+[2.705739] (-) TimerEvent: {}
+[2.767945] (drone_interfaces) StdoutLine: {'line': b'[ 58%] \x1b[32m\x1b[1mLinking C shared library libdrone_interfaces__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[2.806494] (-) TimerEvent: {}
+[2.814108] (drone_interfaces) StdoutLine: {'line': b'[ 58%] Built target drone_interfaces__rosidl_typesupport_introspection_c\n'}
+[2.907985] (-) TimerEvent: {}
+[3.008416] (-) TimerEvent: {}
+[3.013407] (drone_interfaces) StdoutLine: {'line': b'[ 61%] \x1b[32m\x1b[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_cpp.so\x1b[0m\n'}
+[3.056383] (drone_interfaces) StdoutLine: {'line': b'[ 61%] Built target drone_interfaces__rosidl_typesupport_cpp\n'}
+[3.108523] (-) TimerEvent: {}
+[3.208831] (-) TimerEvent: {}
+[3.281731] (drone_interfaces) StdoutLine: {'line': b'[ 64%] \x1b[32m\x1b[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[3.308962] (-) TimerEvent: {}
+[3.360583] (drone_interfaces) StdoutLine: {'line': b'[ 67%] \x1b[32m\x1b[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_introspection_cpp.so\x1b[0m\n'}
+[3.377268] (drone_interfaces) StdoutLine: {'line': b'[ 67%] Built target drone_interfaces__rosidl_typesupport_fastrtps_c\n'}
+[3.397187] (drone_interfaces) StdoutLine: {'line': b'[ 70%] \x1b[32m\x1b[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_fastrtps_cpp.so\x1b[0m\n'}
+[3.409102] (-) TimerEvent: {}
+[3.452925] (drone_interfaces) StdoutLine: {'line': b'[ 70%] Built target drone_interfaces__rosidl_typesupport_introspection_cpp\n'}
+[3.483810] (drone_interfaces) StdoutLine: {'line': b'[ 70%] Built target drone_interfaces__rosidl_typesupport_fastrtps_cpp\n'}
+[3.500525] (drone_interfaces) StdoutLine: {'line': b'[ 70%] Built target drone_interfaces\n'}
+[3.509222] (-) TimerEvent: {}
+[3.522962] (drone_interfaces) StdoutLine: {'line': b'[ 74%] \x1b[34m\x1b[1mGenerating Python code for ROS interfaces\x1b[0m\n'}
+[3.609330] (-) TimerEvent: {}
+[3.709670] (-) TimerEvent: {}
+[3.809958] (-) TimerEvent: {}
+[3.910221] (-) TimerEvent: {}
+[4.010522] (-) TimerEvent: {}
+[4.110810] (-) TimerEvent: {}
+[4.211093] (-) TimerEvent: {}
+[4.300517] (drone_interfaces) StdoutLine: {'line': b'[ 74%] Built target drone_interfaces__py\n'}
+[4.310900] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_generator_py\x1b[0m\n'}
+[4.311151] (-) TimerEvent: {}
+[4.322395] (drone_interfaces) StdoutLine: {'line': b'[ 77%] \x1b[32mBuilding C object CMakeFiles/drone_interfaces__rosidl_generator_py.dir/rosidl_generator_py/drone_interfaces/action/_drone_s.c.o\x1b[0m\n'}
+[4.411275] (-) TimerEvent: {}
+[4.473415] (drone_interfaces) StdoutLine: {'line': b'[ 80%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/drone_interfaces/libdrone_interfaces__rosidl_generator_py.so\x1b[0m\n'}
+[4.507674] (drone_interfaces) StdoutLine: {'line': b'[ 80%] Built target drone_interfaces__rosidl_generator_py\n'}
+[4.511367] (-) TimerEvent: {}
+[4.516474] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_c__pyext\x1b[0m\n'}
+[4.516652] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_fastrtps_c__pyext\x1b[0m\n'}
+[4.516726] (drone_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target drone_interfaces__rosidl_typesupport_introspection_c__pyext\x1b[0m\n'}
+[4.529018] (drone_interfaces) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o\x1b[0m\n'}
+[4.529249] (drone_interfaces) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_c.c.o\x1b[0m\n'}
+[4.529476] (drone_interfaces) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o\x1b[0m\n'}
+[4.611494] (-) TimerEvent: {}
+[4.645175] (drone_interfaces) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\x1b[0m\n'}
+[4.645541] (drone_interfaces) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\x1b[0m\n'}
+[4.645788] (drone_interfaces) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\x1b[0m\n'}
+[4.679357] (drone_interfaces) StdoutLine: {'line': b'[100%] Built target drone_interfaces__rosidl_typesupport_introspection_c__pyext\n'}
+[4.679562] (drone_interfaces) StdoutLine: {'line': b'[100%] Built target drone_interfaces__rosidl_typesupport_c__pyext\n'}
+[4.679669] (drone_interfaces) StdoutLine: {'line': b'[100%] Built target drone_interfaces__rosidl_typesupport_fastrtps_c__pyext\n'}
+[4.688500] (drone_interfaces) CommandEnded: {'returncode': 0}
+[4.711561] (-) TimerEvent: {}
+[4.731823] (drone_interfaces) JobProgress: {'identifier': 'drone_interfaces', 'progress': 'install'}
+[4.741835] (drone_interfaces) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces'], 'cwd': '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('SDKMAN_VERSION', '5.16.0'), ('LANGUAGE', 'en_US:'), ('USER', 'royce'), ('LC_TIME', 'nb_NO.UTF-8'), ('XDG_SESSION_TYPE', 'wayland'), ('GIT_ASKPASS', '/usr/share/code/resources/app/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/royce'), ('CHROME_DESKTOP', 'code-url-handler.desktop'), ('OLDPWD', '/home/royce/prosjektoppgave'), ('TERM_PROGRAM_VERSION', '1.71.2'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/code.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GRADLE_HOME', '/home/royce/.sdkman/candidates/gradle/current'), ('GTK_MODULES', 'gail:atk-bridge'), ('VSCODE_GIT_ASKPASS_MAIN', '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('VSCODE_GIT_ASKPASS_NODE', '/usr/share/code/code'), ('MANAGERPID', '1020'), ('SYSTEMD_EXEC_PID', '1165'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '11580'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/royce/prosjektoppgave/ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'royce'), ('SDKMAN_CANDIDATES_API', 'https://api.sdkman.io/2'), ('JOURNAL_STREAM', '8:22339'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'royce'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '1'), ('PATH', '/home/royce/.local/bin:/home/royce/.sdkman/candidates/gradle/current/bin:/opt/ros/humble/bin:/home/royce/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/royce:@/tmp/.ICE-unix/1142,unix/royce:/tmp/.ICE-unix/1142'), ('SDKMAN_CANDIDATES_DIR', '/home/royce/.sdkman/candidates'), ('INVOCATION_ID', 'a0a79957ec9e4ef7bb14ed6844b4f24a'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'x11'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'Unity'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.29EGT1'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-cc600ca290.sock'), ('SDKMAN_DIR', '/home/royce/.sdkman'), ('SDKMAN_PLATFORM', 'linuxx64'), ('TERM_PROGRAM', 'vscode'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('ROS_DOMAIN_ID', '7'), ('AMENT_PREFIX_PATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces:/opt/ros/humble'), ('ORIGINAL_XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', '--ms-enable-electron-run-as-node'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'en_US.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('PX4_SOURCE_DIR', '/home/royce/px4_ws/PX4-Autopilot'), ('CMAKE_PREFIX_PATH', '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces:/opt/ros/humble')]), 'shell': False}
+[4.751075] (drone_interfaces) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[4.751421] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/rosidl_interfaces/drone_interfaces\n'}
+[4.751577] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces\n'}
+[4.751663] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg\n'}
+[4.751774] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_generator_c__visibility_control.h\n'}
+[4.751893] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action\n'}
+[4.751981] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail\n'}
+[4.752065] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__functions.c\n'}
+[4.752180] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__struct.h\n'}
+[4.752282] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__functions.h\n'}
+[4.752400] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__type_support.h\n'}
+[4.752515] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/drone.h\n'}
+[4.752617] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/library_path.sh\n'}
+[4.752753] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/library_path.dsv\n'}
+[4.752856] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_c.so\n'}
+[4.752992] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_c.so" to ""\n'}
+[4.753146] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces\n'}
+[4.753283] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg\n'}
+[4.753386] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[4.753510] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action\n'}
+[4.753622] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail\n'}
+[4.753728] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_fastrtps_c.h\n'}
+[4.753853] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_c.so\n'}
+[4.754015] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_c.so" to ""\n'}
+[4.754136] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces\n'}
+[4.754270] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg\n'}
+[4.754374] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[4.754506] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action\n'}
+[4.754608] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail\n'}
+[4.754711] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__type_support.c\n'}
+[4.754823] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_introspection_c.h\n'}
+[4.754954] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_c.so\n'}
+[4.755064] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_c.so" to ""\n'}
+[4.755177] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_c.so\n'}
+[4.755332] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_c.so" to ""\n'}
+[4.755465] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces\n'}
+[4.755602] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action\n'}
+[4.755727] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail\n'}
+[4.755874] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__struct.hpp\n'}
+[4.756017] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__traits.hpp\n'}
+[4.756133] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__builder.hpp\n'}
+[4.756246] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/drone.hpp\n'}
+[4.756369] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces\n'}
+[4.756471] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg\n'}
+[4.756571] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[4.756733] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action\n'}
+[4.756872] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail\n'}
+[4.756998] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[4.757107] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/dds_fastrtps\n'}
+[4.757227] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_cpp.so\n'}
+[4.757346] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_cpp.so" to ""\n'}
+[4.757447] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces\n'}
+[4.757554] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action\n'}
+[4.757692] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail\n'}
+[4.757809] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_introspection_cpp.hpp\n'}
+[4.757925] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__type_support.cpp\n'}
+[4.758025] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_cpp.so\n'}
+[4.758155] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[4.758266] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_cpp.so\n'}
+[4.758390] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_cpp.so" to ""\n'}
+[4.758508] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/pythonpath.sh\n'}
+[4.758629] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/pythonpath.dsv\n'}
+[4.758744] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info\n'}
+[4.758869] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/SOURCES.txt\n'}
+[4.758993] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/top_level.txt\n'}
+[4.759076] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/dependency_links.txt\n'}
+[4.759180] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/PKG-INFO\n'}
+[4.759248] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces\n'}
+[4.759347] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_c.c\n'}
+[4.759415] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c\n'}
+[4.759513] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\n'}
+[4.759630] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\n'}
+[4.759706] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/__init__.py\n'}
+[4.759775] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action\n'}
+[4.759873] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/_drone.py\n'}
+[4.759980] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/__init__.py\n'}
+[4.760046] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/_drone_s.c\n'}
+[4.760149] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\n'}
+[4.760270] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/libdrone_interfaces__rosidl_generator_py.so\n'}
+[4.760428] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_introspection_c.c\n'}
+[4.793644] (drone_interfaces) StdoutLine: {'line': b"Listing '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces'...\n"}
+[4.793956] (drone_interfaces) StdoutLine: {'line': b"Compiling '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/__init__.py'...\n"}
+[4.794144] (drone_interfaces) StdoutLine: {'line': b"Listing '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action'...\n"}
+[4.794322] (drone_interfaces) StdoutLine: {'line': b"Compiling '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/__init__.py'...\n"}
+[4.794433] (drone_interfaces) StdoutLine: {'line': b"Compiling '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/_drone.py'...\n"}
+[4.802899] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so\n'}
+[4.803323] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[4.803614] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so\n'}
+[4.804084] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[4.804364] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so\n'}
+[4.804736] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""\n'}
+[4.805047] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_py.so\n'}
+[4.805523] (drone_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_py.so" to ""\n'}
+[4.805680] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/action/Drone.idl\n'}
+[4.805812] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/action/Drone.action\n'}
+[4.805969] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/package_run_dependencies/drone_interfaces\n'}
+[4.806127] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/parent_prefix_path/drone_interfaces\n'}
+[4.806206] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/ament_prefix_path.sh\n'}
+[4.806332] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/ament_prefix_path.dsv\n'}
+[4.806405] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/path.sh\n'}
+[4.806525] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/path.dsv\n'}
+[4.806647] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.bash\n'}
+[4.806717] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.sh\n'}
+[4.806815] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.zsh\n'}
+[4.806883] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.dsv\n'}
+[4.806989] (drone_interfaces) StdoutLine: {'line': b'-- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/package.dsv\n'}
+[4.807103] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/packages/drone_interfaces\n'}
+[4.807228] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_cExport.cmake\n'}
+[4.807359] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_cExport-noconfig.cmake\n'}
+[4.807432] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cExport.cmake\n'}
+[4.807553] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cExport-noconfig.cmake\n'}
+[4.807675] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cExport.cmake\n'}
+[4.807750] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake\n'}
+[4.807843] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cExport.cmake\n'}
+[4.807976] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cExport-noconfig.cmake\n'}
+[4.808108] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_cppExport.cmake\n'}
+[4.808198] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake\n'}
+[4.808363] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake\n'}
+[4.808473] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cppExport.cmake\n'}
+[4.808614] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake\n'}
+[4.808748] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cppExport.cmake\n'}
+[4.808876] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cppExport-noconfig.cmake\n'}
+[4.809015] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_pyExport.cmake\n'}
+[4.809100] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_pyExport-noconfig.cmake\n'}
+[4.809178] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/rosidl_cmake-extras.cmake\n'}
+[4.809261] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[4.809341] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[4.809425] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[4.809506] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[4.809586] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake\n'}
+[4.809662] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake\n'}
+[4.809741] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfacesConfig.cmake\n'}
+[4.809816] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfacesConfig-version.cmake\n'}
+[4.809895] (drone_interfaces) StdoutLine: {'line': b'-- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/package.xml\n'}
+[4.811007] (drone_interfaces) CommandEnded: {'returncode': 0}
+[4.812093] (-) TimerEvent: {}
+[4.887653] (drone_interfaces) JobEnded: {'identifier': 'drone_interfaces', 'rc': 0}
+[4.888371] (-) EventReactorShutdown: {}
