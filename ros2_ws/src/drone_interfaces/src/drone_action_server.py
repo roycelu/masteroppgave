@@ -34,6 +34,10 @@ class DroneActionServer(Node):
                 feedback_msg.current_pos))
             goal_handle.publish_feedback(feedback_msg)
 
+        # final_position = [0.0, 0.0]
+        # self.get_logger().info('Updating final position')   # Foreløpig kommentar
+        # final_position = goal_handle.request.position
+
         goal_handle.succeed()
         result = Drone.Result()
         result.final_pos = feedback_msg.current_pos  # final_pos
