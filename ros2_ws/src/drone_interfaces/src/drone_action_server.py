@@ -21,7 +21,7 @@ class DroneActionServer(Node):
         self.get_logger().info('Executing goal...')
 
         feedback_msg = Drone.Feedback()
-        feedback_msg.current_pos = [0.0, 1.0]   # Tentativ start posisjon
+        feedback_msg.current_pos = [0.0, 0.0]   # Tentativ start posisjon
 
         n = 10  # Tentativ steglengde
         pos = goal_handle.request.pos
@@ -33,14 +33,11 @@ class DroneActionServer(Node):
             self.get_logger().info('Feedback: {0}'.format(
                 feedback_msg.current_pos))
             goal_handle.publish_feedback(feedback_msg)
-
-        # final_position = [0.0, 0.0]
-        # self.get_logger().info('Updating final position')   # Foreløpig kommentar
-        # final_position = goal_handle.request.position
+            time.sleep(1)   # Tentativ "pauseholder"
 
         goal_handle.succeed()
         result = Drone.Result()
-        result.final_pos = feedback_msg.current_pos  # final_pos
+        result.final_pos = feedback_msg.current_pos
         return result
 
 
