@@ -34,6 +34,7 @@ class Sheep:
         x2 = self.position[1] + size
         canvas.create_oval(self.position[0], self.position[1], x1, x2, fill='white', tags=self.id)
     
+    
     def update_sheep(self):
         # Limiting the speed
         if np.linalg.norm(self.velocity) > self.max_speed:
@@ -162,15 +163,16 @@ class Sheep:
         return pv
 
 
-def get_agent_velocity(agent):
+
+def get_sheep_velocity(sheep):
     vel = Vector2()
-    vel.x = agent.velocity.x
-    vel.y = agent.velocity.y
+    vel.x = sheep.velocity[0]
+    vel.y = sheep.velocity[1]
     return vel
 
-def get_agent_position(agent):
+def get_sheep_position(sheep):
     pos = Vector2() 
-    pos.x = agent.position.x
-    pos.y = agent.position.y
+    pos.x = sheep.position[0]
+    pos.y = sheep.position[1]
     return pos
 

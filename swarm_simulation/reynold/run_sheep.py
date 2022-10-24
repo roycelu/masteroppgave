@@ -7,6 +7,8 @@ import time
 from sheep import Sheep
 import numpy as np
 from drone import Drone
+from util import Vector2
+from main_drone import MainDrone
 
 
 def initialise_canvas(window, screen_size):
@@ -24,6 +26,10 @@ def create_sheep(no_of_sheep):
         initial_position[1] = np.random.randint(250, 350) #y-coordinate 
         list_of_sheep[n] = Sheep(initial_position, 'boid'+str(n))
     return list_of_sheep 
+
+def create_main_drone():
+    main_drone = MainDrone('main_drone')
+    return main_drone
 
 def create_drones(no_of_drones):
     list_of_drones = [None for _ in range(no_of_drones)]
@@ -48,6 +54,10 @@ def sheep_behaviours(canvas, list_of_sheep, list_of_drones):
         sheep.main_sheep(list_of_sheep, canvas, list_of_drones)
     canvas.after(100, sheep_behaviours, canvas, list_of_sheep, list_of_drones)
 
+def main_drone_behaviour(canvas, main_drone, list_of_sheep):
+    main_drone.main(list_of_sheep, canvas)
+    canvas.after(100, main_drone_behaviour, canvas, main_drone, list_of_sheep)
+
 def drone_behaviours(canvas, list_of_drones, list_of_sheep):
     step_size = 5
     desired_position = np.zeros(2, dtype=np.int32)
@@ -68,11 +78,12 @@ def main():
     canvas = initialise_canvas(window, screen_size)
     
     list_of_sheep = create_sheep(no_of_sheep)
-    
+    main_drone = create_main_drone()
     list_of_drones = create_drones(no_of_drones)
 
     sheep_behaviours(canvas, list_of_sheep, list_of_drones)
     drone_behaviours(canvas, list_of_drones, list_of_sheep)
+    main_drone_behaviour(canvas, main_drone, list_of_sheep)
     
     window.mainloop()
     
