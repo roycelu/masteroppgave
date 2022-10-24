@@ -1,6 +1,0 @@
-{
-  "package_name": "drone_interfaces",
-  "non_idl_tuples": [
-    "/home/royce/prosjektoppgave/ros2_ws/src/drone_interfaces:action/Drone.action"
-  ]
-}
