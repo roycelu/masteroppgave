@@ -5,12 +5,18 @@
 
 module drone_interfaces {
   module action {
+    @verbatim (language="comment", text=
+      "The desired final position of the drone")
     struct Drone_Goal {
       sequence<float> pos;
     };
+    @verbatim (language="comment", text=
+      "The final position of the drone")
     struct Drone_Result {
       sequence<float> final_pos;
     };
+    @verbatim (language="comment", text=
+      "The current position of the drone")
     struct Drone_Feedback {
       sequence<float> current_pos;
     };

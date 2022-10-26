@@ -1,0 +1,231 @@
+[0.011s] Invoking command in '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/royce/prosjektoppgave/ros2_ws/src/drone_interfaces -DCMAKE_INSTALL_PREFIX=/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces
+[0.128s] -- The C compiler identification is GNU 11.2.0
+[0.251s] -- The CXX compiler identification is GNU 11.2.0
+[0.262s] -- Detecting C compiler ABI info
+[0.324s] -- Detecting C compiler ABI info - done
+[0.332s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.332s] -- Detecting C compile features
+[0.333s] -- Detecting C compile features - done
+[0.337s] -- Detecting CXX compiler ABI info
+[0.414s] -- Detecting CXX compiler ABI info - done
+[0.422s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.422s] -- Detecting CXX compile features
+[0.422s] -- Detecting CXX compile features - done
+[0.429s] -- Found ament_cmake: 1.3.2 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.102s] -- Found Python3: /usr/bin/python3.10 (found version "3.10.6") found components: Interpreter 
+[1.195s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[1.200s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.207s] -- Found rosidl_adapter: 3.1.3 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.259s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.635s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[1.815s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.047s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.070s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.6", minimum required is "3.6") 
+[2.072s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[2.100s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.6", minimum required is "3.5") 
+[2.101s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[2.101s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[2.101s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[2.120s] -- Found PythonExtra: .so  
+[2.158s] -- Found ament_lint_auto: 0.12.4 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[2.183s] -- Added test 'flake8' to check Python code syntax and style conventions
+[2.184s] -- Added test 'lint_cmake' to check CMake code style
+[2.184s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[2.186s] -- Added test 'xmllint' to check XML markup files
+[2.189s] -- Configuring done
+[2.221s] -- Generating done
+[2.223s] -- Build files have been written to: /home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces
+[2.230s] Invoked command in '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/royce/prosjektoppgave/ros2_ws/src/drone_interfaces -DCMAKE_INSTALL_PREFIX=/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces
+[2.232s] Invoking command in '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces -- -j8 -l8
+[2.262s] [  3%] [34m[1mGenerating C code for ROS interfaces[0m
+[2.270s] [  6%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[2.278s] [  6%] Built target ament_cmake_python_copy_drone_interfaces
+[2.625s] running egg_info
+[2.626s] creating drone_interfaces.egg-info
+[2.639s] writing drone_interfaces.egg-info/PKG-INFO
+[2.639s] writing dependency_links to drone_interfaces.egg-info/dependency_links.txt
+[2.639s] writing top-level names to drone_interfaces.egg-info/top_level.txt
+[2.641s] writing manifest file 'drone_interfaces.egg-info/SOURCES.txt'
+[2.678s] reading manifest file 'drone_interfaces.egg-info/SOURCES.txt'
+[2.679s] writing manifest file 'drone_interfaces.egg-info/SOURCES.txt'
+[2.739s] [  9%] [32mBuilding C object CMakeFiles/drone_interfaces__rosidl_generator_c.dir/rosidl_generator_c/drone_interfaces/action/detail/drone__functions.c.o[0m
+[2.739s] [  9%] Built target drone_interfaces__cpp
+[2.747s] [ 16%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[2.747s] [ 16%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[2.747s] [ 19%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[2.761s] [ 19%] Built target ament_cmake_python_build_drone_interfaces_egg
+[2.907s] [ 22%] [32m[1mLinking C shared library libdrone_interfaces__rosidl_generator_c.so[0m
+[2.940s] [ 22%] Built target drone_interfaces__rosidl_generator_c
+[2.949s] [ 25%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[2.950s] [ 29%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[2.951s] [ 32%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[3.156s] [ 35%] [32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/drone_interfaces/action/drone__type_support.cpp.o[0m
+[3.275s] [ 38%] [32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/drone_interfaces/action/drone__type_support.cpp.o[0m
+[3.294s] [ 41%] [32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/drone_interfaces/action/detail/dds_fastrtps/drone__type_support.cpp.o[0m
+[3.294s] [ 45%] [32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/drone_interfaces/action/detail/drone__type_support.cpp.o[0m
+[3.344s] [ 48%] [32m[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_c.so[0m
+[3.402s] [ 48%] Built target drone_interfaces__rosidl_typesupport_c
+[3.448s] [ 51%] [32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/drone_interfaces/action/detail/drone__type_support.c.o[0m
+[3.466s] [ 54%] [32mBuilding CXX object CMakeFiles/drone_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/drone_interfaces/action/detail/drone__type_support_c.cpp.o[0m
+[3.523s] [ 58%] [32m[1mLinking C shared library libdrone_interfaces__rosidl_typesupport_introspection_c.so[0m
+[3.555s] [ 58%] Built target drone_interfaces__rosidl_typesupport_introspection_c
+[3.862s] [ 61%] [32m[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_fastrtps_c.so[0m
+[3.868s] [ 64%] [32m[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_cpp.so[0m
+[3.915s] [ 64%] Built target drone_interfaces__rosidl_typesupport_cpp
+[3.958s] [ 67%] [32m[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_fastrtps_cpp.so[0m
+[3.958s] [ 67%] Built target drone_interfaces__rosidl_typesupport_fastrtps_c
+[4.042s] [ 67%] Built target drone_interfaces__rosidl_typesupport_fastrtps_cpp
+[4.117s] [ 70%] [32m[1mLinking CXX shared library libdrone_interfaces__rosidl_typesupport_introspection_cpp.so[0m
+[4.187s] [ 70%] Built target drone_interfaces__rosidl_typesupport_introspection_cpp
+[4.203s] [ 70%] Built target drone_interfaces
+[4.218s] [ 74%] [34m[1mGenerating Python code for ROS interfaces[0m
+[5.069s] [ 74%] Built target drone_interfaces__py
+[5.087s] [ 77%] [32mBuilding C object CMakeFiles/drone_interfaces__rosidl_generator_py.dir/rosidl_generator_py/drone_interfaces/action/_drone_s.c.o[0m
+[5.257s] [ 80%] [32m[1mLinking C shared library rosidl_generator_py/drone_interfaces/libdrone_interfaces__rosidl_generator_py.so[0m
+[5.293s] [ 80%] Built target drone_interfaces__rosidl_generator_py
+[5.309s] [ 90%] [32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[5.310s] [ 90%] [32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_c.c.o[0m
+[5.310s] [ 90%] [32mBuilding C object CMakeFiles/drone_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[5.420s] [ 96%] [32m[1mLinking C shared library rosidl_generator_py/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so[0m
+[5.420s] [ 96%] [32m[1mLinking C shared library rosidl_generator_py/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so[0m
+[5.422s] [100%] [32m[1mLinking C shared library rosidl_generator_py/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so[0m
+[5.455s] [100%] Built target drone_interfaces__rosidl_typesupport_fastrtps_c__pyext
+[5.456s] [100%] Built target drone_interfaces__rosidl_typesupport_c__pyext
+[5.457s] [100%] Built target drone_interfaces__rosidl_typesupport_introspection_c__pyext
+[5.466s] Invoked command in '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces -- -j8 -l8
+[5.520s] Invoking command in '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces
+[5.527s] -- Install configuration: ""
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/rosidl_interfaces/drone_interfaces
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_generator_c__visibility_control.h
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail
+[5.528s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__functions.c
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__struct.h
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__functions.h
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__type_support.h
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/drone.h
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/library_path.sh
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/library_path.dsv
+[5.529s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_c.so
+[5.530s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_c.so" to ""
+[5.530s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces
+[5.530s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg
+[5.530s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[5.530s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action
+[5.530s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail
+[5.530s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_fastrtps_c.h
+[5.530s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_c.so
+[5.531s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_c.so" to ""
+[5.531s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces
+[5.531s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg
+[5.531s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[5.531s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action
+[5.531s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail
+[5.531s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__type_support.c
+[5.531s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_introspection_c.h
+[5.531s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_c.so
+[5.531s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_c.so" to ""
+[5.532s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_c.so
+[5.532s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_c.so" to ""
+[5.532s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces
+[5.532s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action
+[5.532s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail
+[5.532s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__struct.hpp
+[5.532s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__traits.hpp
+[5.532s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__builder.hpp
+[5.532s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/drone.hpp
+[5.532s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces
+[5.533s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg
+[5.533s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[5.533s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action
+[5.533s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail
+[5.533s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_fastrtps_cpp.hpp
+[5.533s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/dds_fastrtps
+[5.533s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[5.533s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_fastrtps_cpp.so" to ""
+[5.534s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces
+[5.534s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action
+[5.534s] -- Up-to-date: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail
+[5.534s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__rosidl_typesupport_introspection_cpp.hpp
+[5.534s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/include/drone_interfaces/drone_interfaces/action/detail/drone__type_support.cpp
+[5.534s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_cpp.so
+[5.534s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[5.535s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_cpp.so
+[5.535s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_typesupport_cpp.so" to ""
+[5.535s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/pythonpath.sh
+[5.535s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/pythonpath.dsv
+[5.535s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info
+[5.535s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/SOURCES.txt
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/top_level.txt
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/dependency_links.txt
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces-0.0.0-py3.10.egg-info/PKG-INFO
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_c.c
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/__init__.py
+[5.536s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action
+[5.537s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/_drone.py
+[5.537s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/__init__.py
+[5.537s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/_drone_s.c
+[5.537s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[5.537s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/libdrone_interfaces__rosidl_generator_py.so
+[5.537s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/_drone_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[5.572s] Listing '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces'...
+[5.572s] Compiling '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/__init__.py'...
+[5.572s] Listing '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action'...
+[5.572s] Compiling '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/__init__.py'...
+[5.572s] Compiling '/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/action/_drone.py'...
+[5.577s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[5.577s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""
+[5.577s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[5.578s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""
+[5.578s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[5.578s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/local/lib/python3.10/dist-packages/drone_interfaces/drone_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""
+[5.579s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_py.so
+[5.579s] -- Set runtime path of "/home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/lib/libdrone_interfaces__rosidl_generator_py.so" to ""
+[5.579s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/action/Drone.idl
+[5.579s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/action/Drone.action
+[5.580s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/package_run_dependencies/drone_interfaces
+[5.580s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/parent_prefix_path/drone_interfaces
+[5.580s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/ament_prefix_path.sh
+[5.580s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/ament_prefix_path.dsv
+[5.580s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/path.sh
+[5.580s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/environment/path.dsv
+[5.581s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.bash
+[5.581s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.sh
+[5.581s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.zsh
+[5.581s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/local_setup.dsv
+[5.581s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/package.dsv
+[5.582s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/ament_index/resource_index/packages/drone_interfaces
+[5.582s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_cExport.cmake
+[5.582s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_cExport-noconfig.cmake
+[5.582s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cExport.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cExport-noconfig.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_cppExport.cmake
+[5.583s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cppExport.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfaces__rosidl_typesupport_cppExport-noconfig.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_pyExport.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/export_drone_interfaces__rosidl_generator_pyExport-noconfig.cmake
+[5.584s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/rosidl_cmake-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfacesConfig.cmake
+[5.585s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/cmake/drone_interfacesConfig-version.cmake
+[5.586s] -- Installing: /home/royce/prosjektoppgave/ros2_ws/install/drone_interfaces/share/drone_interfaces/package.xml
+[5.588s] Invoked command in '/home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/royce/prosjektoppgave/ros2_ws/build/drone_interfaces

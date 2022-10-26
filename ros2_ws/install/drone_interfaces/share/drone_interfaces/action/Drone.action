@@ -1,5 +1,8 @@
+# The desired final position of the drone
 float32[] pos
 ---
+# The final position of the drone
 float32[] final_pos
 ---
+# The current position of the drone
 float32[] current_pos

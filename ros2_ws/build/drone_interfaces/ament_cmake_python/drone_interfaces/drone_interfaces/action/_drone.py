@@ -5,6 +5,9 @@
 
 # Import statements for member types
 
+# Member 'pos'
+import array  # noqa: E402, I100
+
 import builtins  # noqa: E402, I100
 
 import rosidl_parser.definition  # noqa: E402, I100
@@ -55,22 +58,22 @@ class Drone_Goal(metaclass=Metaclass_Drone_Goal):
     """Message class 'Drone_Goal'."""
 
     __slots__ = [
-        '_speed',
+        '_pos',
     ]
 
     _fields_and_field_types = {
-        'speed': 'float',
+        'pos': 'sequence<float>',
     }
 
     SLOT_TYPES = (
-        rosidl_parser.definition.BasicType('float'),  # noqa: E501
+        rosidl_parser.definition.UnboundedSequence(rosidl_parser.definition.BasicType('float')),  # noqa: E501
     )
 
     def __init__(self, **kwargs):
         assert all('_' + key in self.__slots__ for key in kwargs.keys()), \
             'Invalid arguments passed to constructor: %s' % \
             ', '.join(sorted(k for k in kwargs.keys() if '_' + k not in self.__slots__))
-        self.speed = kwargs.get('speed', float())
+        self.pos = array.array('f', kwargs.get('pos', []))
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -101,7 +104,7 @@ class Drone_Goal(metaclass=Metaclass_Drone_Goal):
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        if self.speed != other.speed:
+        if self.pos != other.pos:
             return False
         return True
 
@@ -111,25 +114,39 @@ class Drone_Goal(metaclass=Metaclass_Drone_Goal):
         return copy(cls._fields_and_field_types)
 
     @builtins.property
-    def speed(self):
-        """Message field 'speed'."""
-        return self._speed
+    def pos(self):
+        """Message field 'pos'."""
+        return self._pos
 
-    @speed.setter
-    def speed(self, value):
+    @pos.setter
+    def pos(self, value):
+        if isinstance(value, array.array):
+            assert value.typecode == 'f', \
+                "The 'pos' array.array() must have the type code of 'f'"
+            self._pos = value
+            return
         if __debug__:
+            from collections.abc import Sequence
+            from collections.abc import Set
+            from collections import UserList
+            from collections import UserString
             assert \
-                isinstance(value, float), \
-                "The 'speed' field must be of type 'float'"
-            assert value >= -3.402823e+38 and value <= 3.402823e+38, \
-                "The 'speed' field must be a float in [-3.402823e+38, 3.402823e+38]"
-        self._speed = value
+                ((isinstance(value, Sequence) or
+                  isinstance(value, Set) or
+                  isinstance(value, UserList)) and
+                 not isinstance(value, str) and
+                 not isinstance(value, UserString) and
+                 all(isinstance(v, float) for v in value) and
+                 all(val >= -3.402823e+38 and val <= 3.402823e+38 for val in value)), \
+                "The 'pos' field must be a set or sequence and each value of type 'float' and each float in [-340282299999999994960115009090224128000.000000, 340282299999999994960115009090224128000.000000]"
+        self._pos = array.array('f', value)
 
 
 # Import statements for member types
 
-# Member 'final_position'
-import array  # noqa: E402, I100
+# Member 'final_pos'
+# already imported above
+# import array
 
 # already imported above
 # import builtins
@@ -183,11 +200,11 @@ class Drone_Result(metaclass=Metaclass_Drone_Result):
     """Message class 'Drone_Result'."""
 
     __slots__ = [
-        '_final_position',
+        '_final_pos',
     ]
 
     _fields_and_field_types = {
-        'final_position': 'sequence<float>',
+        'final_pos': 'sequence<float>',
     }
 
     SLOT_TYPES = (
@@ -198,7 +215,7 @@ class Drone_Result(metaclass=Metaclass_Drone_Result):
         assert all('_' + key in self.__slots__ for key in kwargs.keys()), \
             'Invalid arguments passed to constructor: %s' % \
             ', '.join(sorted(k for k in kwargs.keys() if '_' + k not in self.__slots__))
-        self.final_position = array.array('f', kwargs.get('final_position', []))
+        self.final_pos = array.array('f', kwargs.get('final_pos', []))
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -229,7 +246,7 @@ class Drone_Result(metaclass=Metaclass_Drone_Result):
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        if self.final_position != other.final_position:
+        if self.final_pos != other.final_pos:
             return False
         return True
 
@@ -239,16 +256,16 @@ class Drone_Result(metaclass=Metaclass_Drone_Result):
         return copy(cls._fields_and_field_types)
 
     @builtins.property
-    def final_position(self):
-        """Message field 'final_position'."""
-        return self._final_position
+    def final_pos(self):
+        """Message field 'final_pos'."""
+        return self._final_pos
 
-    @final_position.setter
-    def final_position(self, value):
+    @final_pos.setter
+    def final_pos(self, value):
         if isinstance(value, array.array):
             assert value.typecode == 'f', \
-                "The 'final_position' array.array() must have the type code of 'f'"
-            self._final_position = value
+                "The 'final_pos' array.array() must have the type code of 'f'"
+            self._final_pos = value
             return
         if __debug__:
             from collections.abc import Sequence
@@ -263,13 +280,13 @@ class Drone_Result(metaclass=Metaclass_Drone_Result):
                  not isinstance(value, UserString) and
                  all(isinstance(v, float) for v in value) and
                  all(val >= -3.402823e+38 and val <= 3.402823e+38 for val in value)), \
-                "The 'final_position' field must be a set or sequence and each value of type 'float' and each float in [-340282299999999994960115009090224128000.000000, 340282299999999994960115009090224128000.000000]"
-        self._final_position = array.array('f', value)
+                "The 'final_pos' field must be a set or sequence and each value of type 'float' and each float in [-340282299999999994960115009090224128000.000000, 340282299999999994960115009090224128000.000000]"
+        self._final_pos = array.array('f', value)
 
 
 # Import statements for member types
 
-# Member 'current_position'
+# Member 'current_pos'
 # already imported above
 # import array
 
@@ -325,11 +342,11 @@ class Drone_Feedback(metaclass=Metaclass_Drone_Feedback):
     """Message class 'Drone_Feedback'."""
 
     __slots__ = [
-        '_current_position',
+        '_current_pos',
     ]
 
     _fields_and_field_types = {
-        'current_position': 'sequence<float>',
+        'current_pos': 'sequence<float>',
     }
 
     SLOT_TYPES = (
@@ -340,7 +357,7 @@ class Drone_Feedback(metaclass=Metaclass_Drone_Feedback):
         assert all('_' + key in self.__slots__ for key in kwargs.keys()), \
             'Invalid arguments passed to constructor: %s' % \
             ', '.join(sorted(k for k in kwargs.keys() if '_' + k not in self.__slots__))
-        self.current_position = array.array('f', kwargs.get('current_position', []))
+        self.current_pos = array.array('f', kwargs.get('current_pos', []))
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -371,7 +388,7 @@ class Drone_Feedback(metaclass=Metaclass_Drone_Feedback):
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        if self.current_position != other.current_position:
+        if self.current_pos != other.current_pos:
             return False
         return True
 
@@ -381,16 +398,16 @@ class Drone_Feedback(metaclass=Metaclass_Drone_Feedback):
         return copy(cls._fields_and_field_types)
 
     @builtins.property
-    def current_position(self):
-        """Message field 'current_position'."""
-        return self._current_position
+    def current_pos(self):
+        """Message field 'current_pos'."""
+        return self._current_pos
 
-    @current_position.setter
-    def current_position(self, value):
+    @current_pos.setter
+    def current_pos(self, value):
         if isinstance(value, array.array):
             assert value.typecode == 'f', \
-                "The 'current_position' array.array() must have the type code of 'f'"
-            self._current_position = value
+                "The 'current_pos' array.array() must have the type code of 'f'"
+            self._current_pos = value
             return
         if __debug__:
             from collections.abc import Sequence
@@ -405,8 +422,8 @@ class Drone_Feedback(metaclass=Metaclass_Drone_Feedback):
                  not isinstance(value, UserString) and
                  all(isinstance(v, float) for v in value) and
                  all(val >= -3.402823e+38 and val <= 3.402823e+38 for val in value)), \
-                "The 'current_position' field must be a set or sequence and each value of type 'float' and each float in [-340282299999999994960115009090224128000.000000, 340282299999999994960115009090224128000.000000]"
-        self._current_position = array.array('f', value)
+                "The 'current_pos' field must be a set or sequence and each value of type 'float' and each float in [-340282299999999994960115009090224128000.000000, 340282299999999994960115009090224128000.000000]"
+        self._current_pos = array.array('f', value)
 
 
 # Import statements for member types
