@@ -1,13 +1,8 @@
-from asyncio.constants import LOG_THRESHOLD_FOR_CONNLOST_WRITES
 import tkinter
-import random
-import math
-
-import time
-from sheep import Sheep
 import numpy as np
+
+from sheep import Sheep
 from drone import Drone
-from util import Vector2
 from main_drone import MainDrone
 
 

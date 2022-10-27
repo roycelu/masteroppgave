@@ -1,12 +1,7 @@
 import math
-from re import S
-#from p5 import circle, stroke, fill
-import pygame
-import random
-import tkinter
-from geometry_msgs.msg import Twist, PoseStamped, Pose
-from util import Vector2
 import numpy as np
+from geometry_msgs.msg import Twist
+from util import Vector2
 
 
 class Drone:
@@ -40,10 +35,14 @@ class Drone:
 
     def draw_drone(self, canvas):
         size = 10
-        x1 = self.position[0] + size 
-        x2 = self.position[1] + size
-        canvas.create_oval(self.position[0], self.position[1], x1, x2, fill='green', tags=self.id)
+        # Draw the circle around the position (centre)
+        x0 = self.position[0] - size/2
+        y0 = self.position[1] - size/2
+        x1 = self.position[0] + size/2
+        y1 = self.position[1] + size/2
+        canvas.create_oval(x0, y0, x1, y1, fill='green', tags=self.id)
         canvas.create_text(self.position[0], self.position[1], text=self.id, tags=self.id)
+
     def update_drone(self):
         # Limiting the speed
         if np.linalg.norm(self.velocity) > self.max_speed:

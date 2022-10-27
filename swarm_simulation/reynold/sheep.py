@@ -30,9 +30,12 @@ class Sheep:
 
     def draw_sheep(self, canvas):
         size = 10
-        x1 = self.position[0] + size 
-        x2 = self.position[1] + size
-        canvas.create_oval(self.position[0], self.position[1], x1, x2, fill='white', tags=self.id)
+        # Draw the circle around the position (centre)
+        x0 = self.position[0] - size/2
+        y0 = self.position[1] - size/2
+        x1 = self.position[0] + size/2 
+        y1 = self.position[1] + size/2
+        canvas.create_oval(x0, y0, x1, y1, fill='white', tags=self.id)
     
     
     def update_sheep(self):
