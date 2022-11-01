@@ -22,8 +22,9 @@ class Drone:
         self.alignment_weight = 5
 
         self.desired_separation = 30
-        self.desired_separation_sheep = 30
+        self.desired_separation_sheep = 5
         
+        self.desired_position = initial_position
         
         #self.max_force = 50
         #self.separation_weight = 1.0
@@ -61,9 +62,15 @@ class Drone:
         self.velocity += v1*self.cohesion_weight + v2*self.separation_weight + v2_2*self.separation_weight_sheep + v3*self.alignment_weight
         self.update_drone()
         
-        
-    def tend_to_place(self, desired_position, step_size):
-        self.velocity = (desired_position - self.position) * (step_size / 100)
+    def fly_to_position(self, pos, step_size):
+        goal = False
+        print('goal', goal)
+        self.desired_position = pos
+        self.velocity = (pos - self.position) * (step_size / 100)
+        print("Goal", self.position, self.desired_position)
+        if (self.desired_position[0] - 50 <= self.position[0] <= self.desired_position[0] + 50) and (self.desired_position[1] - 50 <= self.position[1] <= self.desired_position[1] + 50):
+            goal = True
+        return self.position, goal
 
     def cohesion(self, nearest_drone):
         # move together - cohesion

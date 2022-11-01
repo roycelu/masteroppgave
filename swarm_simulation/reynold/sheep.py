@@ -14,7 +14,7 @@ class Sheep:
         
         self.id = id
         self.position = initial_position
-        self.max_speed = 2
+        self.max_speed = 0.5
         
         #Set initial velocity
         #initial_random_velocity = (np.random.rand(2)-0.5) * self.max_speed * 2
@@ -140,7 +140,7 @@ class Sheep:
                     & (np.linalg.norm(drone.position - self.position) < self.desired_separation_drones)
                     & (drone != self)):
                 c -= (drone.position - self.position)*(self.separation_weight_drones/100)
-                self.velocity = -drone.velocity
+                self.velocity = drone.velocity
         return c
 
     def alignment(self, nearest_sheep):
