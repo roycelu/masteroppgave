@@ -6,6 +6,7 @@ class MainDrone:
     def __init__(self, id, drone_path):
         self.id = id
         self.path = drone_path
+        self.point = drone_path[0]
 
     
     def draw_main_drone(self, canvas, list_of_sheep):
@@ -152,7 +153,7 @@ class MainDrone:
     
     def fly_to_edge_convex_hull(self, extended_hull, list_of_drones):
         # print(extended_hull)
-        step_size = 5
+        step_size = 100
         for drone in list_of_drones:
             pos = np.zeros(2, dtype=np.int32)
             if drone.id == 'drone0':
@@ -175,24 +176,37 @@ class MainDrone:
         #Must calculate how far it is to move either clockwise or counterclockwise, choose shortest path 
         return "navigate clockwise/counterclockwise based on what is quicker"
 
+
     def fly_along_path(self, list_of_drones):
-        print('nei')
-        index = 0
-        print(self.path)
-        for point in self.path:
-            print('yo', point)
-            for drone in list_of_drones:
-                print('drone', drone.position)
-                position, goal = drone.fly_to_position(point, 5)
-                if goal:
-                    drone.fly_to_position(self.path[index+1], 5)
-            index += 1
+        list_of_drones[0].goal = False
+        list_of_drones[1].goal = False
+        list_of_drones[2].goal = False
+        step_size = 200
+        for drone in list_of_drones:
+            #print(drone.id, drone.position)
+            #print(self.point)
+            if drone.id == 'drone0':
+                drone.fly_to_position((self.point[0], self.point[1]), step_size)
+            if drone.id == 'drone1':
+                drone.fly_to_position((self.point[0]-50, self.point[1]-50), step_size)
+            if drone.id == 'drone2':
+                drone.fly_to_position((self.point[0]+50, self.point[1]+50), step_size)
+            if list_of_drones[0].goal and list_of_drones[1].goal and list_of_drones[2].goal:
+                if self.point == self.path[-1]:
+                    print('do nothing')
+                else:    
+                    self.point = self.path[self.path.index(self.point)+1]
+                    break
+        
         
     def main(self, list_of_sheep, canvas, list_of_drones):
         canvas.delete(self.id)
         self.draw_main_drone(canvas, list_of_sheep)
-        #self.draw_sheep_border(canvas, list_of_sheep, list_of_drones)
+        
+        # if droner posisjoner korrekt rundt sauer mtp retning de skal bevege seg i mot pathen
         self.fly_along_path(list_of_drones)
+        # else
+        #self.draw_sheep_border(canvas, list_of_sheep, list_of_drones)
 
 
 def calculate_center_of_mass(list_of_sheep):

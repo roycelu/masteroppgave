@@ -1,5 +1,6 @@
 import math
 from re import S
+from turtle import update
 #from p5 import circle, stroke, fill
 import pygame
 import random
@@ -21,15 +22,15 @@ class Sheep:
         self.velocity = 0
         self.horizon = 100
         self.cohesion_weight = 1
-        self.separation_weight = 30
-        self.separation_weight_drones = 10
+        self.separation_weight = 40
+        self.separation_weight_drones = 50
         self.alignment_weight = 5
 
-        self.desired_separation = 15
-        self.desired_separation_drones = 30
+        self.desired_separation = 40
+        self.desired_separation_drones = 50
 
     def draw_sheep(self, canvas):
-        size = 10
+        size = 20
         # Draw the circle around the position (centre)
         x0 = self.position[0] - size/2
         y0 = self.position[1] - size/2
@@ -46,14 +47,17 @@ class Sheep:
         self.position = np.add(self.position, self.velocity)
     
     def main_sheep(self, list_of_sheep, canvas, list_of_drones):
-        step_size = 5
+        step_size = 100
         desired_position = np.zeros(2, dtype=np.int32)
         desired_position[0] = 250
         desired_position[1] = 250
         for drone in list_of_drones:
             if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
-                self.velocity = drone.velocity
+                self.max_speed = 3
+                self.velocity = drone.velocity 
+                #self.update_sheep()
             else:
+                self.max_speed = 0.5
                 self.velocity = (desired_position - self.position) * (step_size / 100)
                 
         v1 = self.cohesion(list_of_sheep)

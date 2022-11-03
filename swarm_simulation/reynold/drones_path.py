@@ -12,6 +12,8 @@ class DronesPath:
             p.append(point[0])
             p.append(point[1])
         canvas.create_line(p, fill='orange', tags=self.id)
+        canvas.create_text(p[0], p[1], text='Start', tags=self.id)
+        canvas.create_text(p[-2], p[-1], text='End', tags=self.id)
 
     def get_path(self):
         return self.path

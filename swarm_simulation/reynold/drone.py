@@ -21,18 +21,16 @@ class Drone:
         
         self.alignment_weight = 5
 
-        self.desired_separation = 30
+        self.desired_separation = 10
         self.desired_separation_sheep = 5
         
         self.desired_position = initial_position
-        
-        #self.max_force = 50
-        #self.separation_weight = 1.0
-        #self.cohesion_weight = 1.0
-        #self.alignment_weight = 1.0
-        # This dictionary holds values of each flocking component and is used
-        # to pass them to the visualization markers publisher.
-        #self.viz_components = {}
+
+        self.goal = False
+        self.count_right = 0
+        self.count_left = 10
+
+        self.u_max = 200
 
     def draw_drone(self, canvas):
         size = 10
@@ -41,7 +39,7 @@ class Drone:
         y0 = self.position[1] - size/2
         x1 = self.position[0] + size/2
         y1 = self.position[1] + size/2
-        canvas.create_oval(x0, y0, x1, y1, fill='green', tags=self.id)
+        canvas.create_oval(x0, y0, x1, y1, fill='green', outline='green', tags=self.id)
         canvas.create_text(self.position[0], self.position[1], text=self.id, tags=self.id)
 
     def update_drone(self):
@@ -49,8 +47,33 @@ class Drone:
         if np.linalg.norm(self.velocity) > self.max_speed:
             self.velocity = (self.velocity/np.linalg.norm(self.velocity)) * self.max_speed
         # Then update the position
-        self.position = np.add(self.position, self.velocity)
-    
+        moving = True
+        max_left = self.position - 10
+        max_right = self.position + 10
+        
+        if self.count_right == 10:
+            vector = (self.velocity[0]-self.position[0], self.velocity[1]-self.position[1])
+            print(vector)
+
+            vector[0] *= math.pi/4
+            #self.velocity[0] /= math.cos(30)
+            #self.velocity[1] /= math.cos(30)
+            self.position = np.add(self.position, vector)
+            self.count_left += 1
+            if self.count_left == 10:
+                self.count_right == 0
+
+        if self.count_left == 10:
+            vector = (self.velocity[0]-self.position[0], self.velocity[1]-self.position[1])
+            print(vector)
+            vector[0] *= (-math.pi/4)
+            #self.velocity[0] /= math.cos(-30)
+            #self.velocity[1] /= math.cos(-30)
+            self.position = np.add(self.position, vector)
+            self.count_right += 1
+            if self.count_right == 10:
+                self.count_left == 0
+
     def main_drone(self, drones, canvas, list_of_sheep):
         v1 = self.cohesion(drones)
         v2 = self.separation(drones)
@@ -63,14 +86,51 @@ class Drone:
         self.update_drone()
         
     def fly_to_position(self, pos, step_size):
-        goal = False
-        print('goal', goal)
         self.desired_position = pos
         self.velocity = (pos - self.position) * (step_size / 100)
-        print("Goal", self.position, self.desired_position)
-        if (self.desired_position[0] - 50 <= self.position[0] <= self.desired_position[0] + 50) and (self.desired_position[1] - 50 <= self.position[1] <= self.desired_position[1] + 50):
-            goal = True
-        return self.position, goal
+        #print("Goal", self.position, self.desired_position)
+        if (self.desired_position[0] -5 <= self.position[0] <= self.desired_position[0] + 5) and (self.desired_position[1] - 5 <= self.position[1] <= self.desired_position[1] + 5):
+            self.goal = True
+
+    def fly_to_edge_guidance_law(self, drone, list_of_corners):
+        E_j = list_of_corners[0]
+        E_j_p = list_of_corners[1]
+        
+        q_t = E_j_p - E_j
+        p_t = E_j_p - drone.position
+        o_t = (0, 0) # O is closest point from drone to edge
+        b_t = drone.position - o_t
+
+        if np.dot(p_t, q_t) < 0:
+            o_t = E_j_p
+            b_t = -p_t
+        elif (np.dot(p_t, q_t) > 0) and (np.linalg.norm(p_t) > np.linalg.norm(q_t)):
+            o_t = np.linalg.norm(q_t)^(-1) * np.dot(p_t, q_t) * np.linalg.norm(q_t)^(-1) * q_t
+            b_t = o_t - p_t
+        else:
+            o_t = E_j
+            b_t = q_t - p_t
+
+        a_t = 2
+        u_t = self.u_max * self.g(a_t, b_t) * self.F(a_t, b_t)
+        v_t = self.max_speed * self.g(a_t, b_t)
+
+        return u_t, v_t
+
+    def F(self, w_1, w_2):
+        f = w_2 - np.dot(w_2, w_1) * w_1
+        if f == 0:
+            F = 0
+        elif f != 0:
+            F = np.linalg.norm(f)^(-1) * f
+        return F
+    
+    def g(self, w_1, w_2):
+        if np.dot(w_1, w_2) > 0:
+            g = 1
+        elif np.dot(w_1, w_2) <= 0:
+            g = -1
+        return g
 
     def cohesion(self, nearest_drone):
         # move together - cohesion
@@ -90,7 +150,6 @@ class Drone:
         return target_position
         
         
-
     def separation(self, nearest_drone):
         # move away from nearest - separation
         c = np.zeros(2)

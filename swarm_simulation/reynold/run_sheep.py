@@ -94,11 +94,10 @@ def main():
     path = drone_path.get_path()
     main_drone = create_main_drone(path)
     list_of_drones = create_drones(no_of_drones)
-    
-
-    sheep_behaviours(canvas, list_of_sheep, list_of_drones)
-    drone_behaviours(canvas, list_of_drones, list_of_sheep)
     main_drone_behaviour(canvas, main_drone, list_of_sheep, list_of_drones)
+
+    drone_behaviours(canvas, list_of_drones, list_of_sheep)
+    sheep_behaviours(canvas, list_of_sheep, list_of_drones)
     
     window.mainloop()
     
