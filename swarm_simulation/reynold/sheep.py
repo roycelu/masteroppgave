@@ -1,4 +1,3 @@
-from util import Vector2
 import numpy as np
 
 
@@ -19,7 +18,8 @@ class Sheep:
         self.alignment_weight = 5
 
         self.desired_separation = 20
-        self.desired_separation_drones = 20
+        self.desired_separation_drones = 20 # Samme avstand som extended_hull og sauene?
+
 
     def draw_sheep(self, canvas):
         size = 10
@@ -29,6 +29,7 @@ class Sheep:
         x1 = self.position[0] + size/2 
         y1 = self.position[1] + size/2
         canvas.create_oval(x0, y0, x1, y1, fill='white', tags=self.id)
+        canvas.create_text(self.position[0], self.position[1], text=self.id[-1], tags=self.id)
     
     
     def update_sheep(self):
@@ -38,6 +39,7 @@ class Sheep:
         # Then update the position
         self.position = np.add(self.position, self.velocity)
     
+
     def main_sheep(self, list_of_sheep, canvas, list_of_drones):
         step_size = 100
         desired_position = np.zeros(2, dtype=np.int32)
@@ -46,10 +48,10 @@ class Sheep:
         for drone in list_of_drones:
             if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
                 self.max_speed = 3
-                self.velocity = drone.velocity 
-                #self.update_sheep()
+                self.velocity = drone.velocity * self.max_speed
+                # self.update_sheep()
             else:
-                self.max_speed = 0.5
+                # self.max_speed = 0.5
                 self.velocity = (desired_position - self.position) * (step_size / 100)
                 
         v1 = self.cohesion(list_of_sheep)
@@ -160,18 +162,3 @@ class Sheep:
             pv = perceived_velocity - self.velocity
         """
         return pv
-
-
-
-def get_sheep_velocity(sheep):
-    vel = Vector2()
-    vel.x = sheep.velocity[0]
-    vel.y = sheep.velocity[1]
-    return vel
-
-def get_sheep_position(sheep):
-    pos = Vector2() 
-    pos.x = sheep.position[0]
-    pos.y = sheep.position[1]
-    return pos
-

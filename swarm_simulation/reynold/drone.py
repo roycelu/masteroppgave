@@ -22,14 +22,11 @@ class Drone:
         self.cohesion_weight = 1
         self.separation_weight = 10
         self.separation_weight_sheep = 10
-        
         self.alignment_weight = 5
-
         self.desired_separation = 10
         self.desired_separation_sheep = 5
         
         self.desired_position = initial_position
-
         
         self.extended_hull_goal = False
         self.hull_position_goal = False
@@ -38,7 +35,6 @@ class Drone:
         self.count_left = 10
 
         self.u_max = 200
-
         self.b_t = (math.inf, math.inf)
 
     def draw_drone(self, canvas):
@@ -94,14 +90,6 @@ class Drone:
         else:
             self.angle += min(self.rotation_velocity, abs(difference_in_angle))
 
-        
-
-    
-    def rotate(self, left=False, right=False):
-        if left:
-            self.angle += self.rotation_velocity
-        elif right:
-            self.angle -= self.rotation_velocity
 
     def update_drone(self):
         # Limiting the speed
@@ -155,6 +143,7 @@ class Drone:
         self.velocity += v1*self.cohesion_weight + v2*self.separation_weight + v2_2*self.separation_weight_sheep + v3*self.alignment_weight
         self.update_drone()
         
+
     def fly_to_position(self, pos):
         step_size = 200
         self.desired_position = pos
@@ -162,6 +151,7 @@ class Drone:
 
         if (self.desired_position[0] -15 <= self.position[0] <= self.desired_position[0] + 15) and (self.desired_position[1] - 15 <= self.position[1] <= self.desired_position[1] + 15):
             self.path_goal = True
+
 
     def fly_to_edge_guidance_law(self, extended_hull):
         shortest_b = (math.inf, math.inf)   # Korteste distansen mellom drone og (saue)kant
@@ -204,19 +194,14 @@ class Drone:
         self.rotation_velocity = self.max_rot_vel * self.g(a_t, self.b_t) * self.F(a_t, self.b_t)
         self.velocity = self.max_speed * self.g(a_t, self.b_t)
 
-        #self.b_t = shortest_b
-        # print(bt_list, des_pos)
         if -5 <= self.b_t[0] <= 5 and -5 <= self.b_t[1] <= 5:
             self.extended_hull_goal = True
-            # print('true')
-        #print(self.desired_position)
+
 
     def fly_on_edge_guidance_law(self, extended_hull, desired_position):
-        desired_position_to_vertex = math.inf
+        desired_position_to_vertex = math.inf   # distance
         drone_to_vertex = math.inf
-        closest_desired_position = (0,0)
         closest_desired_position_index = 0
-        closest_drone = (0,0)
         closest_drone_index = 0
 
         i = 0
@@ -224,13 +209,11 @@ class Drone:
             des_pos_vertex = np.linalg.norm(desired_position-vertex)
             if des_pos_vertex < desired_position_to_vertex:
                 desired_position_to_vertex = des_pos_vertex
-                closest_desired_position = vertex
                 closest_desired_position_index = i
 
             drone_vertex = np.linalg.norm(self.position-vertex)
             if drone_vertex < drone_to_vertex:
                 drone_to_vertex = drone_vertex
-                closest_drone = vertex
                 closest_drone_index = i
 
             i += 1
@@ -267,7 +250,6 @@ class Drone:
                 path_2_length += np.linalg.norm(vertex-path_2[0])
             else: path_2_length += np.linalg.norm(vertex-path_2[k+1])
             k += 1
-
         
         if path_1_length < path_2_length:
             for point in path_1:
@@ -345,29 +327,6 @@ class Drone:
                 break
         """    
 
-        # b_t = self.b_t  # Keeping the drone on the edge
-        # E_j_p = (0, 0) # Target position, egt O*
-        # Umax = 5    #m/s²
-        # Vmax = 25   #m/s
-        # a_t = [-2, -2]  # Midlertidig
-
-        # # Edge sliding
-        # i = 0
-        # for corner in extended_hull:
-        #     E_j = corner
-        #     if i == len(extended_hull)-1:
-        #         E_j_p = extended_hull[0]
-        #     else:
-        #         E_j_p = extended_hull[i+1]
-
-        #     o_star = (E_j_p[0]-self.position[0], E_j_p[1]-self.position[1]) # Navigate drone towards O*, vector between drone and O*
-        #     b_star = np.add(b_t, o_star)
-            
-        #     #print(b_star)
-
-        #     #u_t = Umax*self.g(a_t, b_star) * self.F(a_t, b_star)
-        #     self.velocity = Vmax * self.g(a_t, b_star)
-        # i += 1
 
     def F(self, w_1, w_2):
         f = self.g(w_1, w_2)
@@ -390,11 +349,11 @@ class Drone:
             g = -1
         return g
 
+
     def cohesion(self, nearest_drone):
         # move together - cohesion
         center_of_mass = np.zeros(2)
-        N = 0 #Total drone number
-        #com_direction = Vector2()
+        N = 0   # Total drone number
 
         # Find mean position of neighbouring drone
         for drone in nearest_drone:
@@ -405,8 +364,7 @@ class Drone:
         center_of_mass = center_of_mass / (N-1)
         target_position = (center_of_mass * self.cohesion_weight) / 100
 
-        return target_position
-        
+        return target_position      
         
     def separation(self, nearest_drone):
         # move away from nearest - separation

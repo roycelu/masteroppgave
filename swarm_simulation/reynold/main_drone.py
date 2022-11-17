@@ -14,7 +14,6 @@ class MainDrone:
         self.drone1_point = (50, 50)
         self.drone2_point = (70, 70)
         
-        
         self.extended_hull_goal = False
         self.hull_position_goal = False
         self.path_goal = False
@@ -51,7 +50,7 @@ class MainDrone:
         buffered_hull = []
         poly = shp.Polygon([[p[0], p[1]] for p in new_positions])
         simple_poly = poly.simplify(0.0001)
-        buf_poly = simple_poly.buffer(30, 4)
+        buf_poly = simple_poly.buffer(50, 4)
         poly_array = np.array(buf_poly.exterior)
         
         size = 4
@@ -70,7 +69,7 @@ class MainDrone:
         opp_vector = (-vector[0], -vector[1])
         point_behind = np.add(mass_center, opp_vector)
         line1 = shp.LineString([mass_center, point_behind])
-        size=12
+        size = 12
         i = 0
         point_of_intersection = (0, 0)
         point_orthogonal_1 = (0, 0)
@@ -95,7 +94,6 @@ class MainDrone:
         line4 = shp.LineString([mass_center, (mass_center + orthogonal_2)])
 
         for vertex in poly_array:
-
             if i == len(poly_array)-1:
                 line2 = shp.LineString([vertex, poly_array[0]])
             else:
@@ -156,7 +154,6 @@ class MainDrone:
             list_of_drones[1].path_goal = False
             list_of_drones[2].path_goal = False
 
-            
             for drone in list_of_drones:
                 # Midlertidig håndtering av posisjonering av droner i forhold til hverandre
                 if drone.id == 'drone0':
@@ -167,7 +164,7 @@ class MainDrone:
                     drone.fly_to_position((self.point[0], self.point[1]))
                 
                 if list_of_drones[0].path_goal and list_of_drones[1].path_goal and list_of_drones[2].path_goal:
-                    self.point = self.path[self.path[self.point]+1]
+                    self.point = self.path[self.path.index(self.point)+1]
                     if self.point == self.path[-1]:
                         print("Fly to point", self.path_goal)
                         self.path_goal = True
@@ -191,12 +188,11 @@ class MainDrone:
         #     left, back, right = self.calculate_positions_toward_next_point(poly_array, list_of_sheep, canvas)
         #     self.fly_on_edge_convex_hull(poly_array, list_of_drones, left, back, right)
         if self.extended_hull_goal:
-            print(self.path)
+            # print(self.path)
             left, back, right = self.calculate_positions_toward_next_point(poly_array, list_of_sheep, canvas)
             self.fly_on_edge_convex_hull(poly_array, list_of_drones, left, back, right)
             #self.fly_to_point(list_of_drones)
             if self.hull_position_goal:
-                print('true')
                 self.fly_to_point(list_of_drones)
                 
         # Fly to the path and along the path 
