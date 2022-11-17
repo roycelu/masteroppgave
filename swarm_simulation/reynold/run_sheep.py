@@ -1,7 +1,5 @@
 import tkinter
 import numpy as np
-import random
-
 from sheep import Sheep
 from drone import Drone
 from main_drone import MainDrone
@@ -30,8 +28,8 @@ def sheep_behaviours(canvas, list_of_sheep, list_of_drones):
     canvas.after(100, sheep_behaviours, canvas, list_of_sheep, list_of_drones)
 
 
-def create_main_drone(drone_path):
-    main_drone = MainDrone('main_drone', drone_path)
+def create_main_drone(drone_path, vertices, point):
+    main_drone = MainDrone('main_drone', drone_path, vertices, point)
     return main_drone
 
 def main_drone_behaviour(canvas, main_drone, list_of_sheep, list_of_drones):
@@ -45,11 +43,11 @@ def create_drones(no_of_drones):
         initial_position = np.zeros(2, dtype=np.int32)
         if n == 0:
             initial_position[0] = 0
-            initial_position[1] = 0 
+            initial_position[1] = 40
             list_of_drones[n] = Drone(initial_position, 'drone'+str(n))
         if n == 1:
             initial_position[0] = 0
-            initial_position[1] = 40 
+            initial_position[1] = 0 
             list_of_drones[n] = Drone(initial_position, 'drone'+str(n))
         if n == 2:
             initial_position[0] = 40
@@ -68,15 +66,18 @@ def drone_behaviours(canvas, list_of_drones, list_of_sheep):
     canvas.after(100, drone_behaviours, canvas, list_of_drones, list_of_sheep)
 
 
-def create_drone_path():
-    drone_path = DronesPath('path')
+def create_drone_path(canvas):
+    drone_path = DronesPath('path', canvas)
     return drone_path
 
 def drone_path_behaviours(canvas, drone_path):
     points = []
-    for i in range(4):
-        points.append((random.randint(100, 500), random.randint(100, 500)))
-    drone_path.draw_path(canvas, points)
+    # for i in range(4):
+    #     points.append((random.randint(100, 500), random.randint(100, 500)))
+    
+    #drone_path.draw_path(canvas, points)
+    canvas.bind('<ButtonPress-1>', drone_path.click)
+    #canvas.bind('<ButtonRelease-1>', drone_path.release)
     
 
 def main():
@@ -89,12 +90,16 @@ def main():
     canvas = initialise_canvas(window, screen_size)
     
     list_of_sheep = create_sheep(no_of_sheep)
-    drone_path = create_drone_path()
+    drone_path = create_drone_path(canvas)
     drone_path_behaviours(canvas, drone_path)
-    path = drone_path.get_path()
-    main_drone = create_main_drone(path)
+    path = drone_path.vertices
+    point = drone_path.point
+    polygon = drone_path.polygon
+    main_drone = create_main_drone(path, polygon, point)
+    
     list_of_drones = create_drones(no_of_drones)
     main_drone_behaviour(canvas, main_drone, list_of_sheep, list_of_drones)
+        
 
     drone_behaviours(canvas, list_of_drones, list_of_sheep)
     sheep_behaviours(canvas, list_of_sheep, list_of_drones)

@@ -1,11 +1,3 @@
-import math
-from re import S
-from turtle import update
-#from p5 import circle, stroke, fill
-import pygame
-import random
-import tkinter
-from geometry_msgs.msg import Twist, PoseStamped, Pose
 from util import Vector2
 import numpy as np
 
@@ -22,15 +14,15 @@ class Sheep:
         self.velocity = 0
         self.horizon = 100
         self.cohesion_weight = 1
-        self.separation_weight = 40
+        self.separation_weight = 100
         self.separation_weight_drones = 50
         self.alignment_weight = 5
 
-        self.desired_separation = 40
-        self.desired_separation_drones = 50
+        self.desired_separation = 20
+        self.desired_separation_drones = 20
 
     def draw_sheep(self, canvas):
-        size = 20
+        size = 10
         # Draw the circle around the position (centre)
         x0 = self.position[0] - size/2
         y0 = self.position[1] - size/2

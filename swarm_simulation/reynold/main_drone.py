@@ -1,15 +1,27 @@
 from scipy.spatial import ConvexHull
 import numpy as np
-from drones_path import DronesPath
+import shapely.geometry as shp
+
 
 class MainDrone:
-    def __init__(self, id, drone_path):
+    def __init__(self, id, drone_path, polygon, point):
         self.id = id
         self.path = drone_path
-        self.point = drone_path[0]
+        self.point = point
+        self.polygon = polygon
+        
+        self.drone0_point = (30, 30)
+        self.drone1_point = (50, 50)
+        self.drone2_point = (70, 70)
+        
+        
+        self.extended_hull_goal = False
+        self.hull_position_goal = False
+        self.path_goal = False
 
-    
-    def draw_main_drone(self, canvas, list_of_sheep):
+
+    # Vises som massesenteret til sauene
+    def draw_sheep_mass_centre(self, canvas, list_of_sheep):
         size = 3
         c = calculate_center_of_mass(list_of_sheep)
         # Draw the circle around the position (centre)
@@ -18,195 +30,185 @@ class MainDrone:
         x1 = c[0] + size/2
         y1 = c[1] + size/2
         canvas.create_oval(x0, y0, x1, y1, fill='red', tags=self.id)
+
     
-    def draw_sheep_border(self, canvas, list_of_sheep, list_of_drones):
+    def draw_convex_and_extended_hull(self, canvas, list_of_sheep):
+        # Returns array containing the vertices of the extended hull
         points = []
         positions = []
-        centre = calculate_center_of_mass(list_of_sheep)
+        new_positions = []
         for sheep in list_of_sheep:
             positions.append(sheep.position)
         hull = ConvexHull(positions)
-        neighbours = hull.neighbors # [ [1,3], [x,y] ]
        
         for index in hull.vertices:
             points.append(list_of_sheep[index].position[0])
             points.append(list_of_sheep[index].position[1])
-            """P_iP_i_n = (list_of_sheep[index].position[0]-list_of_sheep[neighbours[i][0]].position[0], list_of_sheep[index].position[1]-list_of_sheep[neighbours[i][0]].position[1])
-            P_iP_i_p = (list_of_sheep[index].position[0]-list_of_sheep[neighbours[i][1]].position[0], list_of_sheep[index].position[1]-list_of_sheep[neighbours[i][1]].position[1])
-            P_i_nP_i = (list_of_sheep[neighbours[i][0]].position[0]-list_of_sheep[index].position[0], list_of_sheep[neighbours[i][0]].position[1]-list_of_sheep[index].position[1])
-            P_i_pP_i = (list_of_sheep[neighbours[i][1]].position[0]-list_of_sheep[index].position[0], list_of_sheep[neighbours[i][1]].position[1]-list_of_sheep[index].position[1])
-            
-            print(P_iP_i_n, P_iP_i_p, P_i_nP_i, P_i_pP_i)"""
+            new_positions.append(list_of_sheep[index].position)
         
-        #print(points)
-        # print("------")
-        
-        #print('points', points)
         canvas.create_polygon(points, fill='', outline='green', tags=self.id)
-        self.draw_extended_hull(canvas, list_of_drones, list_of_sheep, hull)
+
+        buffered_hull = []
+        poly = shp.Polygon([[p[0], p[1]] for p in new_positions])
+        simple_poly = poly.simplify(0.0001)
+        buf_poly = simple_poly.buffer(30, 4)
+        poly_array = np.array(buf_poly.exterior)
         
-       
+        size = 4
+        for l in range(0, len(poly_array)-1):
+            buffered_hull.append(poly_array[l][0])
+            buffered_hull.append(poly_array[l][1])
+            canvas.create_oval(poly_array[l][0]-size/2, poly_array[l][1]-size/2, poly_array[l][0]+size/2, poly_array[l][1]+size/2, fill='cyan', outline='black', tags=self.id)
+        canvas.create_polygon(buffered_hull, fill='', outline='blue', tags=self.id)
 
-    def draw_extended_hull(self, canvas, list_of_drones, list_of_sheep, hull):
+        return poly_array
 
-        extended_distance = 10
-        extended_hull = []
-        extended_hull_separate = []
+    def calculate_positions_toward_next_point(self, poly_array, list_of_sheep, canvas):
+        # Calculates and returns the three positions for the drones on the extended hull
+        mass_center = calculate_center_of_mass(list_of_sheep)
+        vector = (self.point[0] - mass_center[0], self.point[1] - mass_center[1])
+        opp_vector = (-vector[0], -vector[1])
+        point_behind = np.add(mass_center, opp_vector)
+        line1 = shp.LineString([mass_center, point_behind])
+        size=12
         i = 0
+        point_of_intersection = (0, 0)
+        point_orthogonal_1 = (0, 0)
+        point_orthogonal_2 = (0, 0)
 
-        # print("Sheeppos",list_of_sheep.position)
-        #print("Index", positions)
-        """
+        # calculate perpendicular points
+        v_1 = 100
+        v_2 = -100
+        v_3 = 0
+        v_4 = 0
+        if (vector[0] < 0 and vector[1] < 0) or (vector[0] > 0 and vector[1] > 0):
+            v_3 = -(vector[0]/vector[1])*v_1
+        if (vector[0] < 0 and vector[1] > 0) or (vector[0] < 0 and vector[1] > 0):
+            v_3 = (vector[0]/vector[1])*v_1
+        if (vector[0] < 0 and vector[1] < 0) or (vector[0] > 0 and vector[1] > 0):
+            v_4 = -(vector[0]/vector[1])*v_2
+        if (vector[0] < 0 and vector[1] > 0) or (vector[0] < 0 and vector[1] > 0):
+            v_4 = (vector[0]/vector[1])*v_2
+        orthogonal_1 = (v_1, v_3)
+        orthogonal_2 = (v_2, v_4)
+        line3 = shp.LineString([mass_center, (mass_center + orthogonal_1)])
+        line4 = shp.LineString([mass_center, (mass_center + orthogonal_2)])
 
-        """
-        
-        for index in hull.vertices:
-            P_ix = list_of_sheep[index].position[0]
-            P_iy = list_of_sheep[index].position[1]
-            #print(P_ix, P_iy)
-            #print(index)
-            #print(positions)
-            """
-            if i == 0:
-                P_iP_i_n = (positions[-1][0]-index[0], positions[-1][1]-index[1])
-                P_iP_i_p = (positions[i+1][0]-index[0], positions[i+1][1]-index[1])
-                P_i_nP_i = (index[0]-positions[-1][0], index[1]-positions[-1][1])
-                P_i_pP_i = (index[0]-positions[i+1][0], index[1]-positions[i+1][1])
-            elif i == len(positions)-1:
-                P_iP_i_n = (positions[i-1][0]-index[0], positions[i-1][1]-index[1])
-                P_iP_i_p = (positions[0][0]-index[0], positions[0][1]-index[1])
-                P_i_nP_i = (index[0]-positions[i-1][0], index[0]-positions[i-1][1])
-                P_i_pP_i = (index[0]-positions[0][0], index[0]-positions[0][1])
+        for vertex in poly_array:
+
+            if i == len(poly_array)-1:
+                line2 = shp.LineString([vertex, poly_array[0]])
             else:
-                P_iP_i_n = (positions[i-1][0]-index[0], positions[i-1][1]-index[1])
-                P_iP_i_p = (positions[i+1][0]-index[0], positions[i+1][1]-index[1])
-                P_i_nP_i = (index[0]-positions[i-1][0], index[0]-positions[i-1][1])
-                P_i_pP_i = (index[0]-positions[i+1][0], index[0]-positions[i+1][1])
-            """
-            if i == 0:
-                P_iP_i_n = (list_of_sheep[hull.vertices[-1]].position[0]-P_ix , list_of_sheep[hull.vertices[-1]].position[1]-P_iy)
-                P_iP_i_p = (list_of_sheep[hull.vertices[i+1]].position[0]-P_ix, list_of_sheep[hull.vertices[i+1]].position[1]-P_iy)
-                P_i_nP_i = (P_ix-list_of_sheep[hull.vertices[-1]].position[0], P_iy-list_of_sheep[hull.vertices[-1]].position[1])
-                P_i_pP_i = (P_ix-list_of_sheep[hull.vertices[i+1]].position[0], P_iy-list_of_sheep[hull.vertices[i+1]].position[1])
+                line2 = shp.LineString([vertex, poly_array[i+1]])
 
-                #print("P_i", P_ix, P_iy)
-                #print("P_i+1", list_of_sheep[hull.vertices[i+1]].position[0], list_of_sheep[hull.vertices[i+1]].position[1])
-                #print("P_i-1", list_of_sheep[hull.vertices[-1]].position[0], list_of_sheep[hull.vertices[-1]].position[1])
+            int_pt = line1.intersection(line2)
+            int_pt_3 = line3.intersection(line2)
+            int_pt_4 = line4.intersection(line2)
+
+            if not int_pt.is_empty:
+                point_of_intersection = int_pt.x, int_pt.y
+            if not int_pt_3.is_empty:
+                point_orthogonal_1 = int_pt_3.x, int_pt_3.y
+            if not int_pt_4.is_empty:
+                point_orthogonal_2 = int_pt_4.x, int_pt_4.y
                 
-            
-            elif i == len(hull.vertices)-1:
-                P_iP_i_n = (list_of_sheep[hull.vertices[i-1]].position[0]-P_ix, P_iy-list_of_sheep[hull.vertices[i-1]].position[1])
-                P_iP_i_p = (list_of_sheep[hull.vertices[0]].position[0]-P_ix, P_iy-list_of_sheep[hull.vertices[0]].position[1])
-                P_i_nP_i = (P_ix-list_of_sheep[hull.vertices[i-1]].position[0], P_iy-list_of_sheep[hull.vertices[i-1]].position[1])
-                P_i_pP_i = (P_ix-list_of_sheep[hull.vertices[0]].position[0], P_iy-list_of_sheep[hull.vertices[0]].position[1])
+            i += 1 
 
-                #print("P_i", P_ix, P_iy)
-                #print("P_i+1", list_of_sheep[hull.vertices[0]].position[0], list_of_sheep[hull.vertices[0]].position[1])
-                #print("P_i-1", list_of_sheep[hull.vertices[i-1]].position[0], list_of_sheep[hull.vertices[i-1]].position[1])
-            
-            else:
-                P_iP_i_n = (list_of_sheep[hull.vertices[i-1]].position[0]-P_ix, list_of_sheep[hull.vertices[i-1]].position[1]-P_iy)
-                P_iP_i_p = (list_of_sheep[hull.vertices[i+1]].position[0]-P_ix, list_of_sheep[hull.vertices[i+1]].position[1]-P_iy)
-                P_i_nP_i = (P_ix-list_of_sheep[hull.vertices[i-1]].position[0], P_iy-list_of_sheep[hull.vertices[i-1]].position[1])
-                P_i_pP_i = (P_ix-list_of_sheep[hull.vertices[i+1]].position[0], P_iy-list_of_sheep[hull.vertices[i+1]].position[1])
+        canvas.create_oval(point_orthogonal_1[0]-size/2, point_orthogonal_1[1]-size/2, point_orthogonal_1[0]+size/2, point_orthogonal_1[1]+size/2, fill='purple', outline='yellow', tags=self.id)
+        canvas.create_oval(point_orthogonal_2[0]-size/2, point_orthogonal_2[1]-size/2, point_orthogonal_2[0]+size/2, point_orthogonal_2[1]+size/2, fill='purple', outline='green', tags=self.id)
+        canvas.create_oval(point_of_intersection[0]-size/2, point_of_intersection[1]-size/2, point_of_intersection[0]+size/2, point_of_intersection[1]+size/2, fill='purple', outline='pink', tags=self.id)
+        canvas.create_line(mass_center[0], mass_center[1], self.point[0], self.point[1], fill='yellow', tags=self.id)
+        return point_orthogonal_1, point_of_intersection, point_orthogonal_2
+
+
+    def fly_to_edge_convex_hull(self, extended_hull, list_of_drones):
+        # For every drone, fly to the edge of the convex hull that is closest
+        for drone in list_of_drones:
+            drone.fly_to_edge_guidance_law(extended_hull)
+            if list_of_drones[0].extended_hull_goal and list_of_drones[1].extended_hull_goal and list_of_drones[2].extended_hull_goal:
+                self.extended_hull_goal = True
 
             
-            cos_alpha = (np.dot(P_iP_i_n, P_iP_i_p)) / (np.linalg.norm(P_iP_i_n)*np.linalg.norm(P_iP_i_p))
-            # print('cos_alpha', cos_alpha)
-            # print('linalg', np.linalg.norm(cos_alpha))
-            # print('pinpi', P_i_nP_i)
-            # print('linalg pinpi', np.linalg.norm(P_i_nP_i))
-            # print('pippi', P_i_pP_i)
-            # print('linalg pippi', np.linalg.norm(P_i_pP_i))
+    def fly_on_edge_convex_hull(self, extended_hull, list_of_drones, left, back, right):
+        if len(self.path) > 0:  # Sørger for at det eksisterer en path
+            if self.point == (0,0):
+                self.point = self.path[0]
+        #Must calculate how far it is to move either clockwise or counterclockwise, choose shortest path 
+            for drone in list_of_drones:
+                if drone.id == 'drone0':
+                    drone.fly_on_edge_guidance_law(extended_hull, left)
+                if drone.id == 'drone1':
+                    drone.fly_on_edge_guidance_law(extended_hull, back)
+                if drone.id == 'drone2':
+                    drone.fly_on_edge_guidance_law(extended_hull, right)
+                #drone.fly_on_edge_guidance_law(extended_hull, desired_position)
 
-            P_iL_1 = (extended_distance/np.linalg.norm(cos_alpha)) * (P_i_nP_i/np.linalg.norm(P_i_nP_i))
-            P_iL_2 = (extended_distance/np.linalg.norm(cos_alpha)) * (P_i_pP_i/np.linalg.norm(P_i_pP_i))
-            # print('list of sheep index', list_of_sheep[index].position)
-            # print('pil1', P_iL_1)
-            # print('pil2', P_iL_2)
-            # E_i = index + P_iL_1 + P_iL_2
-            E_i = (P_ix, P_iy) + P_iL_1 + P_iL_2
-            # print('e_i', E_i)
-            # #print("EEE", E_i, P_iL_1, P_iL_2)
-            extended_hull.append(E_i)
-            
-            i += 1
-            
-        
-        """ext_hull = ConvexHull(extended_hull)
-        for point in ext_hull.vertices:
-            extended_hull_separate.append(extended_hull[point][0])
-            extended_hull_separate.append(extended_hull[point][1])
-            #ext_hull = ConvexHull(extended_hull)
-
-        """
-        for point in extended_hull:
-            extended_hull_separate.append(point[0])
-            extended_hull_separate.append(point[1])
-            
-        
-        # print("--------")
-        canvas.create_polygon(extended_hull_separate, fill='', outline='purple', tags=self.id)
-        self.fly_to_edge_convex_hull(extended_hull, list_of_drones)
-        
+                if list_of_drones[0].hull_position_goal and list_of_drones[1].hull_position_goal and list_of_drones[2].hull_position_goal:
+                    self.hull_position_goal = True
 
     
-    def fly_to_edge_convex_hull(self, extended_hull, list_of_drones):
-        # print(extended_hull)
-        step_size = 100
-        for drone in list_of_drones:
-            pos = np.zeros(2, dtype=np.int32)
-            if drone.id == 'drone0':
-                pos = extended_hull[0]
-            elif drone.id == 'drone1':
-                pos = extended_hull[1]
-            elif drone.id == 'drone2':
-                pos = extended_hull[2]
-            drone.fly_to_position(pos, step_size)
-        # Må tenke på plasseringen til dronene i forhold til hverandre, de burde få tilsendt
-        # forskjellige posisjoner som de skal dra til, dett vil ta kortest til, kan disse 
-        # koordinatene være 45 grader i forhold til hverandre? også blir det sånn at dersom en drone
-        # når convex hullet stopper den? Da burde man kanskje vite avstand mellom dronene, så dronene
-        # må kunne gi beskjed til hoveddronen om hvor de befinner seg, da kan hoveddronen evt.
-        # gi dem litt modifiserte nye koordinater å bevege seg til. 
-        # Må kanskje begynne å tenke på hastighet de skal bevege seg i og etterhvert
-        return "hei"
+    def fly_to_point(self, list_of_drones):
+        if len(self.path) > 0:  # Sørger for at det eksisterer en path
+            if self.point == (0,0):
+                self.point = self.path[0]
+                
+            list_of_drones[0].path_goal = False
+            list_of_drones[1].path_goal = False
+            list_of_drones[2].path_goal = False
 
-    def fly_on_edge_convex_hull(list_of_drones):
-        #Must calculate how far it is to move either clockwise or counterclockwise, choose shortest path 
-        return "navigate clockwise/counterclockwise based on what is quicker"
-
-
-    def fly_along_path(self, list_of_drones):
-        list_of_drones[0].goal = False
-        list_of_drones[1].goal = False
-        list_of_drones[2].goal = False
-        step_size = 200
-        for drone in list_of_drones:
-            #print(drone.id, drone.position)
-            #print(self.point)
-            if drone.id == 'drone0':
-                drone.fly_to_position((self.point[0], self.point[1]), step_size)
-            if drone.id == 'drone1':
-                drone.fly_to_position((self.point[0]-50, self.point[1]-50), step_size)
-            if drone.id == 'drone2':
-                drone.fly_to_position((self.point[0]+50, self.point[1]+50), step_size)
-            if list_of_drones[0].goal and list_of_drones[1].goal and list_of_drones[2].goal:
-                if self.point == self.path[-1]:
-                    print('do nothing')
-                else:    
-                    self.point = self.path[self.path.index(self.point)+1]
-                    break
-        
+            
+            for drone in list_of_drones:
+                # Midlertidig håndtering av posisjonering av droner i forhold til hverandre
+                if drone.id == 'drone0':
+                    drone.fly_to_position((self.point[0], self.point[1]))
+                if drone.id == 'drone1':
+                    drone.fly_to_position((self.point[0], self.point[1]))
+                if drone.id == 'drone2':
+                    drone.fly_to_position((self.point[0], self.point[1]))
+                
+                if list_of_drones[0].path_goal and list_of_drones[1].path_goal and list_of_drones[2].path_goal:
+                    self.point = self.path[self.path[self.point]+1]
+                    if self.point == self.path[-1]:
+                        print("Fly to point", self.path_goal)
+                        self.path_goal = True
+                    else:    
+                        self.point = self.path[self.path.index(self.point)+1]
+                        break
+    
         
     def main(self, list_of_sheep, canvas, list_of_drones):
         canvas.delete(self.id)
-        self.draw_main_drone(canvas, list_of_sheep)
-        
+        self.draw_sheep_mass_centre(canvas, list_of_sheep)
+        poly_array = self.draw_convex_and_extended_hull(canvas, list_of_sheep)
         # if droner posisjoner korrekt rundt sauer mtp retning de skal bevege seg i mot pathen
-        self.fly_along_path(list_of_drones)
+        # Fly to the extended hull if this has not been reached
+        if self.extended_hull_goal == False:
+
+            self.fly_to_edge_convex_hull(poly_array, list_of_drones)
+        
+        # If the drones are at the extended hull, fly along it to position themselves towards the first point on the path
+        # if self.extended_hull_goal:
+        #     left, back, right = self.calculate_positions_toward_next_point(poly_array, list_of_sheep, canvas)
+        #     self.fly_on_edge_convex_hull(poly_array, list_of_drones, left, back, right)
+        if self.extended_hull_goal:
+            print(self.path)
+            left, back, right = self.calculate_positions_toward_next_point(poly_array, list_of_sheep, canvas)
+            self.fly_on_edge_convex_hull(poly_array, list_of_drones, left, back, right)
+            #self.fly_to_point(list_of_drones)
+            if self.hull_position_goal:
+                print('true')
+                self.fly_to_point(list_of_drones)
+                
+        # Fly to the path and along the path 
+        # PS:må endre position per nye punkt den har kommet til, altså se på neste punk og rotere basert på det, 
+        # evt at dte blir mer krumninger. Dronene må hvertfall alltid være bak sauene.
+        #if self.extended_hull_goal:
+        #    self.calculate_center_back(poly_array, list_of_sheep, canvas)
+        #    self.fly_along_path(list_of_drones)
+
         # else
-        #self.draw_sheep_border(canvas, list_of_sheep, list_of_drones)
+        #
+    
 
 
 def calculate_center_of_mass(list_of_sheep):
