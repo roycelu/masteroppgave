@@ -44,16 +44,16 @@ def create_drones(no_of_drones):
     for n in range(no_of_drones):
         initial_position = np.zeros(2, dtype=np.int32)
         if n == 0:
-            initial_position[0] = -20
-            initial_position[1] = 20
+            initial_position[0] = 20
+            initial_position[1] = -20
             list_of_drones[n] = Drone(initial_position, 'drone'+str(n))
         if n == 1:
             initial_position[0] = 0
             initial_position[1] = 0 
             list_of_drones[n] = Drone(initial_position, 'drone'+str(n))
         if n == 2:
-            initial_position[0] = 20
-            initial_position[1] = -20 
+            initial_position[0] = -20
+            initial_position[1] = 20 
             list_of_drones[n] = Drone(initial_position, 'drone'+str(n))
     return list_of_drones
 

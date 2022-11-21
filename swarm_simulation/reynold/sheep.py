@@ -11,14 +11,13 @@ class Sheep:
         #Set initial velocity
         #initial_random_velocity = (np.random.rand(2)-0.5) * self.max_speed * 2
         self.velocity = 0
-        self.horizon = 100
         self.cohesion_weight = 1
-        self.separation_weight = 100
-        self.separation_weight_drones = 50
-        self.alignment_weight = 5
+        self.separation_weight = 40
+        self.separation_weight_drones = 20
+        self.alignment_weight = 20
 
-        self.desired_separation = 20
-        self.desired_separation_drones = 20 # Samme avstand som extended_hull og sauene?
+        self.desired_separation = 10
+        self.desired_separation_drones = 45 # Samme avstand som extended_hull og sauene?
 
 
     def draw_sheep(self, canvas):
@@ -49,10 +48,11 @@ class Sheep:
             if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
                 self.max_speed = 3
                 self.velocity = drone.velocity * self.max_speed
-                # self.update_sheep()
+                print("Fast sheep")
             else:
-                # self.max_speed = 0.5
+                # self.max_speed = 1
                 self.velocity = (desired_position - self.position) * (step_size / 100)
+                print("Slow sheep")
                 
         v1 = self.cohesion(list_of_sheep)
         v2 = self.separation(list_of_sheep)
@@ -73,41 +73,26 @@ class Sheep:
 
         # Find mean position of neighbouring sheep
         for sheep in nearest_sheep:
-            if (np.linalg.norm(sheep.position - self.position) < self.horizon) & (sheep != self):
+            if (sheep != self):
                 center_of_mass += sheep.position
             N += 1
         
         center_of_mass = center_of_mass / (N-1)
         target_position = (center_of_mass * self.cohesion_weight) / 100
 
-        """
-        # Magnitude of force is proportional to agents' distance from the center of mass
-        # Force should be applied in the direction of the com
-        if nearest_agents:
-            #print(sheep_position)
-            #print(len(nearest_agents))
-            com_direction.x = center_of_mass.x / len(nearest_agents)
-            com_direction.y = center_of_mass.y / len(nearest_agents)
-            #print(com_direction)
-            d = com_direction.norm()
-            #print(com_direction)
-            com_direction.set_mag((self.max_force))
-            #print(com_direction)
-   
-        return com_direction
-        """
         return target_position
         
         
     def separation(self, nearest_sheep):
         # move away from nearest - separation
         c = np.zeros(2)
-        
+        N = 0
         for sheep in nearest_sheep:
-            if ((np.linalg.norm(sheep.position - self.position) < self.horizon)
-                    & (np.linalg.norm(sheep.position - self.position) < self.desired_separation)
+            if ((np.linalg.norm(sheep.position - self.position) < self.desired_separation)
                     & (sheep != self)):
                 c -= (sheep.position - self.position)*(self.separation_weight/100)
+            N += 1
+ 
         """
         N = 0 # Total boid number
 
@@ -134,8 +119,7 @@ class Sheep:
         c = np.zeros(2)
         
         for drone in nearest_drone:
-            if ((np.linalg.norm(drone.position - self.position) < self.horizon)
-                    & (np.linalg.norm(drone.position - self.position) < self.desired_separation_drones)
+            if ((np.linalg.norm(drone.position - self.position) < self.desired_separation_drones)
                     & (drone != self)):
                 c -= (drone.position - self.position)*(self.separation_weight_drones/100)
                 self.velocity = drone.velocity
@@ -143,12 +127,13 @@ class Sheep:
 
     def alignment(self, nearest_sheep):
         # orient towards the neighbours - alignment
+
         perceived_velocity = np.zeros(2)
         N = 0 #Total sheep number
 
         # Find mean direction of the neighbouring agents
         for sheep in nearest_sheep:
-            if (np.linalg.norm(sheep.position - self.position) < self.horizon) & (sheep != self):
+            if (sheep != self):
                 perceived_velocity += sheep.velocity
             N += 1
         
@@ -162,3 +147,4 @@ class Sheep:
             pv = perceived_velocity - self.velocity
         """
         return pv
+
