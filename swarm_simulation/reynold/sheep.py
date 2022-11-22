@@ -46,10 +46,10 @@ class Sheep:
         desired_position[1] = 250
         for drone in list_of_drones:
             if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
-                self.max_speed = 3
+                self.max_speed = 1.7
                 self.velocity = drone.velocity * self.max_speed
             else:
-                self.max_speed = 1
+                self.max_speed = 0.5
                 self.velocity = (desired_position - self.position) * (step_size / 100)
                 
         v1 = self.cohesion(list_of_sheep)

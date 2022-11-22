@@ -9,7 +9,7 @@ class Drone:
         self.position = initial_position
         self.angle = 45
 
-        self.max_speed = 2
+        self.max_speed = 3
         
         #Set initial velocity
         #initial_random_velocity = (np.random.rand(2)-0.5) * self.max_speed * 2
@@ -19,11 +19,8 @@ class Drone:
         self.acceleration = 0.1
 
         self.horizon = 100
-        self.cohesion_weight = 10
         self.separation_weight = 10
-        # self.separation_weight_sheep = 10
         self.desired_separation = 30
-        # self.desired_separation_sheep = 20
         
         self.desired_position = initial_position
         
@@ -49,39 +46,6 @@ class Drone:
         x2 = self.position[1] + size * math.sin(self.angle)
         canvas.create_line(self.position[0], self.position[1], x1, x2, fill='black', arrow='last', arrowshape=(12.8,16,4.8), width=2, tags=self.id)
 
-    """def drone_motion_dynamics(self):
-        d_t = self.position
-        d_t = v_t * a_t
-        a_t = u_t 
-        np.linalg.norm(a_t) = 1 # for every t
-        np.linalg.norm(u_t) <= u_max
-        0 <= v_t <= self.max_speed
-        np.dot(a_t, u_t) = 0"""
-
-
-    def calculate_angle(self):
-        target_x, target_y =  self.desired_position
-        x_diff = target_x - self.position[0]
-        y_diff = target_y - self.position[1]
-
-        if y_diff == 0:
-            desired_radian_angle = math.pi/2
-        else:
-            desired_radian_angle = math.atan(x_diff/y_diff)
-        
-        if target_y > self.position[1]:
-            desired_radian_angle += math.pi
-        
-        difference_in_angle = self.angle - math.degrees(desired_radian_angle)
-        if difference_in_angle >= 180:
-            difference_in_angle -= 360
-        # print("diff_angle", difference_in_angle)
-        
-        if difference_in_angle > 0:
-            self.angle -= min(self.rotation_velocity, abs(difference_in_angle))
-        else:
-            self.angle += min(self.rotation_velocity, abs(difference_in_angle))
-
 
     def update_drone(self):
         # Limiting the speed
@@ -89,45 +53,10 @@ class Drone:
             self.velocity = (self.velocity/np.linalg.norm(self.velocity)) * self.max_speed
         # Then update the position        
         self.position = np.add(self.position, self.velocity)
-        
-        """self.calculate_angle()
-        #self.velocity = min(self.velocity - self.acceleration, -self.max_speed/2)
-        #self.position = np.add(self.position, (self.velocity * math.cos(self.angle), self.velocity * math.sin(self.angle)) 
-        radians = math.radians(self.angle)
-        vertical = math.cos(radians) * self.velocity
-        horizontal = math.sin(radians) * self.velocity
-        print(horizontal)
-        self.position = np.subtract(self.position, (horizontal, vertical))
-        #self.position[0] -= horizontal
-        #self.position[1] -= vertical"""
-        
-        """if self.count_right == 10:
-            vector = (self.velocity[0]-self.position[0], self.velocity[1]-self.position[1])
-            print(vector)
-
-            vector[0] *= math.pi/4
-            #self.velocity[0] /= math.cos(30)
-            #self.velocity[1] /= math.cos(30)
-            self.position = np.add(self.position, vector)
-            self.count_left += 1
-            if self.count_left == 10:
-                self.count_right == 0
-
-        if self.count_left == 10:
-            vector = (self.velocity[0]-self.position[0], self.velocity[1]-self.position[1])
-            print(vector)
-            vector[0] *= (-math.pi/4)
-            #self.velocity[0] /= math.cos(-30)
-            #self.velocity[1] /= math.cos(-30)
-            self.position = np.add(self.position, vector)
-            self.count_right += 1
-            if self.count_right == 10:
-                self.count_left == 0"""
+          
 
     def main_drone(self, drones, canvas, list_of_sheep):
-        v1 = self.cohesion(list_of_sheep)
         v2 = self.separation(drones)
-        # v2_2 = self.sheep_separation(list_of_sheep)
         
         canvas.delete(self.id)
         self.draw_drone(canvas)
@@ -140,7 +69,7 @@ class Drone:
         self.desired_position = pos
         self.velocity = (pos - self.position) * (step_size / 100)
 
-        if (self.desired_position[0] -15 <= self.position[0] <= self.desired_position[0] + 15) and (self.desired_position[1] - 15 <= self.position[1] <= self.desired_position[1] + 15):
+        if (self.desired_position[0] -10 <= self.position[0] <= self.desired_position[0] + 10) and (self.desired_position[1] - 10 <= self.position[1] <= self.desired_position[1] + 10):
             self.path_goal = True
 
 
@@ -191,11 +120,12 @@ class Drone:
 
     def fly_on_edge_guidance_law(self, extended_hull, desired_position):
         desired_position_to_vertex = math.inf   # distance
-        drone_to_vertex = math.inf
+        drone_to_vertex = math.inf # distance
         closest_desired_position_index = 0
         closest_drone_index = 0
 
         i = 0
+        # Finding the closes vertex to the desired position and the drone's own position
         for vertex in extended_hull:
             des_pos_vertex = np.linalg.norm(desired_position-vertex)
             if des_pos_vertex < desired_position_to_vertex:
@@ -214,6 +144,7 @@ class Drone:
         path_1_length = 0
         path_2_length = 0
 
+        # Creating two paths of vertices, one clockwise, the other counterclockwise
         if closest_desired_position_index < closest_drone_index:
             path_1 = extended_hull[closest_desired_position_index:closest_drone_index]
             np.append(path_1, desired_position)
@@ -226,7 +157,8 @@ class Drone:
             path_2 = extended_hull[closest_desired_position_index:]
             np.append(path_2, extended_hull[:closest_drone_index])
             np.append(path_2, desired_position)
-            
+
+        # Finding the length of the two paths    
         j = 0
         for vertex in path_1:
             if j == len(path_1)-1:
@@ -234,7 +166,6 @@ class Drone:
             else: 
                 path_1_length += np.linalg.norm(vertex-path_1[j+1])
             j += 1
-        
         k = 0
         for vertex in path_2:
             if k == len(path_2)-1:
@@ -242,12 +173,16 @@ class Drone:
             else: path_2_length += np.linalg.norm(vertex-path_2[k+1])
             k += 1
         
-        if path_1_length < path_2_length:
-            for point in path_1:
-                self.fly_to_position(point)
+        # If the drone is already on the desired position, stay there, else, fly along the shortest path
+        if (self.desired_position[0] -10 <= self.position[0] <= self.desired_position[0] + 10) and (self.desired_position[1] - 10 <= self.position[1] <= self.desired_position[1] + 10):
+            self.fly_to_position(desired_position)
         else:
-            for point in path_2:
-                self.fly_to_position(point)
+            if path_1_length < path_2_length:
+                for point in path_1:
+                    self.fly_to_position(point)
+            else:
+                for point in path_2:
+                    self.fly_to_position(point)
 
         if (self.desired_position[0] -5 <= self.position[0] <= self.desired_position[0] + 5) and (self.desired_position[1] - 5 <= self.position[1] <= self.desired_position[1] + 5):
             self.hull_position_goal = True
@@ -280,33 +215,4 @@ class Drone:
                 c -= (drone.position - self.position)*(self.separation_weight/100)
         return c
 
-    def sheep_separation(self, nearest_sheep):
-        # move away from nearest - separation
-        c = np.zeros(2)
-        
-        for drone in nearest_sheep:
-            if ((np.linalg.norm(drone.position - self.position) < self.horizon)
-                    & (np.linalg.norm(drone.position - self.position) < self.desired_separation_sheep)
-                    & (drone != self)):
-                c -= (drone.position - self.position)*(self.separation_weight_sheep/100)
-        
-        return c
-
-    def cohesion(self, nearest_drone):
-        # move together - cohesion
-        center_of_mass = np.zeros(2)
-        N = 0 #Total sheep number
-        #com_direction = Vector2()
-
-        # Find mean position of neighbouring sheep
-        for drone in nearest_drone:
-            if (drone != self):
-                center_of_mass += drone.position
-            N += 1
-        
-        center_of_mass = center_of_mass / (N-1)
-        target_position = (center_of_mass * self.cohesion_weight) / 100
-
-        return target_position
-        
         
