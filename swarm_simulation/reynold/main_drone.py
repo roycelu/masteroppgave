@@ -2,6 +2,7 @@ import time
 from scipy.spatial import ConvexHull
 import numpy as np
 import shapely.geometry as shp
+from p5 import Vector
 
 
 class MainDrone:
@@ -34,6 +35,7 @@ class MainDrone:
     
     def draw_convex_and_extended_hull(self, canvas, list_of_sheep):
         # Returns array containing the vertices of the extended hull
+        
         points = []
         positions = []
         new_positions = []
@@ -260,13 +262,23 @@ class MainDrone:
 
 
 def calculate_center_of_mass(list_of_sheep):
-    N = 0 # Number of sheep
-    center_of_mass = 0
+    total = 0
+    center_of_mass = np.zeros(2)
+    for boid in list_of_sheep:
+        center_of_mass += boid.position
+        total += 1
+    if total > 0:
+        center_of_mass /= total
+    print(center_of_mass)
+    # N = 0 # Number of sheep
+    # center_of_mass = (0,0)
     
-    for sheep in list_of_sheep:
-        center_of_mass += sheep.position
-        N += 1
+    # for sheep in list_of_sheep:
+    #     position = sheep.get_position()
+    #     print(position)
+    #     center_of_mass += position
+    #     N += 1
         
-    center_of_mass = center_of_mass / (N)
+    # center_of_mass = (center_of_mass[0]/(N), center_of_mass[1]/(N))
     return center_of_mass
     

@@ -1,3 +1,4 @@
+from p5 import Vector
 import numpy as np
 
 
@@ -6,11 +7,17 @@ class Sheep:
         
         self.id = id
         self.position = initial_position
+        self.velocity = (np.random.rand(2) - 0.5)*10
+
+        self.acceleration = (np.random.rand(2) - 0.5)/2
+
+        self.max_force = 0.3
         self.max_speed = 0.5
+        self.horizon = 100
         
         #Set initial velocity
         #initial_random_velocity = (np.random.rand(2)-0.5) * self.max_speed * 2
-        self.velocity = 0
+        
         self.cohesion_weight = 1
         self.separation_weight = 40
         self.separation_weight_drones = 20
@@ -30,33 +37,36 @@ class Sheep:
         canvas.create_oval(x0, y0, x1, y1, fill='white', tags=self.id)
         canvas.create_text(self.position[0], self.position[1], text=self.id[-1], tags=self.id)
     
+    # def get_position(self):
+    #     return (self.position[0], self.position[1])
     
     def update_sheep(self):
+        print(self.position)
+        print(self.velocity)
+        self.position = np.add(self.position, self.velocity)
+        self.velocity = np.add(self.velocity, self.acceleration)
         # Limiting the speed
         if np.linalg.norm(self.velocity) > self.max_speed:
             self.velocity = (self.velocity/np.linalg.norm(self.velocity)) * self.max_speed
         # Then update the position
-        self.position = np.add(self.position, self.velocity)
+        self.acceleration = np.zeros(2)
     
 
     def main_sheep(self, list_of_sheep, canvas, list_of_drones):
-        step_size = 100
-        desired_position = np.zeros(2, dtype=np.int32)
-        desired_position[0] = 250
-        desired_position[1] = 250
+
         for drone in list_of_drones:
             if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
                 self.max_speed = 1.7
                 self.velocity = drone.velocity * self.max_speed
             else:
                 self.max_speed = 0.5
-                self.velocity = (desired_position - self.position) * (step_size / 100)
+                # self.velocity = (desired_position - self.position)
                 
         v1 = self.cohesion(list_of_sheep)
         v2 = self.separation(list_of_sheep)
         v2_2 = self.drone_separation(list_of_drones)
         v3 = self.alignment(list_of_sheep)
-        self.velocity += v1 + v2 + v2_2 + v3
+        self.acceleration += v1 + v2 + v2_2 + v3
 
         canvas.delete(self.id)
         self.draw_sheep(canvas)
@@ -64,85 +74,91 @@ class Sheep:
         
     
     def cohesion(self, nearest_sheep):
-        # move together - cohesion
+        steering = np.zeros(2)
+        total = 0
         center_of_mass = np.zeros(2)
-        N = 0 #Total sheep number
-        #com_direction = Vector2()
+        for boid in nearest_sheep:
+            if np.linalg.norm(boid.position - self.position) < self.horizon:
+                center_of_mass += boid.position
+                total += 1
+        if total > 0:
+            center_of_mass /= total
+            vec_to_com = center_of_mass - self.position
+            if np.linalg.norm(vec_to_com) > 0:
+                vec_to_com = (vec_to_com / np.linalg.norm(vec_to_com)) * self.max_speed
+            steering = vec_to_com - self.velocity
+            if np.linalg.norm(steering)> self.max_force:
+                steering = (steering /np.linalg.norm(steering)) * self.max_force
 
-        # Find mean position of neighbouring sheep
-        for sheep in nearest_sheep:
-            if (sheep != self):
-                center_of_mass += sheep.position
-            N += 1
-        
-        center_of_mass = center_of_mass / (N-1)
-        target_position = (center_of_mass * self.cohesion_weight) / 100
-
-        return target_position
+        return steering
         
         
     def separation(self, nearest_sheep):
-        # move away from nearest - separation
-        c = np.zeros(2)
-        N = 0
-        for sheep in nearest_sheep:
-            if ((np.linalg.norm(sheep.position - self.position) < self.desired_separation)
-                    & (sheep != self)):
-                c -= (sheep.position - self.position)*(self.separation_weight/100)
-            N += 1
- 
-        """
-        N = 0 # Total boid number
+        steering = np.zeros(2)
+        total = 0
+        avg_vector = np.zeros(2)
+        for boid in nearest_sheep:
+            distance = np.linalg.norm(boid.position - self.position)
+            if (self.position[0] != boid.position[0] and self.position[1] != boid.position[1])and distance < self.horizon:
+                diff = self.position - boid.position
+                diff = (diff[0]/distance, diff[1]/distance)
+                avg_vector += diff
+                total += 1
+        if total > 0:
+            avg_vector /= total
+            if np.linalg.norm(steering) > 0:
+                avg_vector = (avg_vector / np.linalg.norm(steering)) * self.max_speed
+            steering = avg_vector - self.velocity
+            if np.linalg.norm(steering) > self.max_force:
+                steering = (steering /np.linalg.norm(steering)) * self.max_force
 
-        for b in nearest_agents:
-            boid_position = get_agent_position(b)
-            d = boid_position.norm()
-            if d < self.desired_separation:
-                N += 1
-                boid_position *= -1 # Force towards outside
-                boid_position.normalize() # Normalize to get only direction
-                # Magnitude is proportional to inverse square of d, where d is the distance between agents
-                boid_position = boid_position / (d**2)
-                c += boid_position
-        
-        if N:
-            c /= N #average
-            c.limit(2 * self.max_force) # 2 * max_force gives this rule a slight priority
-        """
-        return c
+        return steering
               
 
     def drone_separation(self, nearest_drone):
         # move away from nearest - separation
-        c = np.zeros(2)
-        
+        steering = np.zeros(2)
+        total = 0
+        avg_vector = np.zeros(2)
         for drone in nearest_drone:
-            if ((np.linalg.norm(drone.position - self.position) < self.desired_separation_drones)
-                    & (drone != self)):
-                c -= (drone.position - self.position)*(self.separation_weight_drones/100)
-                self.velocity = drone.velocity
-        return c
+            if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
+                diff = self.position - drone.position
+                diff /= np.linalg.norm(drone.position - self.position)
+                avg_vector += diff
+                total += 1
+        if total > 0:
+            avg_vector /= total
+            if np.linalg.norm(steering) > 0:
+                avg_vector = (avg_vector / np.linalg.norm(steering)) * self.max_speed
+            steering = avg_vector - self.velocity
+            if np.linalg.norm(steering) > self.max_force:
+                steering = (steering /np.linalg.norm(steering)) * self.max_force
+        
+        
+        # c = np.zeros(2)
+        
+        # for drone in nearest_drone:
+        #     if ((np.linalg.norm(drone.position - self.position) < self.desired_separation_drones)
+        #             & (drone != self)):
+        #         c -= (drone.position - self.position)*(self.separation_weight_drones/100)
+        #         self.velocity = drone.velocity
+        # return c
+        return steering
 
+    
     def alignment(self, nearest_sheep):
         # orient towards the neighbours - alignment
-
-        perceived_velocity = np.zeros(2)
-        N = 0 #Total sheep number
-
-        # Find mean direction of the neighbouring agents
+        steering = np.zeros(2)
+        N = 0
+        avg_vector = np.zeros(2)
         for sheep in nearest_sheep:
-            if (sheep != self):
-                perceived_velocity += sheep.velocity
-            N += 1
-        
-        # Steer toward calculated mean direction with maximum velocity
-        perceived_velocity =  perceived_velocity / (N-1)
-        pv = (perceived_velocity * self.alignment_weight / 100)
-        """
-        # Steer toward calculated mean direction with maximum velocity
-        if nearest_agents:
-            perceived_velocity.set_mag(self.max_speed)
-            pv = perceived_velocity - self.velocity
-        """
-        return pv
+            if np.linalg.norm(sheep.position - self.position) < self.horizon:
+                avg_vector += sheep.velocity
+                N += 1
+        if N > 0:
+            avg_vector /= N
+            avg_vector = (avg_vector / np.linalg.norm(avg_vector)) * self.max_speed
+            steering = avg_vector - self.velocity
+
+        return steering
 
