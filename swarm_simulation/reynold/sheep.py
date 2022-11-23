@@ -41,15 +41,15 @@ class Sheep:
     #     return (self.position[0], self.position[1])
     
     def update_sheep(self):
-        print(self.position)
-        print(self.velocity)
         self.position = np.add(self.position, self.velocity)
         self.velocity = np.add(self.velocity, self.acceleration)
         # Limiting the speed
         if np.linalg.norm(self.velocity) > self.max_speed:
-            self.velocity = (self.velocity/np.linalg.norm(self.velocity)) * self.max_speed
+            self.velocity = (self.velocity/np.linalg.norm(self.velocity)) * self.max_speed # Her er det noe rart kanskje
+            #self.velocity = self.max_speed
         # Then update the position
         self.acceleration = np.zeros(2)
+        print('velocity',self.velocity)
     
 
     def main_sheep(self, list_of_sheep, canvas, list_of_drones):
@@ -57,10 +57,10 @@ class Sheep:
         for drone in list_of_drones:
             if np.linalg.norm(drone.position - self.position) < self.desired_separation_drones:
                 self.max_speed = 1.7
-                self.velocity = drone.velocity * self.max_speed
+                self.velocity = drone.velocity * self.max_speed # Føler det er noe rart her og
             else:
                 self.max_speed = 0.5
-                # self.velocity = (desired_position - self.position)
+                # self.velocity = (desired_position - self.position) # Trenger kanskje ikke denne?
                 
         v1 = self.cohesion(list_of_sheep)
         v2 = self.separation(list_of_sheep)

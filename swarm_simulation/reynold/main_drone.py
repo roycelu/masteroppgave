@@ -217,11 +217,11 @@ class MainDrone:
                 
                 if (mass_center[0] -10 <= self.point[0] <= mass_center[0] + 10) and (mass_center[1] - 10 <= self.point[1] <= mass_center[1] + 10):
                     if self.point == self.path[-1]:
-                        print("Fly to point", self.path_goal)
+                        #print("Fly to point", self.path_goal)
                         self.path_goal = True
                     else:    
                         self.point = self.path[self.path.index(self.point)+1]
-                        print("New point recieved", self.point, self.path)
+                        #print("New point recieved", self.point, self.path)
                         self.hull_position_goal = False
     
         
@@ -233,18 +233,18 @@ class MainDrone:
 
         # Fly to the extended hull if this has not been reached
         if self.extended_hull_goal == False:
-            print("Flying to edge")
+            #print("Flying to edge")
             self.fly_to_edge_convex_hull(extended_outer_poly, list_of_drones)
             
         # If the drones are at the extended hull, fly along it to position themselves towards the first point on the path
         elif (self.extended_hull_goal) and (self.hull_position_goal==False):
-            print("Positioning around hull")
+            #print("Positioning around hull")
             left2, left1, back, right1, right2 = self.calculate_positions_toward_next_point(extended_outer_poly, list_of_sheep, canvas)
             self.fly_on_edge_convex_hull(extended_outer_poly, list_of_drones, left2, back, right2)
         
         # If the drones are correctly positioned, fly closer to the sheep so as to make them move
         elif self.extended_hull_goal and self.hull_position_goal:
-            print("Drive the sheep to path")
+            #print("Drive the sheep to path")
             left2, left1, back, right1, right2 = self.calculate_positions_toward_next_point(extended_outer_poly, list_of_sheep, canvas)
             left2_2, left1_2, back_2, right1_2, right2_2 = self.calculate_positions_toward_next_point(extended_inner_poly, list_of_sheep, canvas)
             self.fly_on_buffered_hull(list_of_drones, extended_inner_poly, extended_outer_poly, left2_2, back_2, right2_2, mass_center, back, left2, right2)
@@ -269,7 +269,7 @@ def calculate_center_of_mass(list_of_sheep):
         total += 1
     if total > 0:
         center_of_mass /= total
-    print(center_of_mass)
+    
     # N = 0 # Number of sheep
     # center_of_mass = (0,0)
     
