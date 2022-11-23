@@ -20,6 +20,7 @@ class MainDrone:
         self.path_goal = False
 
         self.zigzag_index = -1
+        self.prev_zigzag_index = -1
 
 
     # Vises som massesenteret til sauene
@@ -92,8 +93,8 @@ class MainDrone:
         point_right2 = (0,0)
 
         # Points at pi/4 degree away from point a
-        vector_left1 = (back_vector[0]*np.cos(np.pi/4)-back_vector[1]*np.sin(np.pi/4), back_vector[0]*np.sin(np.pi/4)+back_vector[1]*np.cos(np.pi/4))
-        vector_right1 = (back_vector[0]*np.cos(-np.pi/4)-back_vector[1]*np.sin(-np.pi/4), back_vector[0]*np.sin(-np.pi/4)+back_vector[1]*np.cos(-np.pi/4))
+        vector_left1 = (back_vector[0]*np.cos(np.pi/6)-back_vector[1]*np.sin(np.pi/6), back_vector[0]*np.sin(np.pi/6)+back_vector[1]*np.cos(np.pi/6))
+        vector_right1 = (back_vector[0]*np.cos(-np.pi/6)-back_vector[1]*np.sin(-np.pi/6), back_vector[0]*np.sin(-np.pi/6)+back_vector[1]*np.cos(-np.pi/6))
         # Points at pi/3 degree away from point a
         vector_left2 = (back_vector[0]*np.cos(np.pi/2)-back_vector[1]*np.sin(np.pi/2), back_vector[0]*np.sin(np.pi/2)+back_vector[1]*np.cos(np.pi/2))
         vector_right2 = (back_vector[0]*np.cos(-np.pi/2)-back_vector[1]*np.sin(-np.pi/2), back_vector[0]*np.sin(-np.pi/2)+back_vector[1]*np.cos(-np.pi/2))
@@ -175,7 +176,7 @@ class MainDrone:
                     self.hull_position_goal = True
 
     
-    def fly_on_buffered_hull(self, list_of_drones, extended_inner_poly, extended_outer_poly, left2, back2, right2, mass_center, back, left, right):
+    def fly_on_buffered_hull(self, list_of_drones, extended_inner_poly, extended_outer_poly, left2, back2, right2, mass_center, back, left, right, back_left, back_right):
         if len(self.path) > 0:  # Sørger for at det eksisterer en path
             if self.point == (0,0):
                 self.point = self.path[0]
@@ -186,11 +187,14 @@ class MainDrone:
 
             if drone.id == 'drone1':
                 point = shp.Point(drone.position)
-                if extended_inner_poly.contains(point):
-                    drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back)
-                else:
-                    # drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back2)
-                    self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [left, back2, right])
+                # "KRANGLER" LITT OM HVOR DRONEN SKAL, DERFOR FORELØPIG KOMMENTERT UT.
+                # if extended_inner_poly.contains(point):
+                #     drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back)
+                #     print("Within the poly")
+                # else:
+                #     # drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back2)
+                #     self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
+                self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
 
             # If the drones are too far from the mass center, fly closer to avoid the spreading of sheep
             drone0_masscenter = np.linalg.norm(list_of_drones[0].position - mass_center)
@@ -229,23 +233,31 @@ class MainDrone:
         # drone.id = drone1 | poly = np.array(poly.exterior) | movement = [outer_left, centre, outer_right]
         if self.zigzag_index == -1:  # Sørger for at zigzag_index settes, default i midten
             self.zigzag_index = 1
-            print("OK")
-
-        if (movement[1][0]-5 <= drone.position[0] <= movement[1][0]+5) and (movement[1][1]-5 <= drone.position[1] <= movement[1][1]+5):
-            self.zigzag_index = 0
-            print("Centre. Moving to left")
-        if (movement[0][0]-5 <= drone.position[0] <= movement[0][0]+5) and (movement[0][1]-5 <= drone.position[1] <= movement[0][1]+5):
-            self.zigzag_index = 1
-            print("Left. Move to centre.")
-        # Foreløpig ikke i bruk, setter bare indeksen tilbake til midten
-        if (movement[2][0]-5 <= drone.position[0] <= movement[2][0]+5) and (movement[2][1]-5 <= drone.position[1] <= movement[2][1]+5):
-            self.zigzag_index = 1
-            print("Right. Moving to centre")
-        # drone.fly_on_edge_guidance_law(poly, movement[self.zigzag_index])
-        drone.fly_to_position(movement[self.zigzag_index])
-        print("---", self.zigzag_index, drone.position, movement[self.zigzag_index])
-
         
+        if (movement[1][0]-1 <= drone.position[0] <= movement[1][0]+1) and (movement[1][1]-1 <= drone.position[1] <= movement[1][1]+1):
+            # Centre. Zigzag to left.
+            if self.prev_zigzag_index > self.zigzag_index:
+                self.zigzag_index = 0
+                self.prev_zigzag_index = 1
+            # Centre. Zigag to right.
+            else:
+                self.zigzag_index = 2
+                self.prev_zigzag_index = 1
+        # Left. Zigzag to centre.
+        if (movement[0][0]-1 <= drone.position[0] <= movement[0][0]+1) and (movement[0][1]-1 <= drone.position[1] <= movement[0][1]+1):
+            self.zigzag_index = 1
+            self.prev_zigzag_index = 0
+        # Right. Zigzag to centre.
+        if (movement[2][0]-1 <= drone.position[0] <= movement[2][0]+1) and (movement[2][1]-1 <= drone.position[1] <= movement[2][1]+1):
+            self.zigzag_index = 1
+            self.prev_zigzag_index = 2
+    
+        drone.max_speed = 5
+        drone.fly_on_edge_guidance_law(poly, movement[self.zigzag_index])   # FORTSATT LITT USTABIL
+        # drone.fly_to_position(movement[self.zigzag_index])
+        # drone.max_speed = 3 # Set back to default max speed?
+
+
     def main(self, list_of_sheep, canvas, list_of_drones):
         canvas.delete(self.id)
         self.draw_sheep_mass_centre(canvas, list_of_sheep)
@@ -268,7 +280,7 @@ class MainDrone:
             # print("Drive the sheep to path")
             left2, left1, back, right1, right2 = self.calculate_positions_toward_next_point(extended_outer_poly, list_of_sheep, canvas)
             left2_2, left1_2, back_2, right1_2, right2_2 = self.calculate_positions_toward_next_point(extended_inner_poly, list_of_sheep, canvas)
-            self.fly_on_buffered_hull(list_of_drones, extended_inner_poly, extended_outer_poly, left2_2, back_2, right2_2, mass_center, back, left2, right2)
+            self.fly_on_buffered_hull(list_of_drones, extended_inner_poly, extended_outer_poly, left2_2, back_2, right2_2, mass_center, back, left2, right2, left1_2, right1_2)
                 
         # Fly to the path and along the path 
         # PS:må endre position per nye punkt den har kommet til, altså se på neste punk og rotere basert på det, 
