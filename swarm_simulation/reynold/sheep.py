@@ -1,4 +1,3 @@
-from p5 import Vector
 import numpy as np
 
 
