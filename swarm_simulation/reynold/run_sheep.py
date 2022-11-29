@@ -17,8 +17,8 @@ def create_sheep(no_of_sheep):
     list_of_sheep = [None for _ in range(no_of_sheep)]
     for n in range(no_of_sheep):
         initial_position = np.zeros(2, dtype=np.int32)
-        initial_position[0] = np.random.randint(250, 350) #x-coordinate
-        initial_position[1] = np.random.randint(250, 350) #y-coordinate 
+        initial_position[0] = np.random.randint(300, 350) #x-coordinate
+        initial_position[1] = np.random.randint(300, 350) #y-coordinate 
         list_of_sheep[n] = Sheep(initial_position, 'boid'+str(n))
     return list_of_sheep 
 
