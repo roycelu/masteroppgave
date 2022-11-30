@@ -74,47 +74,17 @@ class Drone:
 
 
     def fly_to_edge_guidance_law(self, extended_hull):
-        shortest_b = (math.inf, math.inf)   # Korteste distansen mellom drone og (saue)kant
-        i = 0
-        bt_list = []
-        des_pos = []
-        # print(extended_hull)
-        if len(extended_hull) != 0:
-            for corner in extended_hull:
-                E_j = corner
-                if i == len(extended_hull)-1:
-                    E_j_p = extended_hull[0]
-                else:
-                    E_j_p = extended_hull[i+1]
+        shortest_distance = math.inf
+        closest_vertex = (math.inf, math.inf)
+        if len(extended_hull) != 0: # Sørger for at extended_hull eksisterer
+            for vertex in extended_hull:
+                if np.linalg.norm(vertex-self.position) < shortest_distance:
+                    shortest_distance = np.linalg.norm(vertex-self.position)
+                    closest_vertex = vertex
+            self.desired_position = closest_vertex
+        self.fly_to_position(self.desired_position)
                 
-                q_t = (E_j_p[0] - E_j[0], E_j_p[1] - E_j[1])
-                p_t = (E_j_p[0] - self.position[0], E_j_p[1] - self.position[1])
-
-                if np.dot(p_t, q_t) < 0:
-                    b_t = (-p_t[0], -p_t[1])
-                    des_pos.append(E_j_p)
-                    bt_list.append(b_t)
-                elif (np.dot(p_t, q_t) > 0) and (np.linalg.norm(q_t) >= np.linalg.norm(p_t)):
-                    o_t = ((np.linalg.norm(q_t)**(-1) * np.dot(p_t, q_t)) * np.linalg.norm(q_t)**(-1) * (q_t[0]), (np.linalg.norm(q_t)**(-1) * np.dot(p_t, q_t)) * np.linalg.norm(q_t)**(-1) * (q_t[1]))
-                    des_pos.append(np.subtract(E_j_p, o_t))
-                    b_t = (o_t[0] - p_t[0], o_t[1] - p_t[1])
-                    bt_list.append(b_t)
-                else:
-                    b_t = (q_t[0] - p_t[0], q_t[1] - p_t[1])
-                    des_pos.append(E_j)
-                    bt_list.append(b_t)
-                i += 1
-                if np.linalg.norm(shortest_b) > np.linalg.norm(b_t):
-                    shortest_b = b_t
-
-            self.desired_position = des_pos[bt_list.index(shortest_b)]
-
-        a_t = [-2,-2]
-        self.b_t = shortest_b
-        self.rotation_velocity = self.max_rot_vel * self.g(a_t, self.b_t) * self.F(a_t, self.b_t)
-        self.velocity = self.max_speed * self.g(a_t, self.b_t)
-
-        if -5 <= self.b_t[0] <= 5 and -5 <= self.b_t[1] <= 5:
+        if self.position[0]-5 <= self.desired_position[0] <= self.position[0]+5 and self.position[1]-5 <= self.desired_position[1] <= self.position[1]+5:
             self.extended_hull_goal = True
 
 

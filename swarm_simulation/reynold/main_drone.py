@@ -164,8 +164,11 @@ class MainDrone:
              
             extended_hull = np.array(extended_hull_poly.exterior)
             for drone in list_of_drones:
+                if extended_hull_poly.contains(shp.Point(drone.position)):
+                    print(drone.id, "inside extended hull")
+                
                 if drone.id == 'drone0':
-                    drone.max_speed = 3.5
+                    # drone.max_speed = 3.5
                     drone.fly_on_edge_guidance_law(extended_hull, left)
                 if drone.id == 'drone1':
                     drone.fly_on_edge_guidance_law(extended_hull, back)
@@ -187,10 +190,10 @@ class MainDrone:
 
             if drone.id == 'drone1':
                 point = shp.Point(drone.position)
-                # "KRANGLER" LITT OM HVOR DRONEN SKAL, DERFOR FORELØPIG KOMMENTERT UT.
+                # "KRANGLER" LITT OM HVOR DRONEN SKAL.
                 if extended_inner_poly.contains(point):
                     drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back)
-                    print("Within the poly")
+                    # print("Within the poly")
                 else:
                     # drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back2)
                     self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
