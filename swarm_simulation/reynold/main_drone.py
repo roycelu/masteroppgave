@@ -1,8 +1,6 @@
-import time
 from scipy.spatial import ConvexHull
 import numpy as np
 import shapely.geometry as shp
-from p5 import Vector
 
 
 class MainDrone:
@@ -190,13 +188,13 @@ class MainDrone:
             if drone.id == 'drone1':
                 point = shp.Point(drone.position)
                 # "KRANGLER" LITT OM HVOR DRONEN SKAL, DERFOR FORELØPIG KOMMENTERT UT.
-                # if extended_inner_poly.contains(point):
-                #     drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back)
-                #     print("Within the poly")
-                # else:
-                #     # drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back2)
-                #     self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
-                self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
+                if extended_inner_poly.contains(point):
+                    drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back)
+                    print("Within the poly")
+                else:
+                    # drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back2)
+                    self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
+                # self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
 
             # If the drones are too far from the mass center, fly closer to avoid the spreading of sheep
             drone0_masscenter = np.linalg.norm(list_of_drones[0].position - mass_center)
@@ -221,7 +219,6 @@ class MainDrone:
             #     list_of_drones[0].fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), left)
             #     list_of_drones[2].fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), right)
                 
-<<<<<<< HEAD
                 if (mass_center[0] -10 <= self.point[0] <= mass_center[0] + 10) and (mass_center[1] - 10 <= self.point[1] <= mass_center[1] + 10):
                     if self.point == self.path[-1]:
                         #print("Fly to point", self.path_goal)
@@ -230,17 +227,6 @@ class MainDrone:
                         self.point = self.path[self.path.index(self.point)+1]
                         #print("New point recieved", self.point, self.path)
                         self.hull_position_goal = False
-=======
-            
-            if (mass_center[0] -10 <= self.point[0] <= mass_center[0] + 10) and (mass_center[1] - 10 <= self.point[1] <= mass_center[1] + 10):
-                if self.point == self.path[-1]:
-                    print("Fly to point", self.path_goal)
-                    self.path_goal = True
-                else:    
-                    self.point = self.path[self.path.index(self.point)+1]
-                    print("New point recieved", self.point, self.path)
-                    self.hull_position_goal = False
->>>>>>> ef9a113191faaf92720448e0fb9d5f36be923b9a
     
     def zigzag_movement(self, drone, poly, movement):
         # drone.id = drone1 | poly = np.array(poly.exterior) | movement = [outer_left, centre, outer_right]
@@ -265,7 +251,7 @@ class MainDrone:
             self.zigzag_index = 1
             self.prev_zigzag_index = 2
     
-        drone.max_speed = 5
+        # drone.max_speed = 5
         drone.fly_on_edge_guidance_law(poly, movement[self.zigzag_index])   # FORTSATT LITT USTABIL
         # drone.fly_to_position(movement[self.zigzag_index])
         # drone.max_speed = 3 # Set back to default max speed?
@@ -279,30 +265,18 @@ class MainDrone:
 
         # Fly to the extended hull if this has not been reached
         if self.extended_hull_goal == False:
-<<<<<<< HEAD
-            #print("Flying to edge")
-=======
             # print("Flying to edge")
->>>>>>> ef9a113191faaf92720448e0fb9d5f36be923b9a
             self.fly_to_edge_convex_hull(extended_outer_poly, list_of_drones)
             
         # If the drones are at the extended hull, fly along it to position themselves towards the first point on the path
         elif (self.extended_hull_goal) and (self.hull_position_goal==False):
-<<<<<<< HEAD
-            #print("Positioning around hull")
-=======
             # print("Positioning around hull")
->>>>>>> ef9a113191faaf92720448e0fb9d5f36be923b9a
             left2, left1, back, right1, right2 = self.calculate_positions_toward_next_point(extended_outer_poly, list_of_sheep, canvas)
             self.fly_on_edge_convex_hull(extended_outer_poly, list_of_drones, left2, back, right2)
         
         # If the drones are correctly positioned, fly closer to the sheep so as to make them move
         elif self.extended_hull_goal and self.hull_position_goal:
-<<<<<<< HEAD
-            #print("Drive the sheep to path")
-=======
             # print("Drive the sheep to path")
->>>>>>> ef9a113191faaf92720448e0fb9d5f36be923b9a
             left2, left1, back, right1, right2 = self.calculate_positions_toward_next_point(extended_outer_poly, list_of_sheep, canvas)
             left2_2, left1_2, back_2, right1_2, right2_2 = self.calculate_positions_toward_next_point(extended_inner_poly, list_of_sheep, canvas)
             self.fly_on_buffered_hull(list_of_drones, extended_inner_poly, extended_outer_poly, left2_2, back_2, right2_2, mass_center, back, left2, right2, left1_2, right1_2)
@@ -316,8 +290,7 @@ class MainDrone:
 
         # else
         #
-    
-
+        
 
 def calculate_center_of_mass(list_of_sheep):
     total = 0
