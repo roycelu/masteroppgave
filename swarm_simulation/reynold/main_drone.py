@@ -99,6 +99,15 @@ class MainDrone:
         vector_left2 = (back_vector[0]*np.cos(np.pi/2)-back_vector[1]*np.sin(np.pi/2), back_vector[0]*np.sin(np.pi/2)+back_vector[1]*np.cos(np.pi/2))
         vector_right2 = (back_vector[0]*np.cos(-np.pi/2)-back_vector[1]*np.sin(-np.pi/2), back_vector[0]*np.sin(-np.pi/2)+back_vector[1]*np.cos(-np.pi/2))
 
+        dist = 45
+        alpha_left = dist/(np.linalg.norm(vector_left2))
+        alpha_right = dist/(np.linalg.norm(vector_right2))
+
+        vector_left2_test = (alpha_left*vector_left2[0], alpha_left*vector_left2[1])
+        vector_right2_test = (alpha_right*vector_right2[0], alpha_right*vector_right2[1])
+        point_left2_test = mass_center + vector_left2_test
+        point_right2_test = mass_center + vector_right2_test
+
         line_left1 = shp.LineString([mass_center, np.add(mass_center, vector_left1)])
         line_left2 = shp.LineString([mass_center, np.add(mass_center, vector_left2)])
         line_right1 = shp.LineString([mass_center, np.add(mass_center, vector_right1)])
@@ -142,7 +151,7 @@ class MainDrone:
         canvas.create_oval(point_back[0]-size/2, point_back[1]-size/2, point_back[0]+size/2, point_back[1]+size/2, fill='purple', outline='pink', tags=self.id)
         canvas.create_line(mass_center[0], mass_center[1], self.point[0], self.point[1], fill='yellow', tags=self.id)
 
-        return point_left2, point_left1, point_back, point_right1, point_right2
+        return point_left2_test, point_left1, point_back, point_right1, point_right2_test
 
 
     def fly_to_edge_convex_hull(self, extended_hull_poly, list_of_drones):
@@ -164,8 +173,8 @@ class MainDrone:
              
             extended_hull = np.array(extended_hull_poly.exterior)
             for drone in list_of_drones:
-                if extended_hull_poly.contains(shp.Point(drone.position)):
-                    print(drone.id, "inside extended hull")
+                #if extended_hull_poly.contains(shp.Point(drone.position)):
+                    #print(drone.id, "inside extended hull")
                 
                 if drone.id == 'drone0':
                     # drone.max_speed = 3.5

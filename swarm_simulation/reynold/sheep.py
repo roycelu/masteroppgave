@@ -37,15 +37,16 @@ class Sheep:
         canvas.create_text(self.position[0], self.position[1], text=self.id[-1], tags=self.id)
     
     def update_sheep(self):
-        self.position = np.add(self.position, self.velocity)
-        self.velocity = np.add(self.velocity, self.acceleration)
+        #self.position = np.add(self.position, self.velocity)
+        #self.velocity = np.add(self.velocity, self.acceleration)
         # Limiting the speed
         if np.linalg.norm(self.velocity) > self.max_speed:
             self.velocity = (self.velocity/np.linalg.norm(self.velocity)) * self.max_speed # Her er det noe rart kanskje
             #self.velocity = self.max_speed
         # Then update the position
-        self.acceleration = np.zeros(2)
-        print('velocity',self.velocity)
+        self.position = np.add(self.position, self.velocity)
+        #self.acceleration = np.zeros(2)
+        #print('velocity',self.velocity)
     
 
     def main_sheep(self, list_of_sheep, canvas, list_of_drones):
@@ -75,12 +76,15 @@ class Sheep:
         total = 0
         center_of_mass = np.zeros(2)
         for boid in nearest_sheep:
+            # Because all boids are the same mass, the center of mass is equal to the average position of them
             if np.linalg.norm(boid.position - self.position) < self.horizon:
                 center_of_mass = np.add(center_of_mass, boid.position)
                 total += 1
         if total > 0:
             center_of_mass /= total
+            # Vector to center of mass
             vec_to_com = center_of_mass - self.position
+            # Normalize the vector towards the center of mass, because we want
             if np.linalg.norm(vec_to_com) > 0:
                 vec_to_com = (vec_to_com / np.linalg.norm(vec_to_com)) * self.max_speed
             steering = np.subtract(vec_to_com, self.velocity)
@@ -95,12 +99,15 @@ class Sheep:
         total = 0
         avg_vector = np.zeros(2)
         for boid in nearest_sheep:
+            # Find distance between self and another sheep
             distance = np.linalg.norm(boid.position - self.position)
-            if (self.position[0] != boid.position[0] and self.position[1] != boid.position[1])and distance < self.horizon:
+            # If the two sheep are not in the same spot, find the vector between them divided by the distance between them
+            if ((boid.position[0] -5 <= self.position[0] <= boid.position[0] + 5) and (boid.position[1] -5 <= self.position[1] <= boid.position[1] + 5)) and distance < self.horizon:
                 diff = self.position - boid.position
                 diff = (diff[0]/distance, diff[1]/distance)
                 avg_vector = np.add(avg_vector, diff)
                 total += 1
+        # If there are other sheep close to the sheep
         if total > 0:
             avg_vector /= total
             if np.linalg.norm(steering) > 0:
@@ -143,8 +150,10 @@ class Sheep:
             if np.linalg.norm(sheep.position - self.position) < self.horizon:
                 avg_vector = np.add(avg_vector, sheep.velocity)
                 N += 1
+        # Make sure there are other sheep around
         if N > 0:
             avg_vector /= N
+            # Normalize the vector as we only want the direction, and multiply it by the max speed
             avg_vector = (avg_vector / np.linalg.norm(avg_vector)) * self.max_speed
             steering = np.subtract(avg_vector, self.velocity)
 
