@@ -60,12 +60,12 @@ class Sheep:
         v1 = self.cohesion(list_of_sheep)*self.cohesion_weight
         v2 = self.separation(list_of_sheep)*self.separation_weight
         v2_2 = self.drone_separation(list_of_drones)*self.separation_weight_drones
-        #v3 = self.alignment(list_of_sheep)*self.alignment_weight
+        v3 = self.alignment(list_of_sheep)*self.alignment_weight
         v4 = self.force*self.previous_step_weight
         v5 = (np.random.rand(2) - 0.5)*10*self.random_movement_weight
 
         self.force = np.add(self.force, v1, v2)
-        self.force = np.add(self.force, v2_2) # , v3
+        self.force = np.add(self.force, v2_2, v3) # , v3
         self.force = np.add(self.force, v4, v5)
 
         canvas.delete(self.id)
@@ -95,7 +95,7 @@ class Sheep:
             if distance <= self.desired_separation:
                 diff = self.position - sheep.position
                 diff = (diff[0]/distance, diff[1]/distance)
-                avg_vector = np.add(avg_vector, diff)
+                avg_vector = np.subtract(avg_vector, diff)
 
         return avg_vector
               
@@ -108,25 +108,20 @@ class Sheep:
             if distance <= self.desired_separation_drones:
                 diff = self.position - drone.position
                 diff = (diff[0]/distance, diff[1]/distance)
-                avg_vector = np.add(avg_vector, diff)
+                avg_vector = np.subtract(avg_vector, diff)
 
         return avg_vector
 
     
     def alignment(self, nearest_sheep):
         # orient towards the neighbours - alignment
-        steering = np.zeros(2)
-        N = 0
         avg_vector = np.zeros(2)
         for sheep in nearest_sheep:
-            if np.linalg.norm(sheep.position - self.position) < self.horizon:
-                avg_vector = np.add(avg_vector, sheep.velocity)
-                N += 1
-        # Make sure there are other sheep around
-        if N > 0:
-            avg_vector /= N
-            # Normalize the vector as we only want the direction, and multiply it by the max speed
-            avg_vector = (avg_vector / np.linalg.norm(avg_vector)) * self.max_speed
-            steering = np.subtract(avg_vector, self.velocity)
+            distance = np.linalg.norm(self.position - sheep.position)
+            if distance <= self.desired_separation:
+                diff = self.position - sheep.position
+                diff = (diff[0]/distance, diff[1]/distance)
+                avg_vector = np.add(avg_vector, diff)
 
-        return steering
+        return avg_vector
+       

@@ -56,11 +56,11 @@ class Drone:
           
 
     def main_drone(self, drones, canvas, list_of_sheep):
-        v2 = self.separation(drones)
+        v2 = self.separation(list_of_sheep)
         
         canvas.delete(self.id)
         self.draw_drone(canvas)
-        self.velocity += v2*self.separation_weight
+        self.velocity = np.add(self.velocity, v2*self.separation_weight)
         self.update_drone()
         
 
@@ -176,13 +176,22 @@ class Drone:
         
     def separation(self, nearest_drone):
         # move away from nearest - separation
-        c = np.zeros(2)
+        avg_vector = np.zeros(2)
+        for sheep in nearest_drone:
+            distance = np.linalg.norm(self.position - sheep.position)
+            if distance <= self.desired_separation:
+                diff = self.position - sheep.position
+                diff = (diff[0]/distance, diff[1]/distance)
+                avg_vector = np.subtract(avg_vector, diff)
+
+        return avg_vector
+        # c = np.zeros(2)
         
-        for drone in nearest_drone:
-            if ((np.linalg.norm(drone.position - self.position) < self.horizon)
-                    & (np.linalg.norm(drone.position - self.position) < self.desired_separation)
-                    & (drone != self)):
-                c -= (drone.position - self.position)*(self.separation_weight/100)
-        return c
+        # for drone in nearest_drone:
+        #     if ((np.linalg.norm(drone.position - self.position) < self.horizon)
+        #             & (np.linalg.norm(drone.position - self.position) < self.desired_separation)
+        #             & (drone != self)):
+        #         c -= (drone.position - self.position)*(self.separation_weight/100)
+        # return c
 
         

@@ -42,8 +42,8 @@ class MainDrone:
         new_positions = []
         com = calculate_center_of_mass(list_of_sheep)
         for sheep in list_of_sheep:
-            if np.linalg.norm(com - sheep.position) < 70:
-                positions.append(sheep.position)
+            #if np.linalg.norm(com - sheep.position) < 70:
+            positions.append(sheep.position)
         hull = ConvexHull(positions)
        
         for index in hull.vertices:
