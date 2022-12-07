@@ -36,7 +36,6 @@ class MainDrone:
     
     def draw_convex_and_extended_hull(self, canvas, list_of_sheep):
         # Returns array containing the vertices of the extended hull
-        
         points = []
         positions = []
         new_positions = []
@@ -78,10 +77,10 @@ class MainDrone:
             canvas.create_oval(extended_inner_array[l][0]-size/2, extended_inner_array[l][1]-size/2, extended_inner_array[l][0]+size/2, extended_inner_array[l][1]+size/2, fill='cyan', outline='black', tags=self.id)
         canvas.create_polygon(buffered_hull2, fill='', outline='blue', tags=self.id)
 
-        return extended_outer_poly, extended_inner_poly
+        return extended_outer_array, extended_inner_array   # Returnerer numpy-arrays
+
 
     def calculate_positions_toward_next_point(self, extended_hull_poly, list_of_sheep, canvas):
-
         # Calculates and returns the 5 positions for the drones on the extended hull
         mass_center = calculate_center_of_mass(list_of_sheep)
         vector = (self.point[0] - mass_center[0], self.point[1] - mass_center[1])
@@ -115,14 +114,13 @@ class MainDrone:
         line_right1 = shp.LineString([mass_center, np.add(mass_center, vector_right1)])
         line_right2 = shp.LineString([mass_center, np.add(mass_center, vector_right2)])
 
-        poly_array = np.array(extended_hull_poly.exterior)
         # Create line between two vertices to check if any of the vectors/lines intersects
         i = 0
-        for vertex in poly_array:
-            if i == len(poly_array)-1:
-                line_polygon = shp.LineString([vertex, poly_array[0]])
+        for vertex in extended_hull_poly:
+            if i == len(extended_hull_poly)-1:
+                line_polygon = shp.LineString([vertex, extended_hull_poly[0]])
             else:
-                line_polygon = shp.LineString([vertex, poly_array[i+1]])
+                line_polygon = shp.LineString([vertex, extended_hull_poly[i+1]])
 
             int_pt_back = line_back.intersection(line_polygon)
             int_pt_left1 = line_left1.intersection(line_polygon)
@@ -159,7 +157,7 @@ class MainDrone:
     def fly_to_edge_convex_hull(self, extended_hull_poly, list_of_drones):
         # For every drone, fly to the edge of the convex hull that is closest
         for drone in list_of_drones:
-            drone.fly_to_edge_guidance_law(np.array(extended_hull_poly.exterior))
+            drone.fly_to_edge_guidance_law(extended_hull_poly)
             if list_of_drones[0].extended_hull_goal and list_of_drones[1].extended_hull_goal and list_of_drones[2].extended_hull_goal:
                 self.extended_hull_goal = True
 
@@ -173,18 +171,17 @@ class MainDrone:
             list_of_drones[1].hull_position_goal = False
             list_of_drones[2].hull_position_goal = False
              
-            extended_hull = np.array(extended_hull_poly.exterior)
             for drone in list_of_drones:
                 #if extended_hull_poly.contains(shp.Point(drone.position)):
                     #print(drone.id, "inside extended hull")
                 
                 if drone.id == 'drone0':
                     # drone.max_speed = 3.5
-                    drone.fly_on_edge_guidance_law(extended_hull, left)
+                    drone.fly_on_edge_guidance_law(extended_hull_poly, left)
                 if drone.id == 'drone1':
-                    drone.fly_on_edge_guidance_law(extended_hull, back)
+                    drone.fly_on_edge_guidance_law(extended_hull_poly, back)
                 if drone.id == 'drone2':
-                    drone.fly_on_edge_guidance_law(extended_hull, right)
+                    drone.fly_on_edge_guidance_law(extended_hull_poly, right)
 
                 if list_of_drones[0].hull_position_goal and list_of_drones[1].hull_position_goal and list_of_drones[2].hull_position_goal:
                     self.hull_position_goal = True
@@ -195,34 +192,31 @@ class MainDrone:
             if self.point == (0,0):
                 self.point = self.path[0]
 
-            # list = [back2, right2, back2, left2]
-            # if element in list:
             drone = list_of_drones[1]
-
             if drone.id == 'drone1':
                 point = shp.Point(drone.position)
                 # "KRANGLER" LITT OM HVOR DRONEN SKAL.
-                if extended_inner_poly.contains(point):
-                    drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back)
+                if shp.Polygon(extended_inner_poly).contains(point):  # Sjekker om dronen er innenfor det indre hullet
+                    drone.fly_on_edge_guidance_law(extended_inner_poly, back)
                     # print("Within the poly")
                 else:
-                    # drone.fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), back2)
-                    self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
-                # self.zigzag_movement(drone, np.array(extended_inner_poly.exterior), [back_left, back2, back_right])
+                    # drone.fly_on_edge_guidance_law(extended_inner_poly, back2)
+                    self.zigzag_movement(drone, extended_inner_poly, [back_left, back2, back_right])
+                # self.zigzag_movement(drone, extended_inner_poly.exterior, [back_left, back2, back_right])
 
             # If the drones are too far from the mass center, fly closer to avoid the spreading of sheep
             drone0_masscenter = np.linalg.norm(list_of_drones[0].position - mass_center)
             drone2_masscenter = np.linalg.norm(list_of_drones[2].position - mass_center)
 
             if drone0_masscenter > 25:
-                list_of_drones[0].fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), left2)
+                list_of_drones[0].fly_on_edge_guidance_law(extended_inner_poly, left2)
             else:
-                list_of_drones[0].fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), left)
+                list_of_drones[0].fly_on_edge_guidance_law(extended_inner_poly, left)
 
             if drone2_masscenter > 25:
-                list_of_drones[2].fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), right2)
+                list_of_drones[2].fly_on_edge_guidance_law(extended_inner_poly, right2)
             else:
-                list_of_drones[2].fly_on_edge_guidance_law(np.array(extended_inner_poly.exterior), right)
+                list_of_drones[2].fly_on_edge_guidance_law(extended_inner_poly, right)
             # distance = np.linalg.norm(list_of_drones[0].position - list_of_drones[2].position)
             # if distance > 50:
             #     print("Drones far from each other")
@@ -242,6 +236,7 @@ class MainDrone:
                         #print("New point recieved", self.point, self.path)
                         self.hull_position_goal = False
     
+
     def zigzag_movement(self, drone, poly, movement):
         # drone.id = drone1 | poly = np.array(poly.exterior) | movement = [outer_left, centre, outer_right]
         if self.zigzag_index == -1:  # Sørger for at zigzag_index settes, default i midten
@@ -267,7 +262,6 @@ class MainDrone:
     
         # drone.max_speed = 5
         drone.fly_on_edge_guidance_law(poly, movement[self.zigzag_index])   # FORTSATT LITT USTABIL
-        # drone.fly_to_position(movement[self.zigzag_index])
         # drone.max_speed = 3 # Set back to default max speed?
 
 

@@ -91,11 +91,12 @@ class Sheep:
     def separation(self, nearest_sheep):
         avg_vector = np.zeros(2)
         for sheep in nearest_sheep:
-            distance = np.linalg.norm(self.position - sheep.position)
-            if distance <= self.desired_separation:
-                diff = self.position - sheep.position
-                diff = (diff[0]/distance, diff[1]/distance)
-                avg_vector = np.subtract(avg_vector, diff)
+            if self != sheep: # Trenger ikke å separere seg fra seg selv
+                distance = np.linalg.norm(self.position - sheep.position)
+                if distance <= self.desired_separation:
+                    diff = self.position - sheep.position
+                    diff = (diff[0]/distance, diff[1]/distance)
+                    avg_vector = np.add(avg_vector, diff)
 
         return avg_vector
               
