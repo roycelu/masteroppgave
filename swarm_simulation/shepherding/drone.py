@@ -16,6 +16,7 @@ class Drone:
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
         self.goal_position = pygame.Vector2(0, 0)
+        self.goal_status = False
         self.velocity = pygame.Vector2(0.5, 0.5)
         self.acceleration = pygame.Vector2(0, 0)
 
@@ -38,7 +39,7 @@ class Drone:
     def move(self, goal, drones, sheep):
         if self.figure.colliderect(goal.figure):
             # print("{id} is within the goal".format(id="drone" + str(self.id)))
-            pass
+            self.goal_status = True
 
         separation = self.separation(drones)
         self.acceleration += separation * S_WEIGHT

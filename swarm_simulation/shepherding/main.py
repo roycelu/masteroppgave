@@ -41,7 +41,7 @@ def main():
     goal = Goal(pygame.Vector2(500, 600))
     sheeps = sheep_behaviour(NO_OF_SHEEP)
     drones = drone_behaviour(NO_OF_DRONES)
-    main_drone = MainDrone(screen, drones, sheeps, goal)
+    main_drone = MainDrone(screen, label_font, drones, sheeps, goal)
 
     running = True
     while running:
@@ -56,15 +56,12 @@ def main():
 
         for sheep in sheeps:
             sheep.draw(screen, label_font)
-            # sheep.update()
-            sheep.move(goal, sheeps, drones)
 
         for drone in drones:
             drone.draw(screen, label_font)
-            drone.move(goal, drones, sheeps)
-            drone.fly_to_position(goal.position)
 
         main_drone.draw_center_of_mass(screen, label_font, sheeps)
+        main_drone.main()  # Run the methods determined by the main drone (the brain)
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
