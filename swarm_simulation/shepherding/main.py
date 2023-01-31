@@ -4,8 +4,9 @@ import numpy as np
 from sheep import Sheep
 from drone import Drone
 from goal import Goal
+from main_drone import MainDrone
 
-FPS = 100  # Hastigheten på simuleringen
+FPS = 600  # Hastigheten på simuleringen
 NO_OF_SHEEP = 5
 NO_OF_DRONES = 3
 
@@ -35,11 +36,12 @@ def main():
     pygame.display.set_caption("The shepherding problem")
 
     screen = pygame.display.set_mode((1000, 1000))
-    label_font = pygame.font.SysFont("Times New Roman", 15)
+    label_font = pygame.font.SysFont("Times New Roman", 12)
 
     goal = Goal(pygame.Vector2(500, 600))
     sheeps = sheep_behaviour(NO_OF_SHEEP)
     drones = drone_behaviour(NO_OF_DRONES)
+    main_drone = MainDrone(screen, drones, sheeps, goal)
 
     running = True
     while running:
@@ -61,6 +63,8 @@ def main():
             drone.draw(screen, label_font)
             drone.move(goal, drones, sheeps)
             drone.fly_to_position(goal.position)
+
+        main_drone.draw_center_of_mass(screen, label_font, sheeps)
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
