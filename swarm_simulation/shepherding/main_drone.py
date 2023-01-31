@@ -53,4 +53,7 @@ class MainDrone:
             #     print("{id} has reached the goal".format(id="drone" + str(drone.id)))
             #     self.update_goal(drone, new_goal_position)
 
+        method1 = RoyceMoiraMethod(self.goal, self.drones, self.sheeps)
+        method1.main(self.drones, self.sheeps)
+
         # self.draw_center_of_mass(self.canvas, self.font, self.sheeps)
