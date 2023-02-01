@@ -96,7 +96,7 @@ class Sheep:
                 if distance <= self.desired_separation:
                     diff = self.position - sheep.position
                     diff = (diff[0]/distance, diff[1]/distance)
-                    avg_vector = np.add(avg_vector, diff)
+                    avg_vector = np.subtract(avg_vector, diff)
 
         return avg_vector
               

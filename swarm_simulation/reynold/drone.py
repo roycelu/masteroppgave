@@ -19,8 +19,9 @@ class Drone:
         self.acceleration = 0.1
 
         self.horizon = 100
-        self.separation_weight = 10
-        self.desired_separation = 30
+        self.separation_weight = 20
+        self.separation_weight_sheep = 10
+        self.desired_separation = 10
         
         self.desired_position = initial_position
         
@@ -56,11 +57,13 @@ class Drone:
           
 
     def main_drone(self, drones, canvas, list_of_sheep):
+        #v1 = self.separation(drones)
         v2 = self.separation(list_of_sheep)
+
         
         canvas.delete(self.id)
         self.draw_drone(canvas)
-        self.velocity = np.add(self.velocity, v2*self.separation_weight)
+        self.velocity = np.add(self.velocity, v2*self.separation_weight_sheep)
         self.update_drone()
         
 
@@ -180,9 +183,10 @@ class Drone:
         for sheep in nearest_drone:
             distance = np.linalg.norm(self.position - sheep.position)
             if distance <= self.desired_separation:
+                self.max_speed = 1.5
                 diff = self.position - sheep.position
                 diff = (diff[0]/distance, diff[1]/distance)
-                avg_vector = np.subtract(avg_vector, diff)
+                avg_vector = np.add(avg_vector, diff)
 
         return avg_vector
         # c = np.zeros(2)
