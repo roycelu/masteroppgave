@@ -5,14 +5,14 @@ import numpy as np
 Code inspired by https://betterprogramming.pub/boids-simulating-birds-flock-behavior-in-python-9fff99375118
 """
 
-SIZE = 2
+SIZE = 1
 MAX_SPEED = 1.5
 MAX_FORCE = 0.2
-PERCEPTION = 70
-A_WEIGHT = 10
-C_WEIGHT = 30
-S_WEIGHT = 100
-DRONE_SEPARATION = 100  #
+PERCEPTION = 20
+A_WEIGHT = 0.5
+C_WEIGHT = 2
+S_WEIGHT = 10
+DRONE_SEPARATION = 5000
 
 
 class Sheep:
@@ -20,9 +20,6 @@ class Sheep:
         self.id = id
         self.figure = pygame.Rect(0, 0, SIZE * 2, SIZE * 2)
         self.position = initial_position
-        self.velocity = pygame.Vector2(
-            (np.random.random(1) - 0.5) * 10, (np.random.random(1) - 0.5) * 10
-        )
         self.acceleration = pygame.Vector2(
             (np.random.random(1) - 0.5) / 2, (np.random.random(1) - 0.5) / 2
         )
@@ -42,11 +39,10 @@ class Sheep:
         canvas.blit(label, rect)
 
     def update(self):
-        self.position += self.velocity
-        self.velocity += self.acceleration
-        if self.velocity.magnitude() > MAX_SPEED:
-            self.velocity = self.velocity / self.velocity.magnitude() * MAX_SPEED
-        #self.acceleration = pygame.Vector2(0, 0)
+        acceleration_distance = np.linalg.norm(self.acceleration)
+        if acceleration_distance > MAX_SPEED:
+            self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED
+        self.position += self.acceleration
 
     def move(self, goal, sheep, drones):
         alignment = self.alignment(sheep)
@@ -81,7 +77,7 @@ class Sheep:
         for s in sheep:
             distance = self.position-s.position
             if self != s and distance.magnitude() < PERCEPTION:
-                alignment = s.velocity / np.linalg.norm(s.velocity)
+                alignment = s.acceleration / np.linalg.norm(s.acceleration)
                 total += alignment
         total /= len(sheep)
         return total

@@ -6,7 +6,7 @@ from drone import Drone
 from goal import Goal
 from main_drone import MainDrone
 
-FPS = 20  # Hastigheten på simuleringen
+FPS = 600  # Hastigheten på simuleringen
 NO_OF_SHEEP = 5
 NO_OF_DRONES = 3
 
