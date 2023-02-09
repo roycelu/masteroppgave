@@ -6,7 +6,7 @@ from drone import Drone
 from goal import Goal
 from main_drone import MainDrone
 
-FPS = 20  # Hastigheten på simuleringen
+FPS = 600  # Hastigheten på simuleringen
 NO_OF_SHEEP = 5
 NO_OF_DRONES = 3
 
@@ -14,8 +14,8 @@ NO_OF_DRONES = 3
 def sheep_behaviour(n):
     sheep_list = [x for x in range(n)]
     for i in sheep_list:
-        x = np.random.randint(300, 400)
-        y = np.random.randint(300, 400)
+        x = np.random.randint(300, 600)
+        y = np.random.randint(300, 600)
         position = pygame.Vector2(x, y)
         sheep_list[i] = Sheep(i, position)
     return sheep_list
@@ -54,14 +54,14 @@ def main():
         screen.fill(pygame.Color("darkgreen"))
         goal.draw(screen, label_font)
 
+        main_drone.draw_center_of_mass(screen, label_font, sheeps)
+        main_drone.main()  # Run the methods determined by the main drone (the brain)
+
         for sheep in sheeps:
             sheep.draw(screen, label_font)
 
         for drone in drones:
             drone.draw(screen, label_font)
-
-        main_drone.draw_center_of_mass(screen, label_font, sheeps)
-        main_drone.main()  # Run the methods determined by the main drone (the brain)
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
