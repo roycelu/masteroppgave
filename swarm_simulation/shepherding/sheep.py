@@ -2,12 +2,11 @@ import pygame
 import numpy as np
 
 """
-Code inspired by https://betterprogramming.pub/boids-simulating-birds-flock-behavior-in-python-9fff99375118
+Code based on Kubo et al. A-sheep from "Herd guidance by multiple sheepdog agents with repulsive force".
 """
 
-SIZE = 1
+SIZE = 3
 MAX_SPEED = 1.5
-MAX_FORCE = 0.2
 PERCEPTION = 20
 A_WEIGHT = 0.5
 C_WEIGHT = 2
@@ -58,15 +57,16 @@ class Sheep:
         self.update()
 
         if self.figure.colliderect(goal.figure):
-            # print("{id} reached the goal".format(id="sheep" + str(self.id)))
-            pass
+            print("{id} reached the goal".format(id="sheep" + str(self.id)))
+            return True
+            
 
 
     def separation(self, sheep):
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
-            if self != s and distance.magnitude() < PERCEPTION:
+            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) > 0):
                 separation = distance / (np.linalg.norm(self.position-s.position))**2
                 total += separation
         total /= len(sheep)
@@ -86,7 +86,7 @@ class Sheep:
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
-            if self != s and distance.magnitude() < PERCEPTION:
+            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) > 0):
                 cohesion = distance / np.linalg.norm(self.position-s.position)
                 total += cohesion
         total /= len(sheep)
@@ -103,69 +103,3 @@ class Sheep:
         total /= len(drones)
         return total
 
-    """
-    def cohesion(self, sheeps):
-            #The sheep move together as a flock
-            total = 0
-            steering = pygame.Vector2(0, 0)
-            center_of_mass = pygame.Vector2(0, 0)
-            for sheep in sheeps:
-                if (sheep.position - self.position).magnitude() < PERCEPTION:
-                    center_of_mass += sheep.position
-                    total += 1
-            if total > 0:
-                center_of_mass /= total
-                vector = center_of_mass - self.position
-                if vector.magnitude() > 0:
-                    vector = (vector / vector.magnitude()) * MAX_SPEED
-                steering = vector - self.velocity
-                if steering.magnitude() > MAX_FORCE:
-                    steering = (steering / steering.magnitude()) * MAX_FORCE
-            return steering
-
-    def alignment(self, sheeps):
-        #The sheep orient themselves toward each other
-        total = 0
-        steering = pygame.Vector2(0, 0)
-        average = pygame.Vector2(0, 0)
-        for sheep in sheeps:
-            if (sheep.position - self.position).magnitude() < PERCEPTION:
-                average += sheep.velocity
-                total += 1
-        if total > 0:
-            average /= total
-            average = (average / average.magnitude()) * MAX_SPEED
-            steering = average - self.velocity
-        return steering
-
-    def separation(self, sheeps):
-            #The sheep avoid colliding with each other
-            total = 0
-            steering = pygame.Vector2(0, 0)
-            average = pygame.Vector2(0, 0)
-            for sheep in sheeps:
-                distance = sheep.position - self.position
-                if self != sheep and distance.magnitude() < PERCEPTION:
-                    average += (self.position - sheep.position) / distance.magnitude()
-                    total += 1
-            if total > 0:
-                average /= total
-                if steering.magnitude() > 0:
-                    average = (average / steering.magnitude()) * MAX_SPEED
-                steering = average - self.velocity
-                if steering.magnitude() > MAX_FORCE:
-                    steering = (steering / steering.magnitude()) * MAX_FORCE
-            return steering
-
-    
-
-    def escape(self, drones):
-        #The sheep flee from the predators (custom)
-        steering = pygame.Vector2(0, 0)
-        for drone in drones:
-            distance = drone.position - self.position
-            if distance.magnitude() < DRONE_SEPARATION:
-                # steering -= distance
-                steering = distance / distance.magnitude()
-        return steering
-    """
