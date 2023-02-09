@@ -4,7 +4,6 @@ import numpy as np
 
 SIZE = 8
 STEP_SIZE = 500
-MAX_SPEED = 3
 PERCEPTION = 100
 DESIRED_SEPARATION = 20
 S_WEIGHT = 10
@@ -13,6 +12,7 @@ S_WEIGHT = 10
 class Drone:
     def __init__(self, id, initial_position):
         self.id = id
+        self.max_speed = 3
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
         self.goal_position = pygame.Vector2(0, 0)
@@ -32,8 +32,8 @@ class Drone:
     def update(self):
         self.position += self.velocity
         self.velocity += self.acceleration
-        if self.velocity.magnitude() > MAX_SPEED:
-            self.velocity = self.velocity / self.velocity.magnitude() * MAX_SPEED
+        if self.velocity.magnitude() > self.max_speed:
+            self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
         self.acceleration = pygame.Vector2(0, 0)
 
     def move(self, goal, drones, sheep):

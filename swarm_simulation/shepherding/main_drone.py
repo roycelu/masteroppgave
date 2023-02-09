@@ -54,8 +54,9 @@ class MainDrone:
             np.random.randint(100, 900),
         )
 
-        for sheep in self.sheeps:
-            sheep.move(self.goal, self.sheeps, self.drones)
+        # TODO: Unngår at sauene beveger seg, lettere å teste metode
+        # for sheep in self.sheeps:
+        #     sheep.move(self.goal, self.sheeps, self.drones)
 
         for drone in self.drones:
             drone.move(self.goal, self.drones, self.sheeps)
@@ -72,4 +73,4 @@ class MainDrone:
         method2 = PolygonMethod(
             self.canvas, self.font, self.goal, self.drones, self.sheeps
         )
-        method1.main(self.drones, self.sheeps, self.goal)
+        method2.main(self.drones, self.sheeps, self.goal)
