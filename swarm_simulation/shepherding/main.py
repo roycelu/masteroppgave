@@ -38,7 +38,7 @@ def main():
     screen = pygame.display.set_mode((1000, 1000))
     label_font = pygame.font.SysFont("Times New Roman", 12)
 
-    goal = Goal(pygame.Vector2(500, 600))
+    goal = Goal(pygame.Vector2(500, 550))
     sheeps = sheep_behaviour(NO_OF_SHEEP)
     drones = drone_behaviour(NO_OF_DRONES)
     main_drone = MainDrone(screen, label_font, drones, sheeps, goal)
