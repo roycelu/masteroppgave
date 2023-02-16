@@ -165,11 +165,10 @@ class PolygonMethod:
             if angle < smallest_angle:
                 smallest_angle = angle
                 goal_vertex = extended_vertices[v]
-        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex, 20)
 
         # FIND THE OPPOSITE VERTEX CLOSEST TO POINT B
         # Check which side of line is the vertex - https://math.stackexchange.com/a/274728
-        d = (goal_vertex.x - self.centre_of_mass.x) * (
+        side = (goal_vertex.x - self.centre_of_mass.x) * (
             goal.position.y - self.centre_of_mass.y
         ) - (goal_vertex.y - self.centre_of_mass.y) * (
             goal.position.x - self.centre_of_mass.x
@@ -177,18 +176,29 @@ class PolygonMethod:
         goal_vertex_p, goal_vertex_c, goal_vertex_n = self.get_indices(
             extended_vertices.index(goal_vertex), len(extended_vertices)
         )
-        if d > 0:  # left
+        if side > 0:  # left
             goal_vertex2 = extended_vertices[goal_vertex_p]
         else:  # right
             goal_vertex2 = extended_vertices[goal_vertex_n]
 
-        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex2, 10)
+        # pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex, 2)
+        # pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex2, 2)
 
-        # FIND POINT B TODO!!
+        # FIND POINT B
+        # Calculate the intersection point where point B lies - https://stackoverflow.com/a/56312654
         goal_point = pygame.Vector2(0, 0)
-        # pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 10)
+        goal_vertices_edge = pygame.Vector2(goal_vertex - goal_vertex2)
+        d = com_to_goal.dot((goal_vertices_edge.y, -goal_vertices_edge.x))
+        t = (goal_vertex - self.centre_of_mass).dot(
+            (goal_vertices_edge.y, -goal_vertices_edge.x)
+        ) / d
+        u = (goal_vertex - self.centre_of_mass).dot((com_to_goal.y, -com_to_goal.x)) / d
+        goal_point = self.centre_of_mass + com_to_goal * t
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 5)
 
         # VERTICES BETWEEN O AND B ALONG THE GIVEN DIRECTION
+        path1 = []
+        path2 = []
         vertices = []
         b = extended_vertices.index(goal_vertex)
         if direction_index == 1:  # counterclokwise
@@ -200,6 +210,9 @@ class PolygonMethod:
             # print("else")
             vertices.extend(extended_vertices[next:b])
             vertices.append(extended_vertices[b])
+
+        print(vertices)
+        print(extended_vertices)
 
         # THE ANGLE BETWEEN THE EDGES
         edge1 = pygame.Vector2(extended_vertices[prev] - extended_vertices[curr])
@@ -219,9 +232,8 @@ class PolygonMethod:
             (TURNING_RADIUS - DISTANCE) / np.sin(smallest_angle / 2)
         )  # (27)
 
-        B = goal_vertex
-        Eb = self.closest_vertex(B, extended_vertices)
-        # Eb = extended_vertices[extended_vertices.index(B) -1]
+        B = goal_point
+        Eb = self.closest_vertex(B, extended_vertices)  # TODO:Håndtere counterclockwise
         edgeEbB = pygame.draw.line(self.canvas, pygame.Color("blue"), Eb, B)
 
         # if not drone.figure.colliderect(edgeEbB):
