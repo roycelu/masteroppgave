@@ -5,6 +5,7 @@ from sheep import Sheep
 from drone import Drone
 from goal import Goal
 from main_drone import MainDrone
+from polygon_method import PolygonMethod
 
 FPS = 50  # Hastigheten på simuleringen
 NO_OF_SHEEP = 5
@@ -24,8 +25,8 @@ def sheep_behaviour(n):
 def drone_behaviour(n):
     drone_list = [x for x in range(n)]
     for i in drone_list:
-        x = np.random.randint(200, 220)
-        y = np.random.randint(200, 220)
+        x = np.random.randint(800, 820)
+        y = np.random.randint(600, 820)
         position = pygame.Vector2(x, y)
         drone_list[i] = Drone(i, position)
     return drone_list
@@ -38,10 +39,12 @@ def main():
     screen = pygame.display.set_mode((1000, 1000))
     label_font = pygame.font.SysFont("Times New Roman", 12)
 
-    goal = Goal(pygame.Vector2(500, 550))
+    goal = Goal(pygame.Vector2(850, 50))
     sheeps = sheep_behaviour(NO_OF_SHEEP)
     drones = drone_behaviour(NO_OF_DRONES)
     main_drone = MainDrone(screen, label_font, drones, sheeps, goal)
+
+    polygon_method = PolygonMethod(screen, label_font, goal, drones, sheeps)
 
     running = True
     while running:
@@ -55,13 +58,15 @@ def main():
         goal.draw(screen, label_font)
 
         main_drone.draw_center_of_mass(screen, label_font, sheeps)
-        main_drone.main()  # Run the methods determined by the main drone (the brain)
+        # main_drone.main()  # Run the methods determined by the main drone (the brain)
+        polygon_method.main(drones, sheeps, goal)
 
         for sheep in sheeps:
             sheep.draw(screen, label_font)
 
         for drone in drones:
             drone.draw(screen, label_font)
+            drone.move(goal, drones, sheeps)
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
