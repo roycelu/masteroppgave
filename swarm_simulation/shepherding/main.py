@@ -63,6 +63,7 @@ def main():
 
         for sheep in sheeps:
             sheep.draw(screen, label_font)
+            # sheep.move(goal, sheeps, drones)
 
         for drone in drones:
             drone.draw(screen, label_font)

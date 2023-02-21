@@ -27,6 +27,8 @@ class PolygonMethod:
         self.toward_goal = False
 
         self.path = []
+        self.direction_index = 0  # 0: clockwise, 1: counterclockwise
+        self.first_edge_vertex = pygame.Vector2(0, 0)  # ??
 
     def convex_hull(self, sheeps):
         points = []
@@ -130,13 +132,13 @@ class PolygonMethod:
 
         pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 5)
         drone.fly_to_position(closest_point)
+        self.first_edge_vertex = closest_point
 
     def fly_on_edge(self, drone, goal, extended_vertices, convex_vertices):
         # FLY TO THE STEERING POINTS ALONG THE EXTENDED HULL
-        direction_index = 0  # 0: clockwise, 1: counterclockwise
-
-        # FIND THE CLOSEST VERTICES TO THE HULLS
-        closest_vertex = self.closest_vertex(drone.position, extended_vertices)
+        initial_point = self.first_edge_vertex
+        # closest_vertex = self.closest_vertex(drone.position, extended_vertices)
+        closest_vertex = self.closest_vertex(initial_point, extended_vertices)
         closest_convex_vertex = self.closest_vertex(closest_vertex, convex_vertices)
 
         j = extended_vertices.index(closest_vertex)  # Extended vertex index
@@ -149,6 +151,7 @@ class PolygonMethod:
         goal_vertex2 = pygame.Vector2(0, 0)  # Closest vertex to B - opposite
         smallest_angle = np.inf
 
+        # Visual line between COM and goal
         pygame.draw.line(
             self.canvas,
             pygame.Color("yellow"),
@@ -186,8 +189,8 @@ class PolygonMethod:
             goal_vertex = extended_vertices[goal_vertex_n]  # left
             goal_vertex2 = extended_vertices[goal_vertex_c]  # right
 
-        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex, 20)
-        # pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex2, 20)
+        # pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_vertex, 20)
+        # pygame.draw.circle(self.canvas, pygame.Color("orange"), goal_vertex2, 20)
 
         # FIND POINT B
         # Calculate the intersection point where point B lies - https://stackoverflow.com/a/56312654
@@ -198,50 +201,41 @@ class PolygonMethod:
             (goal_vertices_edge.y, -goal_vertices_edge.x)
         ) / d
         goal_point = self.centre_of_mass + com_to_goal * t
+
         pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 5)
         self.add_label("B", goal_point)
 
-        # VERTICES BETWEEN O AND B ALONG THE GIVEN DIRECTION
-        path1 = []
-        path2 = []
+        # VERTICES BETWEEN O AND B ALONG THE GIVEN DIRECTION, TODO
+        path1 = []  # Clockwise
+        path2 = []  # Counterclockwise
         b_left = extended_vertices.index(goal_vertex)
         b_right = extended_vertices.index(goal_vertex2)
 
-        if direction_index == 1:  # counterclokwise TODO
-            # print("if")
-            path1.extend(extended_vertices[b_left:curr])
-            path1.extend(extended_vertices[:b_left])
-            path1.append(extended_vertices[b_left])
-        else:  # TODO
-            # clockwise
-            path1.extend(extended_vertices[curr:b_left])
-            path1.append(extended_vertices[b_left])
-            # counterclockwise
-            path2.extend(extended_vertices[b_right:curr])
-            path2.extend(extended_vertices[:b_right])
-            path2.append(extended_vertices[b_right])
+        # path1.extend(extended_vertices[curr:b_right])
+        # path1.extend(extended_vertices[:b_right])
+        path1.append(extended_vertices[b_right])
+        # path2.extend(extended_vertices[b_left:curr:-1])
+        path2.append(extended_vertices[b_left])
 
-        print(path1)
-        print(path2)
-        # DECIDE ON WHICH PATH THE DRONE SHALL FOLLOW
-        # TODO: Check shortest path. Choose direction
+        # DECIDE ON WHICH PATH THE DRONE SHALL FOLLOW - EITHER CLOKWISE OR COUNTERCLOCKWISE
         path1_length = 0
         for p in range(len(path1) - 1):
             path1_length += (path1[p] - path1[p + 1]).length()
-            pygame.draw.line(self.canvas, pygame.Color("red"), path1[p], path1[p + 1])
+            # pygame.draw.line(self.canvas, pygame.Color("green"), path1[p], path1[p + 1], 5)
 
         path2_length = 0
         for p in range(len(path2) - 1):
             path2_length += (path2[p] - path2[p + 1]).length()
-            # pygame.draw.line(
-            #     self.canvas, pygame.Color("red"), path2[p], path2[p + 1], 5
-            # )
+            # pygame.draw.line(self.canvas, pygame.Color("red"), path2[p], path2[p + 1], 5)
 
-        if path1_length < path2_length:
+        if path1_length <= path2_length:
+            self.direction_index = 0
             self.path = path1
         else:
+            self.direction_index = 1
             self.path = path2
-        print("----", self.path)
+
+        print("----------", self.direction_index)
 
         # THE ANGLE BETWEEN THE EDGES
         edge1 = pygame.Vector2(extended_vertices[prev] - extended_vertices[curr])
@@ -262,20 +256,20 @@ class PolygonMethod:
         )  # (27)
 
         B = goal_point
-        Eb = extended_vertices[b_left]
-        # TODO: Håndtere counterclockwise
+        if self.direction_index == 0:  # clockwise
+            Eb = extended_vertices[b_right]
+        if self.direction_index == 1:  # counterclockwise
+            Eb = extended_vertices[b_left]
         edgeEbB = pygame.draw.line(self.canvas, pygame.Color("blue"), Eb, B)
 
-        # print(vertices)
         new = self.path.pop(0)
         if len(self.path) == 0 and drone.figure.colliderect(edgeEbB):
             # BRAKE - stop the drone when it arrives at the final vertex
             drone.fly_to_position(B)
             if drone.figure.collidepoint(B):
-                self.toward_goal = True
+                self.toward_goal = True  # TODO: Tentativ løsning
         else:
-            # TRANSFER - arc trajectory TODO: Rekker ikke å kjøre bort, før neste punkt på listen blir gitt
-            # print("Flying to next vertex")
+            # TRANSFER - arc trajectory TODO
 
             # if not drone.figure.colliderect(edgeEbB):
             #     # Transfer - arc trajectory
@@ -284,29 +278,26 @@ class PolygonMethod:
             #             if np.sin(angle / 2) > 1 - (DISTANCE / TURNING_RADIUS):
             #                 if angle > 2 * np.arcsin(1 - DISTANCE / TURNING_RADIUS):  # (28)
             #                     print("Turning")
-            #             # drone.fly_to_position(vertices[v + 1])
+            #                 drone.fly_to_position(extended_vertices[curr])
             #     else:
             #         print("Directly")
-            #         drone.fly_to_position(vertices[next])
-
-            if drone.figure.collidepoint(new) and self.next_vertex == False:
-                self.next_vertex = True
-
-            print(new, self.path)
-            print(drone.position)
-            if self.next_vertex == True:
-                drone.fly_to_position(self.path[0])
-                print("new position, OK")
-                self.next_vertex = False
-            else:
-                print("Flyyyyyyyy")
-                drone.fly_to_position(new)
+            #         drone.fly_to_position(extended_vertices[next])
+            drone.fly_to_position(new)
 
         pygame.draw.circle(self.canvas, pygame.Color("blue"), drone.goal_position, 5)
 
-    def calculate_optimal_steering_points(self, drones, sheeps, points):
+    def calculate_optimal_steering_points(self, drones, convex_vertices, vertices):
         # FIND THE OPTIMAL STEERING POINTS AND THEIR COLLISION-FREE ALLOCATION
-        pass
+        largest_distance = -np.inf
+        furthest_convex_vertex = pygame.Vector2(0, 0)
+        for vertex in convex_vertices:
+            if vertex.position.distance_to(self.centre_of_mass) > largest_distance:
+                furthest_convex_vertex = vertex.position  # = furthest convex vertex
+                largest_distance = vertex.position.distance_to(self.centre_of_mass)
+
+        steering_point = pygame.Vector2(0, 0)
+
+        # if len(vertices) >= len(drones):
 
     def add_label(self, text, position, color="black"):
         label = self.font.render(text, True, pygame.Color(color))
@@ -338,9 +329,6 @@ class PolygonMethod:
     def main(self, drones, sheeps, goal):
         convex_vertices, convex_hull = self.convex_hull(sheeps)
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
-
-        B = extended_vertices
-
         # Styrer tentativ bare én drone
         # for drone in drones:
 
@@ -348,7 +336,7 @@ class PolygonMethod:
         if drones[0].figure.colliderect(extended_hull) and self.on_edge == False:
             # TODO: "Kolliderer" for tidlig, må finne alternativ løsning..
             self.on_edge = True  # Drone arrived edge
-            # b_star = b + o  # Edge sliding
+
             pygame.draw.circle(
                 self.canvas, pygame.Color("brown"), drones[0].position, 10
             )
@@ -356,7 +344,10 @@ class PolygonMethod:
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
             self.fly_to_egde(drones[0], extended_vertices)
+            print("Flying to the edge")
         if self.toward_goal == True:
             drones[0].fly_to_position(goal.position)
-        else:
+            print("Goaaaal")
+        if self.on_edge == True and self.toward_goal == False:
             self.fly_on_edge(drones[0], goal, extended_vertices, convex_vertices)
+            print("Around the edge")
