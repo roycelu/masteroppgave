@@ -20,6 +20,12 @@ class Drone:
         self.velocity = pygame.Vector2(0.5, 0.5)
         self.acceleration = pygame.Vector2(0, 0)
 
+        self.direction_index = 0
+        self.travel_distance = np.inf
+        self.fly_to_edge_point = pygame.Vector2(0, 0)
+        self.steering_point = pygame.Vector2(0, 0)
+        self.allocated_steering_point = pygame.Vector2(0, 0)
+
     def draw(self, canvas, font):
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)

@@ -28,7 +28,6 @@ class PolygonMethod:
 
         self.path = []
         self.direction_index = 0  # 0: clockwise, 1: counterclockwise
-        self.first_edge_vertex = pygame.Vector2(0, 0)  # ??
         self.fly_to_vertex = pygame.Vector2(0, 0)
 
     def convex_hull(self, sheeps):
@@ -132,8 +131,8 @@ class PolygonMethod:
         )
 
         pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 5)
+        drone.fly_to_edge_point = closest_point
         drone.fly_to_position(closest_point)
-        self.first_edge_vertex = closest_point
 
     def fly_on_edge(self, drone, goal, extended_vertices, convex_vertices):
         # FLY TO THE STEERING POINTS ALONG THE EXTENDED HULL
@@ -311,18 +310,41 @@ class PolygonMethod:
 
     def selection_of_steering_points(self, drones, convex_vertices, vertices):
         # FIND THE OPTIMAL STEERING POINTS FOR THE DRONES ALONG EXTENDED HULL
+        # Input: number of drones (n_d), extended hull (E), drones (D)
+
+        drone = drones[0]  # Tentativ løsning for én drone
         largest_distance = -np.inf
         furthest_convex_vertices = [pygame.Vector2(0, 0) for i in drones]
 
         # Find the sheep furthest away from the centre of mass
+        left = 0  # 1: drone pass z=0 by left, 0: otherwise
+        right = 0  # 1: drone pass z=0 by right, 0: otherwise
+        direction = 0  # 0: flying left, 1: flying right
+
+        # FIND STEERING POINTS
+        furtest_convex_vertex = pygame.Vector2(0, 0)
         for vertex in convex_vertices:
-            if vertex.distance_to(self.centre_of_mass) > largest_distance:
-                furthest_convex_vertices = vertex  # = furthest convex vertex
-                largest_distance = vertex.distance_to(self.centre_of_mass)
-        furthest_vertex = self.closest_vertex(furthest_convex_vertices, vertices)
-        steering_point = pygame.Vector2(0, 0)
-        for drone in drones:
-            distance = drone.position.distance_to(furthest_convex_vertices)
+            if self.centre_of_mass.distance_to(vertex) > largest_distance:
+                largest_distance = self.centre_of_mass.distance_to(vertex)
+                furtest_convex_vertex = vertex
+        furthest_vertex = self.closest_vertex(furtest_convex_vertex)
+
+        initial = self.closest_vertex(drone.fly_to_edge_point, vertices)
+        line_segment = []  # line segment: [0,M]
+        line_segment2 = []
+        for i in range(len(vertices)):
+            if i >= vertices.index(initial):
+                line_segment.append(vertices[i])
+            else:
+                line_segment2.append(vertices[i])
+        line_segment.extend(line_segment2)
+
+        for z in range(len(line_segment)):
+            prev, curr, next = self.get_indices(z, line_segment)
+            #
+
+        print(line_segment2)
+        print("--", vertices)
 
         # if len(vertices) >= len(drones):
 
@@ -359,6 +381,8 @@ class PolygonMethod:
         # Styrer tentativ bare én drone
         # for drone in drones:
 
+        self.selection_of_steering_points(drones, convex_vertices, extended_vertices)
+
         # The drone is on the extended hull edge
         if drones[0].figure.colliderect(extended_hull) and self.on_edge == False:
             # TODO: "Kolliderer" for tidlig, må finne alternativ løsning..
@@ -378,5 +402,3 @@ class PolygonMethod:
         if self.on_edge == True and self.toward_goal == False:
             self.fly_on_edge(drones[0], goal, extended_vertices, convex_vertices)
             # print("Around the edge")
-
-        self.selection_of_steering_points(drones, convex_vertices, extended_vertices)
