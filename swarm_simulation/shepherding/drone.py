@@ -21,14 +21,13 @@ class Drone:
         self.acceleration = pygame.Vector2(0, 0)
 
         # 0: clockwise (right), 1: counterclockwise (left)
-        self.direction_index = 0
+        self.direction_index = 0  # 0:clockwise, 1:counterclockwise
         self.right_pass = 0  # 0: otherwise, 1: pass z=0 by right flying to z=j
         self.left_pass = 0  # =. otherwise, 1: pass z=0 by left flying to z=j
-        self.travel_distance = -np.inf  # Travel distance to a steering point
-        self.travel_path = []
-        self.possible_allocations = []
-        self.edge_point = pygame.Vector2(0, 0)
-        self.steering_point = pygame.Vector2(0, 0)
+        self.travel_path = []  # The path from start to steering point
+        self.possible_allocations = []  # All possible steering points allocations
+        self.edge_point = pygame.Vector2(0, 0)  # The first point on the edge
+        self.steering_point = pygame.Vector2(0, 0)  # The final point to fly to
 
     def draw(self, canvas, font):
         self.figure.center = self.position
