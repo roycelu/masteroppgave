@@ -12,7 +12,7 @@ S_WEIGHT = 10
 class Drone:
     def __init__(self, id, initial_position):
         self.id = id
-        self.max_speed = 3
+        self.max_speed = 2
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
         self.goal_position = pygame.Vector2(0, 0)

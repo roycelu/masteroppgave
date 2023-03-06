@@ -1,14 +1,14 @@
 import pygame
 import numpy as np
-import shapely as shp
+import shapely.geometry as shp
 from scipy.spatial import ConvexHull
 from goal import Goal
 from utils import Calculate
 
 
-DISTANCE = 10  # drone-to-animal distance (predefined)
+DISTANCE = 20  # 30  # drone-to-animal distance (predefined)
 TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
-SHEEP_RADIUS = 60  # the sheep's smallest circle during driving (predefined)
+SHEEP_RADIUS = 40  # 60  # the sheep's smallest circle during driving (predefined)
 DRIVING_SPEED = 38  # driving speed (predefined)
 
 
@@ -49,26 +49,34 @@ class PolygonMethod:
     def extended_hull(self, vertices):
         extended_hull = []
 
-        for i in range(len(vertices)):
-            prev, current, next = self.get_indices(i, len(vertices))
-            P = pygame.Vector2(vertices[current])
-            P1 = pygame.Vector2(vertices[prev])
-            P2 = pygame.Vector2(vertices[next])
+        # for i in range(len(vertices)):
+        #     prev, current, next = self.get_indices(i, len(vertices))
+        #     P = pygame.Vector2(vertices[current])
+        #     P1 = pygame.Vector2(vertices[prev])
+        #     P2 = pygame.Vector2(vertices[next])
 
-            PP1 = P1 - P
-            PP2 = P2 - P
-            P1P = P - P1
-            P2P = P - P2
+        #     PP1 = P1 - P
+        #     PP2 = P2 - P
+        #     P1P = P - P1
+        #     P2P = P - P2
 
-            cos_alpha = PP1.dot(PP2) / (PP1.length() * PP2.length())
-            PL1 = (DISTANCE / abs(cos_alpha)) * (P1P / P1P.length())
-            PL2 = (DISTANCE / abs(cos_alpha)) * (P2P / P2P.length())
-            E = P + PL1 + PL2
+        #     cos_alpha = PP1.dot(PP2) / (PP1.length() * PP2.length())
+        #     PL1 = (DISTANCE / abs(cos_alpha)) * (P1P / P1P.length())
+        #     PL2 = (DISTANCE / abs(cos_alpha)) * (P2P / P2P.length())
+        #     E = P + PL1 + PL2
 
-            extended_hull.append(E)
+        #     extended_hull.append(E)
 
-            pygame.draw.circle(self.canvas, pygame.Color("gray"), E, 8)
-            self.add_label(str(i), E)
+        #     pygame.draw.circle(self.canvas, pygame.Color("gray"), E, 8)
+        #     self.add_label(str(i), E)
+
+        polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, 0)
+        polygon_list = np.array(polygon.exterior)
+        for i in range(len(polygon_list) - 1):
+            point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
+            extended_hull.append(point)
+            pygame.draw.circle(self.canvas, pygame.Color("gray"), point, 8)
+            self.add_label(str(i), point)
 
         figure = pygame.draw.polygon(
             self.canvas, pygame.Color("gray"), extended_hull, 1
@@ -76,7 +84,7 @@ class PolygonMethod:
         return extended_hull, figure
 
     def fly_to_egde(self, drone, vertices):
-        # THE DRONE FLIES TO EXTENDED HULL
+        # THE DRONE FLIES TO THE EXTENDED HULL
         closest_point = pygame.Vector2(0, 0)
         shortest_distance = np.inf
         edge_vertices = [pygame.Vector2(0, 0), pygame.Vector2(0, 0)]
@@ -134,19 +142,19 @@ class PolygonMethod:
         drone.fly_to_position(closest_point)
 
     def fly_on_edge(self, drone, vertices, convex_vertices):
-        # Steering point, direction index, edge_point
-        print(drone.id, drone.steering_point, drone.travel_path)
-        path = drone.travel_path
-        new = drone.steering_point
+        # THE DRONE FLIES AROUND THE EXTENDED HULL
+        print(drone.id, drone.steering_point, drone.travel_path)  # TODO:remove
 
-        if len(path) == 0:
+        if len(drone.travel_path) == 0:
             # BRAKE - stop the drone when it arrives at the final vertex
-            print("Fly to the steering point")
-            drone.fly_to_position(new)
+            # print("Fly to the steering point")  # TODO:remove
+            drone.fly_to_position(drone.steering_point)
         else:
             # TRANSFER - arc trajectory
+            new = drone.travel_path.pop(0)
+            # print(drone.id, drone.steering_point, drone.travel_path)  # TODO remove
+
             # Find the next point on the list when arrived the first one
-            new = path.pop(0)
             prev, curr, next = self.get_indices(vertices.index(new), len(vertices))
 
             current_point = vertices[curr]
@@ -179,7 +187,6 @@ class PolygonMethod:
                         if not angle > 2 * np.arcsin(1 - (DISTANCE / TURNING_RADIUS)):
                             drone.fly_to_position(current_point)
             else:
-                # TODO: Dronen "sitter fast" på punktet fordi path-listen forblir konstant, og derfor blir kun første element poppet av
                 drone.fly_to_position(new)
                 if drone.direction_index == 0:
                     if drone.figure.collidepoint(F_1):
@@ -188,17 +195,13 @@ class PolygonMethod:
                     if drone.figure.collidepoint(F_2):
                         drone.fly_to_position(F_1)
 
+                # TODO: Dronen "sitter fast" på punktet fordi path-listen forblir konstant, og derfor blir kun første element poppet av
                 if drone.figure.collidepoint(new):
-                    print("Stuck??")
                     if new == drone.steering_point:
-                        print("Nope, just arrived where I wanted")
-                    # drone.edge_point = new
-
-            print("---", new, drone.travel_path)
-
-            pygame.draw.circle(self.canvas, pygame.Color("orange"), F_1, 3)
-            pygame.draw.circle(self.canvas, pygame.Color("yellow"), C_t, 5)
-            pygame.draw.circle(self.canvas, pygame.Color("red"), F_2, 3)
+                        pass
+                        # print("Nope, just arrived where I wanted")
+                    else:
+                        drone.edge_point = new
 
     def allocate_steering_points(self, drones, convex_vertices, vertices):
         # FIND THE OPTIMAL STEERING POINTS FOR THE DRONES ALONG EXTENDED HULL
@@ -210,9 +213,9 @@ class PolygonMethod:
         copy_list = convex_vertices
         for m in range(len(convex_vertices)):
             for n in range(len(convex_vertices) - 1):
-                distance = self.centre_of_mass.distance_to(copy_list[n])
+                d = self.centre_of_mass.distance_to(copy_list[n])
                 d2 = self.centre_of_mass.distance_to(copy_list[n + 1])
-                if distance > d2:
+                if d > d2:
                     copy_list[n], copy_list[n + 1] = copy_list[n + 1], copy_list[n]
         furthest_convex_vertices = copy_list[::-1]  # From furthest to closest
 
@@ -221,8 +224,8 @@ class PolygonMethod:
         for vertex in furthest_convex_vertices:
             closest = self.closest_vertex(vertex, vertices)
             if vertex not in steering_points:
-                # TODO: Slipper inn uavhengig, trenger vi da "if"-en?
                 steering_points.append(closest)
+        steering_points = steering_points[: len(drones)]
 
         # CALCULATE THE DRONES' POSITION ON THE DISCONNECTED EXTENDED HULL (z-axis)
         # The disconnected extended hull from the first drone's position [0, M]
@@ -240,16 +243,15 @@ class PolygonMethod:
         drone_positions = [0 for d in drones]
         for drone in drones:
             i = drones.index(drone)
-            vertex = self.closest_vertex(drone.edge_point, vertices)  # TODO?
+            vertex = self.closest_vertex(drone.position, vertices)  # TODO?
             drone_positions[i] = line_segment.index(vertex)
 
         # GENERATE POSSIBLE ALLOCATIONS FOR EACH DRONE
         for drone in drones:
             drone.possible_allocations = []
             for point in steering_points:
-                drone.possible_allocations.append([0, point])
-                drone.possible_allocations.append([1, point])
-                # i=0: direction index, i=1: possible steering point
+                drone.possible_allocations.append([0, point])  # clockwise
+                drone.possible_allocations.append([1, point])  # counterclcokwise
 
         # CALCLULATE THE OPTIMAL STEERING POINTS FOR THE DRONES BASED ON THE TRAVEL DISTANCES
         for drone in drones:
@@ -285,12 +287,14 @@ class PolygonMethod:
         # Sort the list of possible allocations based on the furthest travel distance
         for drone in drones:
             temp_list = drone.possible_allocations
-            for n in range(len(drone.possible_allocations) - 1):
-                distance = drone.possible_allocations[n][2]
-                d2 = drone.possible_allocations[n + 1][2]
-                if distance > d2:
-                    temp_list[n], temp_list[n + 1] = temp_list[n + 1], temp_list[n]
-            drone.possible_allocations = temp_list[::-1]  # From furthest to closest
+            for m in range(len(drone.possible_allocations)):
+                for n in range(len(drone.possible_allocations) - 1):
+                    d = drone.possible_allocations[n][2]
+                    d2 = drone.possible_allocations[n + 1][2]
+                    if d > d2:
+                        temp_list[n], temp_list[n + 1] = temp_list[n + 1], temp_list[n]
+            drone.possible_allocations = temp_list
+            # drone.possible_allocations = temp_list[::-1]  # From furthest to closest
 
         # Remark 5: Each drone is allocated to each steering point, if there is enough of steering points to be allocated, or else the drone stand by
         x = 0
@@ -304,12 +308,12 @@ class PolygonMethod:
                 direction = el[0]
                 point = el[1]
                 distance = el[2]
-                # TODO: Legger til i listen uavhengig (v), trengs da "if"-en?
                 if point not in allocated_steering_points:
-                    drone.steering_point = point
-                    drone.direction_index = direction
-                    # Avoid duplicate of the steering points, so two or more drones do not fly to the same steering point
-                    allocated_steering_points[i] = point
+                    if allocated_steering_points[i] == pygame.Vector2(0, 0):
+                        drone.steering_point = point
+                        drone.direction_index = direction
+                        # Avoid duplicate of the steering points, so two or more drones do not fly to the same steering point
+                        allocated_steering_points[i] = point
 
         # FIND THE FLYING PATH FOR THE DRONE TO THE ALLOCATED STEERING POINT
         for i in range(len(drones) - x):
@@ -318,7 +322,7 @@ class PolygonMethod:
 
             # Check if the drone is allocated a steering point
             if allocated_steering_points[i] == pygame.Vector2(0, 0):
-                print(i, "No steering point set")
+                print(drone.id, "No steering point set")
                 continue
 
             # Calculte the drone's path
@@ -342,14 +346,14 @@ class PolygonMethod:
                 if start_index <= n <= end_index:
                     drone.travel_path.append(line_segment[index])
 
+            drone.fly_to_position(drone.steering_point)
+
     def drive_to_goal(self, drones, goal, vertices):
         # FIND THE POINT BEHIND THE EXTENDED HULL, BETWEEN THE CENTROID AND THE GOAL
         goal_point = pygame.Vector2(0, 0)  # A point between centroid and goal
+
         # FIND THE VECTOR BETWEEN COM AND GOAL
-        com_to_goal = -pygame.Vector2(goal.position - self.centre_of_mass)
-        goal_vertex = pygame.Vector2(0, 0)  # Closest vertex to B
-        goal_vertex2 = pygame.Vector2(0, 0)  # Closest vertex to B - opposite
-        smallest_angle = np.inf
+        com_to_goal = pygame.Vector2(self.centre_of_mass - goal.position)
 
         # Visual line between the goal and the centre of mass
         pygame.draw.line(
@@ -359,63 +363,18 @@ class PolygonMethod:
             goal.position,
         )
 
-        # FIND THE VERTEX CLOSEST TO POINT B
-        for v in range(len(vertices)):
-            # Find angle between two vectors - https://mathsathome.com/angle-between-two-vectors/
-            com_to_vertex = pygame.Vector2(vertices[v] - self.centre_of_mass)
-            angle = np.arccos(
-                (com_to_goal.dot(com_to_vertex))
-                / (com_to_goal.length() * com_to_vertex.length())
-            )
-            if angle < smallest_angle:
-                smallest_angle = angle
-                goal_vertex = vertices[v]
-
-        # FIND THE OPPOSITE VERTEX CLOSEST TO POINT B
-        # Check which side of line is the vertex - https://math.stackexchange.com/a/274728
-        side = (goal_vertex.x - self.centre_of_mass.x) * (
-            goal.position.y - self.centre_of_mass.y
-        ) - (goal_vertex.y - self.centre_of_mass.y) * (
-            goal.position.x - self.centre_of_mass.x
+        # Compute the point moving from centroid and the goal, formula (43)
+        goal_point = self.centre_of_mass + DRIVING_SPEED * (
+            com_to_goal / com_to_goal.length()
         )
-        goal_vertex_p, goal_vertex_c, goal_vertex_n = self.get_indices(
-            vertices.index(goal_vertex), len(vertices)
-        )
-
-        if side > 0:  # closest goal_vertex to the right of line
-            goal_vertex = vertices[goal_vertex_c]  # left
-            goal_vertex2 = vertices[goal_vertex_p]  # right
-        else:
-            goal_vertex = vertices[goal_vertex_n]  # left
-            goal_vertex2 = vertices[goal_vertex_c]  # right
-
-        # FIND POINT B
-        # Calculate the intersection point where point B lies - https://stackoverflow.com/a/56312654
-        goal_point = pygame.Vector2(0, 0)
-        goal_vertices_edge = pygame.Vector2(goal_vertex - goal_vertex2)
-        d = com_to_goal.dot((goal_vertices_edge.y, -goal_vertices_edge.x))
-        t = (goal_vertex - self.centre_of_mass).dot(
-            (goal_vertices_edge.y, -goal_vertices_edge.x)
-        ) / d
-        goal_point = self.centre_of_mass + com_to_goal * t
-
-        # # Compute the point moving from centroid and the goal, formula (43)
-        # goal_point = self.centre_of_mass + DRIVING_SPEED * \
-        #     (com_to_goal/com_to_goal.length())
 
         # Visually display the goal_point
         pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 5)
         self.add_label("B", goal_point)
 
-        goal_point_left = pygame.Vector2(0, 0)
-        goal_point_right = pygame.Vector2(0, 0)
-
-        goal_point_left = (self.centre_of_mass - goal_point).rotate_rad(np.pi / 2)
-        goal_point_left.scale_to_length((self.centre_of_mass - goal_point).length())
-        goal_point_right = (self.centre_of_mass - goal_point).rotate_rad(-np.pi / 2)
-
-        pygame.draw.circle(self.canvas, pygame.Color("orange"), goal_point_left, 10)
-        pygame.draw.circle(self.canvas, pygame.Color("orange"), goal_point_right, 10)
+        # The drone will move towards the goal, hopefully with the sheep flock in front
+        for drone in drones:
+            drone.fly_to_position(goal_point)
 
         return goal_point
 
@@ -455,14 +414,13 @@ class PolygonMethod:
             self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1
         )
 
-        # The drone is on the extended hull edge
-        if drones[0].figure.colliderect(extended_hull) and self.on_edge == False:
-            # TODO: "Kolliderer" for tidlig, må finne alternativ løsning..
-            self.on_edge = True  # Drone arrived edge
-
-            pygame.draw.circle(
-                self.canvas, pygame.Color("brown"), drones[0].position, 10
-            )
+        # If the drone ends up in the convex hull, move out to the closest vertex on the extended hull
+        # for drone in drones:
+        #     if convex_hull.contains(drone.figure):
+        #         print("Uuuuuuuuuuuuuuuuuuuut", drone.position, drone.goal_position)
+        #         drone.fly_to_position(
+        #             self.closest_vertex(drone.position, extended_vertices)
+        #         )
 
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
@@ -479,13 +437,12 @@ class PolygonMethod:
             self.toward_goal = True
 
         if self.toward_goal == True:
-            goal_point = self.drive_to_goal(drones, goal, extended_vertices)
-            drones[0].fly_to_position(goal_point)  # TODO remove
+            self.drive_to_goal(drones, goal, extended_vertices)
 
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
         if self.on_edge == True and self.toward_goal == False:
             self.allocate_steering_points(drones, convex_vertices, extended_vertices)
-            for drone in drones:
-                self.fly_on_edge(drone, extended_vertices, convex_vertices)
+            # for drone in drones:
+            #     self.fly_on_edge(drone, extended_vertices, convex_vertices)
 
             # self.fly_on_edge(drones[0], extended_vertices, convex_vertices)

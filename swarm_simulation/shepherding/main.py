@@ -15,8 +15,8 @@ NO_OF_DRONES = 3
 def sheep_behaviour(n):
     sheep_list = [x for x in range(n)]
     for i in sheep_list:
-        x = np.random.randint(300, 600)
-        y = np.random.randint(300, 600)
+        x = np.random.randint(300, 350)
+        y = np.random.randint(350, 400)
         position = pygame.Vector2(x, y)
         sheep_list[i] = Sheep(i, position)
     return sheep_list
