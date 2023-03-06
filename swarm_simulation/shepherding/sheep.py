@@ -6,7 +6,7 @@ Code based on Kubo et al. A-sheep from "Herd guidance by multiple sheepdog agent
 """
 
 SIZE = 3
-MAX_SPEED = 1
+MAX_SPEED = 1.5
 PERCEPTION = 20
 A_WEIGHT = 0.5
 C_WEIGHT = 2
@@ -59,27 +59,23 @@ class Sheep:
         if self.figure.colliderect(goal.figure):
             print("{id} reached the goal".format(id="sheep" + str(self.id)))
             return True
+            
+
 
     def separation(self, sheep):
         total = pygame.Vector2(0, 0)
         for s in sheep:
-            distance = self.position - s.position
-            if (
-                self != s
-                and distance.magnitude() < PERCEPTION
-                and (np.linalg.norm(distance) > 0)
-            ):
-                separation = (
-                    distance / (np.linalg.norm(self.position - s.position)) ** 2
-                )
+            distance = self.position-s.position
+            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) > 0):
+                separation = distance / (np.linalg.norm(self.position-s.position))**2
                 total += separation
         total /= len(sheep)
         return total
-
+    
     def alignment(self, sheep):
         total = pygame.Vector2(0, 0)
         for s in sheep:
-            distance = self.position - s.position
+            distance = self.position-s.position
             if self != s and distance.magnitude() < PERCEPTION:
                 alignment = s.acceleration / np.linalg.norm(s.acceleration)
                 total += alignment
@@ -89,26 +85,21 @@ class Sheep:
     def cohesion(self, sheep):
         total = pygame.Vector2(0, 0)
         for s in sheep:
-            distance = self.position - s.position
-            if (
-                self != s
-                and distance.magnitude() < PERCEPTION
-                and (np.linalg.norm(distance) > 0)
-            ):
-                cohesion = distance / np.linalg.norm(self.position - s.position)
+            distance = self.position-s.position
+            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) > 0):
+                cohesion = distance / np.linalg.norm(self.position-s.position)
                 total += cohesion
         total /= len(sheep)
-        total *= -1
+        total *= (-1)
         return total
-
+    
     def escape(self, drones):
         total = pygame.Vector2(0, 0)
         for drone in drones:
-            distance = self.position - drone.position
+            distance = self.position-drone.position
             if distance.magnitude() < PERCEPTION:
-                separation = (
-                    distance / (np.linalg.norm(self.position - drone.position)) ** 3
-                )
+                separation = distance / (np.linalg.norm(self.position-drone.position))**3
                 total += separation
         total /= len(drones)
         return total
+
