@@ -7,7 +7,7 @@ from goal import Goal
 from main_drone import MainDrone
 from polygon_method import PolygonMethod
 
-FPS = 50  # Hastigheten på simuleringen
+FPS = 600  # Hastigheten på simuleringen
 NO_OF_SHEEP = 5
 NO_OF_DRONES = 3
 
