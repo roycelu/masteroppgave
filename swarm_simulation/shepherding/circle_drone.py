@@ -43,7 +43,7 @@ class CircleDrone:
 
         
 
-    def move(self, goal, drones, sheep, goal_vector):
+    def move(self, goal, drones, sheep, goal_vector, canvas):
         if self.figure.colliderect(goal.figure):
             self.goal_status = True
 
@@ -52,7 +52,7 @@ class CircleDrone:
             com += s.position
         com /= len(sheep)
         flock_radius = 0
-        furthest_from_goal = 0
+        furthest_from_goal = 0 
         target = 0
         for s in sheep:
             distance = np.linalg.norm(s.position-com)
@@ -91,7 +91,7 @@ class CircleDrone:
         repulsion = pygame.Vector2(0, 0)
         for drone in drones:
             distance = np.linalg.norm(self.position - drone.position)
-            if drone != self and distance < PERCEPTION:
+            if drone != self and distance < PERCEPTION and distance != 0:
                 print(self.position, drone.position)
                 # Hva skal x_i være??? Hvorfor er det ikke X_i?
                 repulsion += ((self.position - drone.position) / (np.linalg.norm(self.position - drone.position))**3)
