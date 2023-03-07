@@ -9,7 +9,7 @@ DESIRED_SEPARATION = 20
 S_WEIGHT = 10
 
 
-class Drone:
+class PolygonDrone:
     def __init__(self, id, initial_position):
         self.id = id
         self.max_speed = 2

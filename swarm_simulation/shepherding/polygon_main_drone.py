@@ -12,7 +12,7 @@ SHEEP_RADIUS = 5  # 60  # the sheep's smallest circle during driving (predefined
 DRIVING_SPEED = 38  # driving speed (predefined)
 
 
-class PolygonMethod:
+class PolygonMainDrone:
     def __init__(self, canvas, font, goal, drones, sheeps):
         self.canvas = canvas
         self.font = font
