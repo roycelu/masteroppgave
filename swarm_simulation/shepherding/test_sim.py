@@ -3,6 +3,7 @@ from shared_main import SharedMain
 
 
 NO_SHEEP = 20
+NO_DRONES = 5
 FPS = 100
 
 def test(id, no_sheep, no_drones, FPS, dronetype):
@@ -13,11 +14,10 @@ def test(id, no_sheep, no_drones, FPS, dronetype):
 
 def main():
     df = pd.DataFrame(columns = ['id', 'no_drones', 'K_f4', 'Successrate (%)', 'Herdtime (s)'])
-    no_drones = 15
-    for drones in range(no_drones, 20):
+    for drones in range(NO_DRONES, 20):
         for kf4 in range(1000,8000,1000):
             for id in range(100):
-                successrate, herdtime = test(id, NO_SHEEP, drones, FPS*(no_drones), "circle")
+                successrate, herdtime = test(id, NO_SHEEP, drones, FPS*NO_DRONES, "polygon")
                 df = df.append({'id' : id, 'no_drones' : drones, 'K_f4': kf4, 'Successrate (%)' : successrate, 'Herdtime (s)' : herdtime}, ignore_index = True)
 
     df_grouped1 = df.groupby(['no_drones', 'K_f4'], as_index=False).aggregate({'Successrate (%)': 'mean'})

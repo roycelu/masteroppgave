@@ -3,13 +3,11 @@ import numpy as np
 import shapely.geometry as shp
 from scipy.spatial import ConvexHull
 from goal import Goal
-from utils import Calculate
 
 
 DISTANCE = 30  # drone-to-animal distance (predefined)
 TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
-SHEEP_RADIUS = 5  # 60  # the sheep's smallest circle during driving (predefined)
-DRIVING_SPEED = 38  # driving speed (predefined)
+SHEEP_RADIUS = 60  # the sheep's smallest circle during driving (predefined)
 
 
 class PolygonMainDrone:
@@ -22,10 +20,11 @@ class PolygonMainDrone:
         self.drones = drones
         self.sheeps = sheeps
 
-        self.centre_of_mass = Calculate.center_of_mass(sheeps)
+        self.centre_of_mass = pygame.Vector2(0, 0)
 
         self.on_edge = False
         self.toward_goal = False
+
 
     def convex_hull(self, sheeps):
         points = []
@@ -33,8 +32,6 @@ class PolygonMainDrone:
 
         for sheep in sheeps:
             positions.append(sheep.position)
-
-        self.centre_of_mass = Calculate.center_of_mass(sheeps)
 
         hull = ConvexHull(positions)
         for i in hull.vertices:
@@ -45,6 +42,7 @@ class PolygonMainDrone:
 
         figure = pygame.draw.polygon(self.canvas, pygame.Color("black"), points, 1)
         return points, figure
+
 
     def extended_hull(self, vertices):
         extended_hull = []
@@ -71,7 +69,7 @@ class PolygonMainDrone:
         #     self.add_label(str(i), E)
 
         polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, 0)
-        polygon_list = np.array(polygon.exterior)
+        polygon_list = polygon.exterior.coords
         for i in range(len(polygon_list) - 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
             extended_hull.append(point)
@@ -82,6 +80,7 @@ class PolygonMainDrone:
             self.canvas, pygame.Color("gray"), extended_hull, 1
         )
         return extended_hull, figure
+
 
     def fly_to_egde(self, drone, vertices):
         # THE DRONE FLIES TO THE EXTENDED HULL
@@ -140,6 +139,7 @@ class PolygonMainDrone:
         pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 5)
         drone.edge_point = closest_point
         drone.fly_to_position(closest_point)
+
 
     def fly_on_edge(self, drone, vertices, convex_vertices):
         # THE DRONE FLIES AROUND THE EXTENDED HULL
@@ -200,6 +200,7 @@ class PolygonMainDrone:
                         # print("Nope, just arrived where I wanted")
                     else:
                         drone.edge_point = new
+
 
     def allocate_steering_points(self, drones, convex_vertices, vertices):
         # FIND THE OPTIMAL STEERING POINTS FOR THE DRONES ALONG EXTENDED HULL
@@ -314,7 +315,7 @@ class PolygonMainDrone:
                         allocated_steering_points[i] = point
 
         # FIND THE FLYING PATH FOR THE DRONE TO THE ALLOCATED STEERING POINT
-        for i in range(len(drones) - x):
+        for i in range(len(drones)):
             drone = drones[i]
             drone.travel_path = []
 
@@ -344,7 +345,8 @@ class PolygonMainDrone:
                 if start_index <= n <= end_index:
                     drone.travel_path.append(line_segment[index])
 
-    def drive_to_goal(self, drones, goal, vertices):
+
+    def drive_to_goal(self, drones, goal, vertices, convex_vertices):
         # FIND THE POINT BEHIND THE EXTENDED HULL, BETWEEN THE CENTROID AND THE GOAL
         goal_point = pygame.Vector2(0, 0)  # A point between centroid and goal
 
@@ -359,8 +361,14 @@ class PolygonMainDrone:
             goal.position,
         )
 
+        # Find the point furthest away from the centre of mass
+        speed = -np.inf
+        for v in vertices:
+            if speed < self.centre_of_mass.distance_to(v):
+                speed = self.centre_of_mass.distance_to(v)
+                
         # Compute the point moving from centroid and the goal, formula (43)
-        goal_point = self.centre_of_mass + DRIVING_SPEED * (
+        goal_point = self.centre_of_mass + speed * (
             com_to_goal / com_to_goal.length()
         )
 
@@ -369,16 +377,30 @@ class PolygonMainDrone:
         self.add_label("B", goal_point)
 
         # The drone will move towards the goal, hopefully with the sheep flock in front
-        for drone in drones:
-            drone.fly_to_position(goal_point)
+        com_to_point = pygame.Vector2(self.centre_of_mass - goal_point)
+        left_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 2)
+        right_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 2)
 
-        return goal_point
+        pygame.draw.circle(self.canvas, pygame.Color("blue"), left_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("green"), right_point, 3)
+
+        # Tentativ løsning for å plassere dronene før de støter på sauene
+        for drone in drones:
+            if drone.id == 0:
+                self.fly_on_edge(drone, vertices, convex_vertices)
+                drone.fly_to_position(left_point)
+            if drone.id == 1:
+                drone.fly_to_position(goal_point)
+            if drone.id == 2:
+                drone.fly_to_position(right_point)
+
 
     def add_label(self, text, position, color="black"):
         label = self.font.render(text, True, pygame.Color(color))
         rect = label.get_rect()
         rect.center = position
         self.canvas.blit(label, rect)
+
 
     def get_indices(self, current, max_length):
         if current == 0:
@@ -392,6 +414,7 @@ class PolygonMainDrone:
             next = current + 1
         return prev, current, next
 
+
     def closest_vertex(self, point, vertices):
         shortest_distance = np.inf
         closest_vertex = pygame.Vector2(0, 0)
@@ -401,7 +424,10 @@ class PolygonMainDrone:
                 closest_vertex = vertices[i]
         return closest_vertex
 
-    def main(self, drones, sheeps, goal):
+
+    def run(self, drones, sheeps, goal, centre_of_mass):
+        self.centre_of_mass = centre_of_mass
+
         convex_vertices, convex_hull = self.convex_hull(sheeps)
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
 
@@ -425,7 +451,7 @@ class PolygonMainDrone:
             self.toward_goal = True
 
         if self.toward_goal == True:
-            self.drive_to_goal(drones, goal, extended_vertices)
+            self.drive_to_goal(drones, goal, extended_vertices, convex_vertices)
 
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
         if self.on_edge == True and self.toward_goal == False:

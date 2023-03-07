@@ -44,7 +44,7 @@ class PolygonDrone:
             self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
         self.acceleration = pygame.Vector2(0, 0)
 
-    def move(self, goal, drones, sheep):
+    def move(self, goal, drones, sheep, goal_vector, canvas):
         if self.figure.colliderect(goal.figure):
             print("{id} is within the goal".format(id="drone" + str(self.id)))
 
