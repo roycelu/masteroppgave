@@ -66,7 +66,7 @@ class Sheep:
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
-            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) > 0):
+            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) != 0):
                 separation = distance / (np.linalg.norm(self.position-s.position))**2
                 total += separation
         total /= len(sheep)
@@ -86,7 +86,7 @@ class Sheep:
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
-            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) > 0):
+            if self != s and distance.magnitude() < PERCEPTION and (np.linalg.norm(distance) != 0):
                 cohesion = distance / np.linalg.norm(self.position-s.position)
                 total += cohesion
         total /= len(sheep)
