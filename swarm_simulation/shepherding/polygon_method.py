@@ -6,9 +6,9 @@ from goal import Goal
 from utils import Calculate
 
 
-DISTANCE = 20  # 30  # drone-to-animal distance (predefined)
+DISTANCE = 30  # drone-to-animal distance (predefined)
 TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
-SHEEP_RADIUS = 40  # 60  # the sheep's smallest circle during driving (predefined)
+SHEEP_RADIUS = 5  # 60  # the sheep's smallest circle during driving (predefined)
 DRIVING_SPEED = 38  # driving speed (predefined)
 
 
@@ -143,8 +143,6 @@ class PolygonMethod:
 
     def fly_on_edge(self, drone, vertices, convex_vertices):
         # THE DRONE FLIES AROUND THE EXTENDED HULL
-        print(drone.id, drone.steering_point, drone.travel_path)  # TODO:remove
-
         if len(drone.travel_path) == 0:
             # BRAKE - stop the drone when it arrives at the final vertex
             # print("Fly to the steering point")  # TODO:remove
@@ -346,8 +344,6 @@ class PolygonMethod:
                 if start_index <= n <= end_index:
                     drone.travel_path.append(line_segment[index])
 
-            drone.fly_to_position(drone.steering_point)
-
     def drive_to_goal(self, drones, goal, vertices):
         # FIND THE POINT BEHIND THE EXTENDED HULL, BETWEEN THE CENTROID AND THE GOAL
         goal_point = pygame.Vector2(0, 0)  # A point between centroid and goal
@@ -414,14 +410,6 @@ class PolygonMethod:
             self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1
         )
 
-        # If the drone ends up in the convex hull, move out to the closest vertex on the extended hull
-        # for drone in drones:
-        #     if convex_hull.contains(drone.figure):
-        #         print("Uuuuuuuuuuuuuuuuuuuut", drone.position, drone.goal_position)
-        #         drone.fly_to_position(
-        #             self.closest_vertex(drone.position, extended_vertices)
-        #         )
-
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
             for drone in drones:
@@ -442,7 +430,5 @@ class PolygonMethod:
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
         if self.on_edge == True and self.toward_goal == False:
             self.allocate_steering_points(drones, convex_vertices, extended_vertices)
-            # for drone in drones:
-            #     self.fly_on_edge(drone, extended_vertices, convex_vertices)
-
-            # self.fly_on_edge(drones[0], extended_vertices, convex_vertices)
+            for drone in drones:
+                self.fly_on_edge(drone, extended_vertices, convex_vertices)

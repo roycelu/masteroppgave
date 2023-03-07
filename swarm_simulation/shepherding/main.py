@@ -25,7 +25,7 @@ def sheep_behaviour(n):
 def drone_behaviour(n):
     drone_list = [x for x in range(n)]
     for i in drone_list:
-        x = np.random.randint(800, 820)
+        x = np.random.randint(600, 820)
         y = np.random.randint(60, 82)
         position = pygame.Vector2(x, y)
         drone_list[i] = Drone(i, position)
