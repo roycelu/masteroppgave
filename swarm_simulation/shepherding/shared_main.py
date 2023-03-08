@@ -5,7 +5,8 @@ from sheep import Sheep
 from circle_drone import CircleDrone
 from occlusion_drone import OcclusionDrone
 from caging_drone import CagingDrone
-#from polygon_drone import PolygonDrone
+from polygon_main_drone import PolygonMainDrone
+from polygon_drone import PolygonDrone
 from goal import Goal
 from utils import Calculate
 
@@ -40,6 +41,8 @@ class SharedMain:
             potential_field = flock_radius + 50
             pygame.draw.circle(canvas, pygame.Color("pink"), center_of_mass, potential_field, 1)
 
+            return center_of_mass
+
 
     def sheep_behaviour(self, n):
         sheep_list = [x for x in range(n)]
@@ -63,8 +66,8 @@ class SharedMain:
                 drone_list[i] = OcclusionDrone(i, position, self.FPS)
             if self.dronetype == 'caging':
                 drone_list[i] = CagingDrone(i, position)
-            #if dronetype == "polygon":
-            #    drone_list[i] = PolygonDrone(i, position)
+            if self.dronetype == "polygon":
+                drone_list[i] = PolygonDrone(i, position)
         return drone_list
 
 
@@ -79,6 +82,10 @@ class SharedMain:
         goal = Goal(goal_vector)
         sheep = self.sheep_behaviour(self.no_sheep)
         drones = self.drone_behaviour(self.no_drones)
+        main_drone = None
+
+        if self.dronetype == 'polygon':
+            main_drone = PolygonMainDrone(screen, label_font, goal, drones, sheep)
         
         # Trengs dette med deltatime? Det forhindrer at hvis man har en tregere CPU så går det saktere.
         #prev_time = time.time()
@@ -88,10 +95,6 @@ class SharedMain:
         tick = 0
         while running:
 
-            # Compute delta time
-            #now = time.time()
-            #dt = now-prev_time
-            #prev_time = now
             goal_count = np.zeros(len(sheep))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -99,8 +102,14 @@ class SharedMain:
                     pygame.quit()
                     sys.exit()
 
-            screen.fill(pygame.Color("green"))
+            screen.fill(pygame.Color("darkgreen"))
             goal.draw(screen, label_font)
+
+            centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)
+
+            if main_drone != None:
+                main_drone.run(drones, sheep, goal, centre_of_mass)
+
 
             for s in sheep:
                 s.draw(screen, label_font)
@@ -110,20 +119,16 @@ class SharedMain:
                 else:
                     goal_count[s.id] = 0
                     
-
             for drone in drones:
                 drone.draw(screen, label_font)
                 drone.move(goal, drones, sheep, goal_vector, screen)
-
-
-            self.draw_center_of_mass(screen, label_font, sheep)
         
 
             pygame.display.update()
             #pygame.time.Clock().tick(self.FPS)
             pygame.time.Clock().tick_busy_loop(self.FPS)
 
-            print(pygame.time.get_ticks()-tick)
+            # print(pygame.time.get_ticks()-tick)
             tick = pygame.time.get_ticks()
 
             #print(pygame.time.get_ticks())
@@ -136,7 +141,8 @@ class SharedMain:
                     break
             
             sek = 1/self.FPS
-            if pygame.time.get_ticks() > 10000 or count == self.no_sheep:
+            # if pygame.time.get_ticks() > 10000 or count == self.no_sheep:
+            if count == self.no_sheep:
                 successrate = (count / self.no_sheep) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)
 

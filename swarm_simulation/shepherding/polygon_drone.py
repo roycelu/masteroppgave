@@ -4,21 +4,29 @@ import numpy as np
 
 SIZE = 8
 STEP_SIZE = 500
-MAX_SPEED = 3
 PERCEPTION = 100
 DESIRED_SEPARATION = 20
 S_WEIGHT = 10
 
 
-class Drone:
+class PolygonDrone:
     def __init__(self, id, initial_position):
         self.id = id
+        self.max_speed = 2
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
         self.goal_position = pygame.Vector2(0, 0)
-        self.goal_status = False
         self.velocity = pygame.Vector2(0.5, 0.5)
         self.acceleration = pygame.Vector2(0, 0)
+
+        # 0: clockwise (right), 1: counterclockwise (left)
+        self.direction_index = 0  # 0:clockwise, 1:counterclockwise
+        self.right_pass = 0  # 0: otherwise, 1: pass z=0 by right flying to z=j
+        self.left_pass = 0  # =. otherwise, 1: pass z=0 by left flying to z=j
+        self.travel_path = []  # The path from start to steering point
+        self.possible_allocations = []  # All possible steering points allocations
+        self.edge_point = pygame.Vector2(0, 0)  # The first point on the edge
+        self.steering_point = pygame.Vector2(0, 0)  # The final point to fly to
 
     def draw(self, canvas, font):
         self.figure.center = self.position
@@ -32,14 +40,13 @@ class Drone:
     def update(self):
         self.position += self.velocity
         self.velocity += self.acceleration
-        if self.velocity.magnitude() > MAX_SPEED:
-            self.velocity = self.velocity / self.velocity.magnitude() * MAX_SPEED
+        if self.velocity.magnitude() > self.max_speed:
+            self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
         self.acceleration = pygame.Vector2(0, 0)
 
-    def move(self, goal, drones, sheep):
+    def move(self, goal, drones, sheep, goal_vector, canvas):
         if self.figure.colliderect(goal.figure):
-            # print("{id} is within the goal".format(id="drone" + str(self.id)))
-            self.goal_status = True
+            print("{id} is within the goal".format(id="drone" + str(self.id)))
 
         separation = self.separation(drones)
         self.acceleration += separation * S_WEIGHT

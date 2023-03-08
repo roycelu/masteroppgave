@@ -4,8 +4,8 @@ import pygame
 from shared_main import SharedMain
 
 
-NO_SHEEP = 5
-NO_DRONES = 3
+NO_SHEEP = 3
+NO_DRONES = 5
 FPS = 100
 
 def test(id, no_sheep, no_drones, FPS, dronetype):
