@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 from utils import Calculate
 from royce_moira_method import RoyceMoiraMethod
+from polygon_method import PolygonMethod
 
 SIZE = 5
 
@@ -30,11 +31,22 @@ class MainDrone:
         rect.center = center_of_mass
         canvas.blit(label, rect)
 
+    # TODO: Sender ny målposisjon når målet er nådd
     # def update_goal(self, drone, new_position):
     #     self.goal.position = new_position
     #     drone.fly_to_position(new_position)
     #     drone.goal_status = False
     #     return new_position
+
+    # TODO: Ikke testet ennå, men tanken er at metoden skal telle antall sauer i mål
+    def amount_sheeps_in_goal(self, sheeps):
+        amount = []
+        for sheep in sheeps:
+            if sheep.id not in amount:
+                amount.append(sheep.id)
+        if len(amount) == len(sheeps):
+            print("Shepherding accomplished")
+        return len(amount)
 
     def main(self):
         new_goal_position = pygame.Vector2(
@@ -42,18 +54,23 @@ class MainDrone:
             np.random.randint(100, 900),
         )
 
-        for sheep in self.sheeps:
-            sheep.move(self.goal, self.sheeps, self.drones)
+        # TODO: Unngår at sauene beveger seg, lettere å teste metode
+        # for sheep in self.sheeps:
+        #     sheep.move(self.goal, self.sheeps, self.drones)
 
         for drone in self.drones:
             drone.move(self.goal, self.drones, self.sheeps)
-            drone.fly_to_position(self.goal.position)
+            # drone.fly_to_position(self.goal.position)
 
             # if drone.goal_status == True:
             #     print("{id} has reached the goal".format(id="drone" + str(drone.id)))
             #     self.update_goal(drone, new_goal_position)
 
-        method1 = RoyceMoiraMethod(self.goal, self.drones, self.sheeps)
-        method1.main(self.drones, self.sheeps)
+        method1 = RoyceMoiraMethod(
+            self.canvas, self.font, self.goal, self.drones, self.sheeps
+        )
 
-        # self.draw_center_of_mass(self.canvas, self.font, self.sheeps)
+        method2 = PolygonMethod(
+            self.canvas, self.font, self.goal, self.drones, self.sheeps
+        )
+        method2.main(self.drones, self.sheeps, self.goal)
