@@ -4,17 +4,19 @@ import pygame
 from shared_main import SharedMain
 
 
-NO_SHEEP = 3
-NO_DRONES = 5
-FPS = 100
+NO_SHEEP = 5
+NO_DRONES = 3
+FPS = 50
+TESTTYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 
-def test(id, no_sheep, no_drones, FPS, dronetype):
-    sim = SharedMain(id, no_sheep, no_drones, FPS, dronetype)
+def test(id, no_sheep, no_drones, FPS, dronetype, test):
+    sheep_positions = get_sheep_list(test, no_sheep)
+    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype)
     successrate, herdtime = sim.main()
     return successrate, herdtime
     
-def get_sheep_list(testtype):
-    position_list = [x for x in range(NO_SHEEP)]
+def get_sheep_list(testtype, no_sheep):
+    position_list = [x for x in range(no_sheep)]
     
     if testtype == "cooperative_flock":
         for i in position_list:
@@ -23,7 +25,7 @@ def get_sheep_list(testtype):
             position_list[i] = pygame.Vector2(x, y) 
     
     if testtype == "lone_sheep":
-        for i in position_list-1:
+        for i in range(len(position_list)-1):
             x = np.random.randint(400, 420)
             y = np.random.randint(200, 220)
             position_list[i] = pygame.Vector2(x, y) 
@@ -40,23 +42,22 @@ def get_sheep_list(testtype):
             y = np.random.randint(200, 220)
             position_list[i] = pygame.Vector2(x, y) 
         for i in position_list[middle_index:]:
-            x = np.random.randint(100, 900)
-            y = np.random.randint(100, 900)
+            x = np.random.randint(200, 220)
+            y = np.random.randint(400, 420)
             position_list[i] = pygame.Vector2(x, y)
 
-    if testtype == "right_angle":
-        return
+    #f testtype == "right_angle":
+    #    return
 
     return position_list
 
 
 def main():
     df = pd.DataFrame(columns = ['id', 'Testtype', 'Successrate (%)', 'Herdtime (s)'])
-    testtype = [] # list of tests; 1: cooperative sheep, one sheep takes off, divided flock, turn flock 90 degrees (må endre i shared main)
-    for test in testtype:
-        for id in range(50):
-            successrate, herdtime = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, "circle")
-            df = df.append({'id' : id, 'Testtype': testtype, 'Successrate (%)' : successrate, 'Herdtime (s)' : herdtime}, ignore_index = True)
+    for testtype in TESTTYPE:
+        for id in range(3):
+            successrate, herdtime = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, "circle", testtype)
+            df = df.append({'id' : id, 'Testtype': TESTTYPE, 'Successrate (%)' : successrate, 'Herdtime (s)' : herdtime}, ignore_index = True)
 
     #df_grouped1 = df.groupby(['no_drones', 'K_f4'], as_index=False).aggregate({'Successrate (%)': 'mean'})
     #df_pivoted1 = df_grouped1.pivot(index='K_f4', columns='no_drones', values='Successrate (%)')

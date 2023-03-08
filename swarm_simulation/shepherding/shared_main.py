@@ -13,9 +13,9 @@ from utils import Calculate
 
 class SharedMain:
 
-    def __init__(self, id, no_sheep, no_drones, FPS, dronetype):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype):
         self.id = id
-        self.no_sheep = no_sheep
+        self.sheep_positions = sheep_positions
         self.no_drones = no_drones
         self.FPS = FPS
         self.dronetype = dronetype
@@ -44,13 +44,12 @@ class SharedMain:
             return center_of_mass
 
 
-    def sheep_behaviour(self, n):
-        sheep_list = [x for x in range(n)]
-        for i in sheep_list:
-            x = np.random.randint(400, 430)
-            y = np.random.randint(200, 230)
-            position = pygame.Vector2(x, y)
-            sheep_list[i] = Sheep(i, position)
+    def sheep_behaviour(self, sheep_positions):
+        sheep_list = []
+        i = 0
+        for position in sheep_positions:
+            sheep_list.append(Sheep(i, position))
+            i += 1
         return sheep_list
 
 
@@ -80,7 +79,7 @@ class SharedMain:
 
         goal_vector = pygame.Vector2(500, 600)
         goal = Goal(goal_vector)
-        sheep = self.sheep_behaviour(self.no_sheep)
+        sheep = self.sheep_behaviour(self.sheep_positions)
         drones = self.drone_behaviour(self.no_drones)
         main_drone = None
 
@@ -141,9 +140,9 @@ class SharedMain:
                     break
             
             sek = 1/self.FPS
-            # if pygame.time.get_ticks() > 10000 or count == self.no_sheep:
-            if count == self.no_sheep:
-                successrate = (count / self.no_sheep) * 100
+            if pygame.time.get_ticks() > 10000 or count == len(self.sheep_positions):
+            #if count == len(self.sheep_positions):
+                successrate = (count / len(self.sheep_positions)) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)
 
                 pygame.quit()

@@ -30,14 +30,15 @@ class CircleDrone:
         label_rect.center = self.position
         canvas.blit(label, label_rect)
 
-    def update(self, com, flock_radius):
+    def update(self, sheep):
 
         acceleration_distance = np.linalg.norm(self.acceleration)
         if acceleration_distance > MAX_SPEED:
             self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED
            
-        if (self.position-com).magnitude() <= (flock_radius + DESIRED_SEPARATION_SHEEP):
-            self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED_SHEEP
+        for s in sheep:
+            if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP):
+                self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED_SHEEP
 
         self.position += self.acceleration
 
@@ -75,7 +76,7 @@ class CircleDrone:
         self.acceleration += repulsion * REPULSION
         
 
-        self.update(com, flock_radius)
+        self.update(sheep)
 
     def chase(self, target):
         return -((self.position-target.position) / np.linalg.norm(self.position - target.position))
