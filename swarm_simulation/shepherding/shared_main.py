@@ -1,6 +1,7 @@
 import sys
 import pygame, time
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 from sheep import Sheep
 from circle_drone import CircleDrone
 from occlusion_drone import OcclusionDrone
@@ -13,12 +14,15 @@ from utils import Calculate
 
 class SharedMain:
 
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
         self.FPS = FPS
         self.dronetype = dronetype
+        self.testtype = testtype
+        self.goal_vector = initial_goal_vector
+        self.goal = initial_goal
 
 
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -77,22 +81,17 @@ class SharedMain:
         screen = pygame.display.set_mode((1000, 1000))
         label_font = pygame.font.SysFont("Times New Roman", 12)
 
-        goal_vector = pygame.Vector2(500, 600)
-        goal = Goal(goal_vector)
         sheep = self.sheep_behaviour(self.sheep_positions)
         drones = self.drone_behaviour(self.no_drones)
         main_drone = None
 
         if self.dronetype == 'polygon':
-            main_drone = PolygonMainDrone(screen, label_font, goal, drones, sheep)
-        
-        # Trengs dette med deltatime? Det forhindrer at hvis man har en tregere CPU så går det saktere.
-        #prev_time = time.time()
-        #dt = 0
+            main_drone = PolygonMainDrone(screen, label_font, self.goal, drones, sheep)
 
         running = True
-        tick = 0
+        goals_reached = 0
         while running:
+            
 
             goal_count = np.zeros(len(sheep))
             for event in pygame.event.get():
@@ -102,17 +101,17 @@ class SharedMain:
                     sys.exit()
 
             screen.fill(pygame.Color("darkgreen"))
-            goal.draw(screen, label_font)
+            self.goal.draw(screen, label_font)
 
             centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)
 
             if main_drone != None:
-                main_drone.run(drones, sheep, goal, centre_of_mass)
+                main_drone.run(drones, sheep, self.goal, centre_of_mass)
 
 
             for s in sheep:
                 s.draw(screen, label_font)
-                sheep_id_goal_reached = s.move(goal, sheep, drones)
+                sheep_id_goal_reached = s.move(self.goal, sheep, drones)
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
                 else:
@@ -120,17 +119,11 @@ class SharedMain:
                     
             for drone in drones:
                 drone.draw(screen, label_font)
-                drone.move(goal, drones, sheep, goal_vector, screen)
+                drone.move(self.goal, drones, sheep, self.goal_vector, screen)
         
 
             pygame.display.update()
-            #pygame.time.Clock().tick(self.FPS)
             pygame.time.Clock().tick_busy_loop(self.FPS)
-
-            # print(pygame.time.get_ticks()-tick)
-            tick = pygame.time.get_ticks()
-
-            #print(pygame.time.get_ticks())
 
             count = 0
             for value in goal_count:
@@ -139,15 +132,42 @@ class SharedMain:
                 else:
                     break
             
+            
             sek = 1/self.FPS
-            if pygame.time.get_ticks() > 10000 or count == len(self.sheep_positions):
-            #if count == len(self.sheep_positions):
+            if count == len(self.sheep_positions):
+                
+                if goals_reached == 1 and self.testtype == "right_angle":
+                    print('ja')
+                    successrate = (count / len(self.sheep_positions)) * 100
+                    herdtime = pygame.time.get_ticks() / (sek * 1000)
+                    pygame.quit()
+                    return successrate, herdtime
+                
+                elif self.testtype == "right_angle":
+                    sheep_alignment_vector = pygame.Vector2(0, 0)
+                    for s in sheep:
+                        sheep_alignment_vector += s.acceleration / np.linalg.norm(s.acceleration)
+                    sheep_alignment_vector /= len(sheep)
+                    rotation_radians = np.radians(90)
+                    newX = sheep_alignment_vector.x * np.cos(rotation_radians) - sheep_alignment_vector.y * np.sin(rotation_radians)
+                    newY = sheep_alignment_vector.x * np.sin(rotation_radians) + sheep_alignment_vector.y * np.cos(rotation_radians)
+                    vector = pygame.Vector2(newX, newY)
+                    self.goal_vector += vector*200
+                    self.goal = Goal(self.goal_vector)
+                    goals_reached += 1    
+                
+                else:
+                    successrate = (count / len(self.sheep_positions)) * 100
+                    herdtime = pygame.time.get_ticks() / (sek * 1000)
+                    pygame.quit()
+                    return successrate, herdtime
+
+            if pygame.time.get_ticks() > 50000:   
                 successrate = (count / len(self.sheep_positions)) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)
-
-                pygame.quit()
-                
-                return successrate, herdtime
+                pygame.quit()     
+                return successrate, herdtime  
+                    
 
 
 

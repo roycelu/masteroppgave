@@ -2,16 +2,19 @@ import pandas as pd
 import numpy as np
 import pygame
 from shared_main import SharedMain
+from goal import Goal
 
 
 NO_SHEEP = 5
 NO_DRONES = 3
 FPS = 50
-TESTTYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
+TESTTYPE = ["right_angle", "cooperative_flock", "lone_sheep", "divided_flock"]
+INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
+INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 
-def test(id, no_sheep, no_drones, FPS, dronetype, test):
-    sheep_positions = get_sheep_list(test, no_sheep)
-    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype)
+def test(id, no_sheep, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
+    sheep_positions = get_sheep_list(testtype, no_sheep)
+    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal)
     successrate, herdtime = sim.main()
     return successrate, herdtime
     
@@ -23,6 +26,7 @@ def get_sheep_list(testtype, no_sheep):
             x = np.random.randint(400, 420)
             y = np.random.randint(200, 220)
             position_list[i] = pygame.Vector2(x, y) 
+            print('t', position_list)
     
     if testtype == "lone_sheep":
         for i in range(len(position_list)-1):
@@ -35,7 +39,6 @@ def get_sheep_list(testtype, no_sheep):
         position_list[-1] = pygame.Vector2(x, y)
     
     if testtype == "divided_flock":
-        # dele på to, ikke sikker på om i blir riktig nå
         middle_index = len(position_list)//2
         for i in position_list[:middle_index]:
             x = np.random.randint(400, 420)
@@ -46,8 +49,11 @@ def get_sheep_list(testtype, no_sheep):
             y = np.random.randint(400, 420)
             position_list[i] = pygame.Vector2(x, y)
 
-    #f testtype == "right_angle":
-    #    return
+    if testtype == "right_angle":
+        for i in position_list:
+            x = np.random.randint(400, 420)
+            y = np.random.randint(200, 220)
+            position_list[i] = pygame.Vector2(x, y) 
 
     return position_list
 
@@ -56,7 +62,7 @@ def main():
     df = pd.DataFrame(columns = ['id', 'Testtype', 'Successrate (%)', 'Herdtime (s)'])
     for testtype in TESTTYPE:
         for id in range(3):
-            successrate, herdtime = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, "circle", testtype)
+            successrate, herdtime = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, "circle", testtype, INITIAL_GOAL_VECTOR, INITIAL_GOAL)
             df = df.append({'id' : id, 'Testtype': TESTTYPE, 'Successrate (%)' : successrate, 'Herdtime (s)' : herdtime}, ignore_index = True)
 
     #df_grouped1 = df.groupby(['no_drones', 'K_f4'], as_index=False).aggregate({'Successrate (%)': 'mean'})

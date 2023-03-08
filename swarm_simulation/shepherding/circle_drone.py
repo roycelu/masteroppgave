@@ -64,6 +64,7 @@ class CircleDrone:
                 furthest_from_goal = distance_goal
                 target = s
 
+        
    
         chase_action = self.chase(target)
         stay_away_action = self.stay_away_target(target)

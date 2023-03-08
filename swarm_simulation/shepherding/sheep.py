@@ -9,6 +9,7 @@ SIZE = 3
 MAX_SPEED = 1
 GRAZE_SPEED = 0.2
 PERCEPTION = 30
+GRAZE_PERCEPTION = 50
 A_WEIGHT = 0.5
 C_WEIGHT = 2
 S_WEIGHT = 10
@@ -40,7 +41,7 @@ class Sheep:
 
     def update(self, drones):
         acceleration_distance = np.linalg.norm(self.acceleration)
-        if (self.position-drones[0].position).magnitude() <= PERCEPTION or (self.position-drones[1].position).magnitude() <= PERCEPTION or (self.position-drones[2].position).magnitude() <= PERCEPTION:
+        if (self.position-drones[0].position).magnitude() <= GRAZE_PERCEPTION or (self.position-drones[1].position).magnitude() <= GRAZE_PERCEPTION or (self.position-drones[2].position).magnitude() <= GRAZE_PERCEPTION:
             self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED
         else:
             self.acceleration = self.acceleration / acceleration_distance * GRAZE_SPEED
