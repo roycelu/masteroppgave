@@ -66,7 +66,7 @@ class CircleDrone:
    
         chase_action = self.chase(target)
         stay_away_action = self.stay_away_target(target)
-        stay_away_goal = self.stay_away_goal(goal_vector)
+        stay_away_goal = self.move_to_goal(goal_vector)
         repulsion = self.separation(drones, target)
         
         self.acceleration += chase_action * CHASE_ACTION
@@ -83,8 +83,7 @@ class CircleDrone:
     def stay_away_target(self, target):
         return (self.position-target.position) / (np.linalg.norm(self.position - target.position))**3
 
-    def stay_away_goal(self, goal):
-        # Denne er egentlig negativ, men hvorfor vil man ha dem vekk fra målet???
+    def move_to_goal(self, goal):
         return ((self.position - goal) / np.linalg.norm(self.position - goal))
     
     def separation(self, drones, target):
@@ -92,8 +91,6 @@ class CircleDrone:
         for drone in drones:
             distance = np.linalg.norm(self.position - drone.position)
             if drone != self and distance < PERCEPTION and distance != 0:
-                print(self.position, drone.position)
-                # Hva skal x_i være??? Hvorfor er det ikke X_i?
                 repulsion += ((self.position - drone.position) / (np.linalg.norm(self.position - drone.position))**3)
         repulsion /= len(drones)
         return repulsion
