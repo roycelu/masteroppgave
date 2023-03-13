@@ -5,10 +5,10 @@ from shared_main import SharedMain
 from goal import Goal
 
 
-NO_SHEEP = 5
+NO_SHEEP = 20
 NO_DRONES = 3
 FPS = 50
-TESTTYPE = ["right_angle", "cooperative_flock", "lone_sheep", "divided_flock"]
+TESTTYPE = [ "cooperative_flock", "lone_sheep", "divided_flock"]
 INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
 INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 
@@ -62,7 +62,7 @@ def main():
     df = pd.DataFrame(columns = ['id', 'Testtype', 'Successrate (%)', 'Herdtime (s)'])
     for testtype in TESTTYPE:
         for id in range(3):
-            successrate, herdtime = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, "circle", testtype, INITIAL_GOAL_VECTOR, INITIAL_GOAL)
+            successrate, herdtime = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, "polygon", testtype, INITIAL_GOAL_VECTOR, INITIAL_GOAL)
             df = df.append({'id' : id, 'Testtype': TESTTYPE, 'Successrate (%)' : successrate, 'Herdtime (s)' : herdtime}, ignore_index = True)
 
     #df_grouped1 = df.groupby(['no_drones', 'K_f4'], as_index=False).aggregate({'Successrate (%)': 'mean'})
