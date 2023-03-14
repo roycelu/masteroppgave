@@ -62,7 +62,7 @@ class Sheep:
         self.update(drones)
 
         if self.figure.colliderect(goal.figure):
-            print("{id} reached the goal".format(id="sheep" + str(self.id)))
+            #print("{id} reached the goal".format(id="sheep" + str(self.id)))
             return True
             
 

@@ -126,7 +126,7 @@ class OcclusionDrone:
         for drone in drones:
             distance = np.linalg.norm(self.position - drone.position)
             if drone != self and distance < PERCEPTION:
-                if distance <= DESIRED_SEPARATION :
+                if distance <= DESIRED_SEPARATION and distance != 0:
                     separation += S_WEIGHT*((1/distance)-(1/DESIRED_SEPARATION))*((self.position-drone.position)/(distance**2))
         print('separation', separation)
         return separation
