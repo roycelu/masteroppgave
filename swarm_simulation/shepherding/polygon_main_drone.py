@@ -11,9 +11,8 @@ SHEEP_RADIUS = 30 # 60  # the sheep's smallest circle during driving (predefined
 
 
 class PolygonMainDrone:
-    def __init__(self, canvas, font, goal, drones, sheeps):
+    def __init__(self, canvas, goal, drones, sheeps):
         self.canvas = canvas
-        self.font = font
 
         self.main_goal = goal
         self.goal = Goal(goal.position)
@@ -36,9 +35,6 @@ class PolygonMainDrone:
         hull = ConvexHull(positions)
         for i in hull.vertices:
             points.append(positions[i])
-
-            pygame.draw.circle(self.canvas, pygame.Color("black"), positions[i], 4)
-            self.add_label(str(i), positions[i])
 
         figure = pygame.draw.polygon(self.canvas, pygame.Color("black"), points, 1)
         return points, figure
@@ -66,19 +62,15 @@ class PolygonMainDrone:
         #     extended_hull.append(E)
 
         #     pygame.draw.circle(self.canvas, pygame.Color("gray"), E, 8)
-        #     self.add_label(str(i), E)
 
         polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, join_style=2, mitre_limit=10)
         polygon_list = polygon.exterior.coords
         for i in range(len(polygon_list) - 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
             extended_hull.append(point)
-            pygame.draw.circle(self.canvas, pygame.Color("gray"), point, 8)
-            self.add_label(str(i), point)
+            pygame.draw.circle(self.canvas, pygame.Color("gray"), point, 5)
 
-        figure = pygame.draw.polygon(
-            self.canvas, pygame.Color("gray"), extended_hull, 1
-        )
+        figure = pygame.draw.polygon(self.canvas, pygame.Color("gray"), extended_hull, 2)
         return extended_hull, figure
 
 
@@ -119,8 +111,7 @@ class PolygonMainDrone:
                 edge_vertices[0] = pygame.Vector2(vertices[j])
                 edge_vertices[1] = pygame.Vector2(vertices[j + 1])
 
-        pygame.draw.line(self.canvas, pygame.Color("purple"), edge_vertices[0], edge_vertices[1])
-        pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 5)
+        pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 3)
 
         drone.edge_point = closest_point
         drone.fly_to_position(closest_point)
@@ -342,16 +333,15 @@ class PolygonMainDrone:
         goal_point = self.centre_of_mass + speed * (com_to_goal / com_to_goal.length())
 
         # Visually display the goal_point
-        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 5)
-        self.add_label("G", goal_point)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 3)
 
         # The drone will move towards the goal, hopefully with the sheep flock in front
         com_to_point = pygame.Vector2(self.centre_of_mass - goal_point)
         left_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 2)
         right_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 2)
 
-        pygame.draw.circle(self.canvas, pygame.Color("blue"), left_point, 3)
-        pygame.draw.circle(self.canvas, pygame.Color("blue"), right_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), left_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), right_point, 3)
 
         # TODO: Tentativ løsning for å plassere dronene før de støter på sauene
         for drone in drones:
@@ -366,13 +356,6 @@ class PolygonMainDrone:
                 drone.steering_point = goal_point
             drone.fly_to_position(drone.steering_point)
             # self.fly_on_edge(drone, vertices, convex_vertices)
-
-
-    def add_label(self, text, position, color="black"):
-        label = self.font.render(text, True, pygame.Color(color))
-        rect = label.get_rect()
-        rect.center = position
-        self.canvas.blit(label, rect)
 
 
     def get_indices(self, current, max_length):
@@ -405,9 +388,7 @@ class PolygonMainDrone:
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
 
         # The minimum distance of gathering, before the animals need to be driven to a designated location
-        gather_radius = pygame.draw.circle(
-            self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1
-        )
+        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1)
 
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:

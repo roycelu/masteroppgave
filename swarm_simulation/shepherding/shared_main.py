@@ -85,7 +85,7 @@ class SharedMain:
         main_drone = None
 
         if self.dronetype == 'polygon':
-            main_drone = PolygonMainDrone(screen, label_font, self.goal, drones, sheep)
+            main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
 
         running = True
         goals_reached = 0
