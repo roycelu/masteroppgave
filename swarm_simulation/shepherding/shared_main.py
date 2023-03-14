@@ -13,7 +13,6 @@ from utils import Calculate
 
 
 class SharedMain:
-
     def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
         self.id = id
         self.sheep_positions = sheep_positions
@@ -26,26 +25,26 @@ class SharedMain:
 
 
     def draw_center_of_mass(self, canvas, font, sheep):
-            center_of_mass = Calculate.center_of_mass(sheep)
-            pygame.draw.circle(canvas, pygame.Color("gray"), center_of_mass, 1, 2)
+        center_of_mass = Calculate.center_of_mass(sheep)
+        pygame.draw.circle(canvas, pygame.Color("gray"), center_of_mass, 1, 2)
 
-            label = font.render("GCM", True, pygame.Color("black"))
-            rect = label.get_rect()
-            rect.center = center_of_mass
-            canvas.blit(label, rect)
+        label = font.render("COM", True, pygame.Color("black"))
+        rect = label.get_rect()
+        rect.center = center_of_mass
+        canvas.blit(label, rect)
 
-            flock_radius = 0
-            for s in sheep:
-                distance = np.linalg.norm(s.position-center_of_mass)
-                if distance > flock_radius:
-                    flock_radius = distance
-            
-            pygame.draw.circle(canvas, pygame.Color("purple"), center_of_mass, flock_radius, 1)
+        flock_radius = 0
+        for s in sheep:
+            distance = np.linalg.norm(s.position-center_of_mass)
+            if distance > flock_radius:
+                flock_radius = distance
+        
+        pygame.draw.circle(canvas, pygame.Color("purple"), center_of_mass, flock_radius, 1)
 
-            potential_field = flock_radius + 50
-            pygame.draw.circle(canvas, pygame.Color("pink"), center_of_mass, potential_field, 1)
+        potential_field = flock_radius + 50
+        pygame.draw.circle(canvas, pygame.Color("pink"), center_of_mass, potential_field, 1)
 
-            return center_of_mass
+        return center_of_mass
 
 
     def sheep_behaviour(self, sheep_positions):
@@ -74,7 +73,7 @@ class SharedMain:
         return drone_list
 
 
-    def main(self):
+    def main(self, time_limit):
         pygame.init()
         pygame.display.set_caption("The shepherding problem")
 
@@ -91,7 +90,6 @@ class SharedMain:
         running = True
         goals_reached = 0
         while running:
-            
 
             goal_count = np.zeros(len(sheep))
             for event in pygame.event.get():
@@ -136,7 +134,6 @@ class SharedMain:
                     count += 1
                 else:
                     break
-            
 
             sek = 1/self.FPS
             if count == len(self.sheep_positions):
@@ -164,13 +161,10 @@ class SharedMain:
                     herdtime = pygame.time.get_ticks() / (sek * 1000)
                     pygame.quit()
                     return successrate, herdtime, reached_goal_time_list, reached_goal_number
+
             # if pygame.time.get_ticks() / (sek * 1000) > 10000:  
-            if pygame.time.get_ticks() > 10000:   
+            if pygame.time.get_ticks() > time_limit:   
                 successrate = (count / len(self.sheep_positions)) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)
                 pygame.quit()     
                 return successrate, herdtime, reached_goal_time_list, reached_goal_number 
-                    
-
-
-

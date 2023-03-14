@@ -22,7 +22,6 @@ class PolygonMainDrone:
 
         self.centre_of_mass = pygame.Vector2(0, 0)
 
-        self.initial_index = pygame.Vector2(0, 0)
         self.on_edge = False
         self.toward_goal = False
 
@@ -120,9 +119,6 @@ class PolygonMainDrone:
                 edge_vertices[0] = pygame.Vector2(vertices[j])
                 edge_vertices[1] = pygame.Vector2(vertices[j + 1])
 
-        if drone.id == 0:
-            self.initial_index = vertices.index(self.closest_vertex(closest_point, vertices))
-
         pygame.draw.line(self.canvas, pygame.Color("purple"), edge_vertices[0], edge_vertices[1])
         pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 5)
 
@@ -201,7 +197,7 @@ class PolygonMainDrone:
 
         # CALCULATE THE DRONES' POSITION ON THE DISCONNECTED EXTENDED HULL (z-axis)
         # The disconnected extended hull from the first drone's position [0, M]
-        initial = self.closest_vertex(drones[0].edge_point, vertices) # TODO?
+        initial = self.closest_vertex(drones[0].edge_point, vertices)
         line_segment = []  # line segment (z-axis): [0,M]
         temp = []
         for i in range(len(vertices)):
@@ -357,19 +353,6 @@ class PolygonMainDrone:
         pygame.draw.circle(self.canvas, pygame.Color("blue"), left_point, 3)
         pygame.draw.circle(self.canvas, pygame.Color("blue"), right_point, 3)
 
-        # angle = np.pi / (2 * len(drones))
-        # for i in range(len(drones)):
-        #     drone = drones[i]
-        #     drone.travel_path = []
-        #     if i % 2 == 0:
-        #         point = self.centre_of_mass - com_to_point.rotate_rad(angle*i)
-        #     else:
-        #         point = self.centre_of_mass - com_to_point.rotate_rad(-angle*i)
-        #     drone.steering_point = point
-        #     self.fly_on_edge(drone, vertices, convex_vertices)
-
-        #     pygame.draw.circle(self.canvas, pygame.Color("pink"), point, 2)
-
         # TODO: Tentativ løsning for å plassere dronene før de støter på sauene
         for drone in drones:
             drone.travel_path = []
@@ -381,8 +364,8 @@ class PolygonMainDrone:
                 drone.steering_point = right_point
             else:
                 drone.steering_point = goal_point
-            # drone.fly_to_position(drone.steering_point)
-            self.fly_on_edge(drone, vertices, convex_vertices)
+            drone.fly_to_position(drone.steering_point)
+            # self.fly_on_edge(drone, vertices, convex_vertices)
 
 
     def add_label(self, text, position, color="black"):
@@ -443,12 +426,10 @@ class PolygonMainDrone:
             self.toward_goal = False
 
         if self.toward_goal == True:
-            print(".....")
             self.drive_to_goal(drones, goal, extended_vertices, convex_vertices)
 
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
         if self.on_edge == True and self.toward_goal == False:
-            print("----")
             self.allocate_steering_points(drones, extended_vertices)
             for drone in drones:
                 self.fly_on_edge(drone, extended_vertices, convex_vertices)
