@@ -8,7 +8,7 @@ from goal import Goal
 NO_SHEEP = 20
 NO_DRONES = 3
 FPS = 50
-TESTTYPE = [ "cooperative_flock", "lone_sheep", "divided_flock"]
+TESTTYPE = ["right_angle", "cooperative_flock", "lone_sheep", "divided_flock"]
 INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
 INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 
