@@ -108,12 +108,17 @@ class SharedMain:
             if main_drone != None:
                 main_drone.run(drones, sheep, self.goal, centre_of_mass)
 
-
+            reached_goal_time_list = []
+            reached_goal_number = []
+            sheep_count = 0
             for s in sheep:
                 s.draw(screen, label_font)
                 sheep_id_goal_reached = s.move(self.goal, sheep, drones)
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
+                    reached_goal_time_list.append(pygame.time.get_ticks()/1000)
+                    sheep_count += 1
+                    reached_goal_number.append(sheep_count)
                 else:
                     goal_count[s.id] = 0
                     
@@ -132,16 +137,14 @@ class SharedMain:
                 else:
                     break
             
-            
+
             sek = 1/self.FPS
             if count == len(self.sheep_positions):
-                
                 if goals_reached == 1 and self.testtype == "right_angle":
-                    print('ja')
                     successrate = (count / len(self.sheep_positions)) * 100
                     herdtime = pygame.time.get_ticks() / (sek * 1000)
                     pygame.quit()
-                    return successrate, herdtime
+                    return successrate, herdtime, reached_goal_time_list, reached_goal_number
                 
                 elif self.testtype == "right_angle":
                     sheep_alignment_vector = pygame.Vector2(0, 0)
@@ -160,13 +163,13 @@ class SharedMain:
                     successrate = (count / len(self.sheep_positions)) * 100
                     herdtime = pygame.time.get_ticks() / (sek * 1000)
                     pygame.quit()
-                    return successrate, herdtime
-
-            if pygame.time.get_ticks() > 50000:   
+                    return successrate, herdtime, reached_goal_time_list, reached_goal_number
+            # if pygame.time.get_ticks() / (sek * 1000) > 10000:  
+            if pygame.time.get_ticks() > 10000:   
                 successrate = (count / len(self.sheep_positions)) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)
                 pygame.quit()     
-                return successrate, herdtime  
+                return successrate, herdtime, reached_goal_time_list, reached_goal_number 
                     
 
 
