@@ -12,15 +12,13 @@ S_WEIGHT = 10
 class PolygonDrone:
     def __init__(self, id, initial_position):
         self.id = id
-        self.max_speed = 2
+        self.max_speed = 3 # Endrer hastigheten når dronene skal støte sauene
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
-        self.goal_position = pygame.Vector2(0, 0)
         self.velocity = pygame.Vector2(0.5, 0.5)
         self.acceleration = pygame.Vector2(0, 0)
 
-        # 0: clockwise (right), 1: counterclockwise (left)
-        self.direction_index = 0  # 0:clockwise, 1:counterclockwise
+        self.direction_index = 0  # 0:clockwise (right), 1:counterclockwise (left)
         self.right_pass = 0  # 0: otherwise, 1: pass z=0 by right flying to z=j
         self.left_pass = 0  # =. otherwise, 1: pass z=0 by left flying to z=j
         self.travel_path = []  # The path from start to steering point
@@ -45,9 +43,6 @@ class PolygonDrone:
         self.acceleration = pygame.Vector2(0, 0)
 
     def move(self, goal, drones, sheep, goal_vector, canvas):
-        if self.figure.colliderect(goal.figure):
-            print("{id} is within the goal".format(id="drone" + str(self.id)))
-
         separation = self.separation(drones)
         self.acceleration += separation * S_WEIGHT
 
@@ -63,5 +58,21 @@ class PolygonDrone:
         return steering
 
     def fly_to_position(self, position):
-        self.goal_position = position
         self.acceleration = (position - self.position) * (STEP_SIZE / 100)
+
+    # def fly(self, speed, point):
+    #     # TODO: implementere som en del av dronen? Formel (18) og (19)
+    #     speed = speed.normalize()
+    #     F = pygame.Vector2(0, 0)
+    #     g = 1
+    #     f = point - (speed.dot(point)) * speed
+
+    #     if f != 0:
+    #         F = pygame.Vector2(f / f.length())
+    #     if speed.dot(point) <= 0:
+    #         g = -1
+        
+    #     self.acceleration = MAX_ACCELERATION * g * F
+    #     self.velocity = pygame.Vector2(self.max_speed * g)
+
+    #     print(self.acceleration)
