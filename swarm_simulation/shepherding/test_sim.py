@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 NO_SHEEP = 5
 NO_DRONES = 3
-FPS = 200
+FPS = 50
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['circle'] # 'polygon', 'occlusion']
+DRONETYPES = ['polygon'] # 'circle', 'occlusion']
 INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
 INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 
