@@ -63,7 +63,7 @@ class PolygonMainDrone:
 
         #     pygame.draw.circle(self.canvas, pygame.Color("gray"), E, 8)
 
-        polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, join_style=2, mitre_limit=10)
+        polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, join_style=2, mitre_limit=1)
         polygon_list = polygon.exterior.coords
         for i in range(len(polygon_list) - 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
@@ -390,27 +390,34 @@ class PolygonMainDrone:
         # The minimum distance of gathering, before the animals need to be driven to a designated location
         gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1)
 
+        # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
+        for drone in drones:
+            if drone.figure.colliderect(extended_hull):
+                self.on_edge = True
+            # else:
+            #     self.on_edge = False
+
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
             for drone in drones:
+                print("eeeedge")
                 self.fly_to_egde(drone, extended_vertices)
-                # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
-                if drone.figure.colliderect(extended_hull):
-                    self.on_edge = True
-                else:
-                    self.on_edge = False
 
+        # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
+        if self.on_edge == True and self.toward_goal == False and not gather_radius.contains(convex_hull):
+            print("allocate")
+            self.allocate_steering_points(drones, extended_vertices)
+            for drone in drones:
+                self.fly_on_edge(drone, extended_vertices, convex_vertices)
+                
         # Check if the sheep flock is gathered enough, if so, push them toward the goal
         if gather_radius.contains(convex_hull) and self.toward_goal == False:
             self.toward_goal = True
         else:
             self.toward_goal = False
 
-        if self.toward_goal == True:
+        if self.toward_goal == True and gather_radius.contains(convex_hull):
+            print("to goal")
             self.drive_to_goal(drones, goal, extended_vertices, convex_vertices)
 
-        # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
-        if self.on_edge == True and self.toward_goal == False:
-            self.allocate_steering_points(drones, extended_vertices)
-            for drone in drones:
-                self.fly_on_edge(drone, extended_vertices, convex_vertices)
+        
