@@ -7,7 +7,7 @@ from goal import Goal
 
 DISTANCE = 20 #30  # drone-to-animal distance (predefined)
 TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
-SHEEP_RADIUS = 30 # 60  # the sheep's smallest circle during driving (predefined)
+SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined)
 
 
 class PolygonMainDrone:
@@ -337,23 +337,55 @@ class PolygonMainDrone:
 
         # The drone will move towards the goal, hopefully with the sheep flock in front
         com_to_point = pygame.Vector2(self.centre_of_mass - goal_point)
-        left_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 2)
-        right_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 2)
+        left_most_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 2)
+        right_most_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 2)
+        left_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 1.2)
+        right_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 1.2)
 
         pygame.draw.circle(self.canvas, pygame.Color("yellow"), left_point, 3)
         pygame.draw.circle(self.canvas, pygame.Color("yellow"), right_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), left_most_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), right_most_point, 3)
 
         # TODO: Tentativ løsning for å plassere dronene før de støter på sauene
         for drone in drones:
             drone.travel_path = []
             if drone.id == 0:
-                drone.steering_point = left_point
+                
+                if drone.figure.collidepoint(left_most_point) and drone.steering_drive == 'left_most_point':
+                    drone.steering_point = left_point
+                    drone.steering_drive = 'left_point'
+                if drone.figure.collidepoint(left_point) and drone.steering_drive == 'left_point':
+                    drone.steering_point = left_most_point
+                    drone.steering_drive = 'left_most_point'
+                if drone.steering_drive != 'left_most_point' and drone.steering_drive != 'left_point':
+                    drone.steering_point = left_point
+                    drone.steering_drive = 'left_point'
+                print(drone.steering_point)
+                print(drone.steering_drive)
             elif drone.id == 1:
-                drone.steering_point = goal_point
+                if drone.figure.collidepoint(left_point) and drone.steering_drive == 'left_point':
+                    drone.steering_point = right_point
+                    drone.steering_drive = 'right_point'
+                if drone.figure.collidepoint(right_point) and drone.steering_drive == 'right_point':
+                    drone.steering_point = left_point
+                    drone.steering_drive = 'left_point'
+                if drone.steering_drive != 'right_point' and drone.steering_drive != 'left_point':
+                    drone.steering_point = right_point
+                    drone.steering_drive = 'right_point'
+
             elif drone.id == 2:
-                drone.steering_point = right_point
-            else:
-                drone.steering_point = goal_point
+                if drone.figure.collidepoint(right_most_point) and drone.steering_drive == 'right_most_point':
+                    drone.steering_point = right_point
+                    drone.steering_drive = 'right_point'
+                if drone.figure.collidepoint(right_point) and drone.steering_drive == 'right_point':
+                    drone.steering_point = right_most_point
+                    drone.steering_drive = 'right_most_point'
+                if drone.steering_drive != 'right_most_point' and drone.steering_drive != 'right_point':
+                    drone.steering_point = right_most_point
+                    drone.steering_drive = 'right_most_point'
+            # else:
+            #     drone.steering_point = goal_point
             drone.fly_to_position(drone.steering_point)
             # self.fly_on_edge(drone, vertices, convex_vertices)
 
@@ -411,7 +443,7 @@ class PolygonMainDrone:
                 self.fly_on_edge(drone, extended_vertices, convex_vertices)
                 
         # Check if the sheep flock is gathered enough, if so, push them toward the goal
-        if gather_radius.contains(convex_hull) and self.toward_goal == False:
+        if gather_radius.contains(convex_hull) and self.toward_goal == False and self.on_edge == True:
             self.toward_goal = True
         else:
             self.toward_goal = False

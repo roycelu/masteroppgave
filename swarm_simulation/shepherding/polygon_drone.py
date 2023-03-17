@@ -25,7 +25,8 @@ class PolygonDrone:
         self.possible_allocations = []  # All possible steering points allocations
         self.edge_point = pygame.Vector2(0, 0)  # The first point on the edge
         self.steering_point = pygame.Vector2(0, 0)  # The final point to fly to
-
+        self.steering_drive = ""
+        
     def draw(self, canvas, font):
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
@@ -35,18 +36,24 @@ class PolygonDrone:
         label_rect.center = self.position
         canvas.blit(label, label_rect)
 
-    def update(self):
-        self.position += self.velocity
-        self.velocity += self.acceleration
-        if self.velocity.magnitude() > self.max_speed:
-            self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
-        self.acceleration = pygame.Vector2(0, 0)
+    def update(self, dt, target_fps):
+        acceleration_distance = np.linalg.norm(self.acceleration)
+        if acceleration_distance > self.max_speed:
+            self.acceleration = self.acceleration / acceleration_distance * self.max_speed
+        
+        self.position += self.acceleration * dt * target_fps
 
-    def move(self, goal, drones, sheep, goal_vector, canvas):
+        # self.position += self.velocity
+        # self.velocity += self.acceleration
+        # if self.velocity.magnitude() > self.max_speed:
+        #     self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
+        # self.acceleration = pygame.Vector2(0, 0)
+
+    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
         separation = self.separation(drones)
         self.acceleration += separation * S_WEIGHT
 
-        self.update()
+        self.update(dt, target_fps)
 
     def separation(self, drones):
         """The drone avoid colliding with each other"""

@@ -37,7 +37,7 @@ class OcclusionDrone:
         label_rect.center = self.position
         canvas.blit(label, label_rect)
 
-    def update(self, com, flock_radius):
+    def update(self, com, flock_radius, dt, target_fps):
         
         acceleration_distance = np.linalg.norm(self.acceleration)
         if acceleration_distance > MAX_SPEED:
@@ -46,9 +46,9 @@ class OcclusionDrone:
         if (self.position-com).magnitude() <= (flock_radius + DESIRED_SEPARATION_SHEEP):
             self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED_SHEEP # Mindre enn hastigheten til sauene (enn så lenge bare makshastigheten til sauene)
         print('acceleration after', self.acceleration)
-        self.position += self.acceleration
+        self.position += self.acceleration * dt * target_fps
 
-    def move(self, goal, drones, sheep, goal_vector, canvas):
+    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
         if self.figure.colliderect(goal.figure):
             self.goal_status = True
 
@@ -72,7 +72,7 @@ class OcclusionDrone:
         print('acceleration before', self.acceleration)
         
 
-        self.update(com, flock_radius)
+        self.update(com, flock_radius, dt, target_fps)
 
     def repulsion(self, com, flock_radius, goal):
         """ Avoid pushing the flock in the wrong direction """
