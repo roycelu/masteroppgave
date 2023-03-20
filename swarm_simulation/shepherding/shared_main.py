@@ -8,10 +8,10 @@ from occlusion_drone import OcclusionDrone
 from caging_drone import CagingDrone
 from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
+from v_drone import VDrone
 from goal import Goal
 from utils import Calculate
 
-METERS_PER_PIXEL = 0.038370147
 
 class SharedMain:
     def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
@@ -67,8 +67,8 @@ class SharedMain:
                 drone_list[i] = CircleDrone(i, position)
             if self.dronetype == "occlusion":
                 drone_list[i] = OcclusionDrone(i, position, self.FPS)
-            if self.dronetype == 'caging':
-                drone_list[i] = CagingDrone(i, position)
+            if self.dronetype == 'v':
+                drone_list[i] = VDrone(i, position)
             if self.dronetype == "polygon":
                 drone_list[i] = PolygonDrone(i, position)
         return drone_list

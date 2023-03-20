@@ -12,7 +12,7 @@ NO_SIMULATIONS = 2 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['polygon'] # 'circle', 'occlusion']
+DRONETYPES = ['polygon', 'polygon', 'v']
 INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
 INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 

@@ -27,7 +27,7 @@ class CagingDrone:
         self.id = id
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
-        self.acceleration = pygame.Vector2(0, 0)
+        self.velocity = pygame.Vector2(0, 0)
         self.t_0 = 0
 
     def draw(self, canvas, font):
@@ -39,40 +39,38 @@ class CagingDrone:
         label_rect.center = self.position
         canvas.blit(label, label_rect)
 
-    def update(self):
+    def update(self, dt, target_fps):
+        velocity_distance = np.linalg.norm(self.velocity)
+        if velocity_distance > MAX_SPEED:
+            self.velocity = self.velocity / velocity_distance * MAX_SPEED
 
-        acceleration_distance = np.linalg.norm(self.acceleration)
-        if acceleration_distance > MAX_SPEED:
-            self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED
+        self.position += self.velocity * dt * target_fps
 
-        self.position += self.acceleration
+        self.velocity = pygame.Vector2(0, 0)
 
-        
-
-    def move(self, goal, drones, sheep, goal_vector, canvas):
+    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
         if self.figure.colliderect(goal.figure):
             self.goal_status = True
 
         if self.shrink_condition(drones):
-            self.acceleration += self.shrink_mechanism(sheep)
+            self.velocity += self.shrink_mechanism(sheep)
+            print('SHRINK CONDITION')
         else:
             O_i = self.edge_mechanism_O(drones)
             F_i = self.edge_mechanism_F(drones, sheep)
-            self.acceleration = k_o*O_i + k_f*F_i
-        
-        self.update()
+            self.velocity = k_o*O_i + k_f*F_i
+            print('EDGE MECHANISM')
+        self.update(dt, target_fps)
 
-    def weight_function(self, agent):
+    def weight_function(self, agent): # Ser fin ut :)
         k = 0.375 # Chosen such that an agent 20 body length away has 11.76% as much influence in the direction of the focal agent i as one right next to the agent i.
-        agent_density = 0
-        
         distance = self.position - agent.position
-        #print('distance', distance)
-        if np.linalg.norm(distance) <= PERCEPTION and self != agent:
+        agent_density = 0
+        if np.linalg.norm(distance) <= PERCEPTION and self != agent and distance != 0:
             agent_density = (1/(1+k*np.linalg.norm(distance))*(distance/np.linalg.norm(distance)))
         return agent_density
                 
-    def density(self, drones, sheep):
+    def density(self, drones, sheep): # Ser fint ut
         drone_density = 0
         sheep_density = 0
         for drone in drones:
@@ -82,13 +80,14 @@ class CagingDrone:
         density = C_r*drone_density + C_s*sheep_density
         return density
 
-    def edge_mechanism_O(self, drones):
+
+    def edge_mechanism_O(self, drones): # Ser riktig ut
         """Movement of drones is guided by the overlap avoidance force"""
         neighbouring_drones = 0
         O_sum = 0
         for drone in drones:
             distance = self.position-drone.position
-            if np.linalg.norm(distance) < PERCEPTION and drone != self:
+            if np.linalg.norm(distance) < PERCEPTION and drone != self and distance != 0:
                 neighbouring_drones += 1
                 O_sum += (1/(np.linalg.norm(distance))*(distance/np.linalg.norm(distance)))
 
@@ -98,51 +97,47 @@ class CagingDrone:
 
     def edge_mechanism_F(self, drones, sheep):
         """Movement of drones is guided by the density-force"""
-        print('sheep',sheep)
         F_i = 0 # Density-based force
-        drone_array = []
-        sheep_array = []
-        for s in sheep:
-            print('weight', self.weight_function(s))
-            print('gradient', np.gradient(self.weight_function(s)))
-            sheep_array.append(np.gradient(self.weight_function(s)))
-        for drone in drones:
-            if drone != self:
-                drone_array.append(np.gradient(self.weight_function(drone)))
+        # drone_array = []
+        # sheep_array = []
+        # for s in sheep:
+        #     print('weight', self.weight_function(s))
+        #     print('gradient', np.gradient(self.weight_function(s)))
+        #     sheep_array.append(np.gradient(self.weight_function(s)))
+        # for drone in drones:
+        #     if drone != self:
+        #         drone_array.append(np.gradient(self.weight_function(drone)))
         
-        drone_gradient = drone_array
-        sheep_gradient = sheep_array
-        print('dronearray', drone_array)
-        print('sheeparray', sheep_array)
+        # drone_gradient = drone_array
+        # sheep_gradient = sheep_array
+        # print('dronearray', drone_array)
+        # print('sheeparray', sheep_array)
 
-        density = self.density(drones, sheep)
-        m = len(drones)+len(sheep)
-        for i in range(m):
-            print('i', i)
-            print('len drones', len(drones))
-            print('len sheep', len(sheep))
-            if i < len(drones)-2 and i < len(sheep)-1:
-                F_i += 1/density*np.dot(((density/density_0)**7 - 1),(C_r*drone_gradient[i]+C_s*sheep_gradient[i]))
-            elif i < len(drones)-2:
-                F_i += 1/density*((density/density_0)**7 - 1)*(C_s*drone_gradient[i])
-            elif i < len(sheep)-1:
-                F_i += 1/density*((density/density_0)**7 - 1)*(C_r*sheep_gradient[i])
+        # density = self.density(drones, sheep)
+        # m = len(drones)+len(sheep)
+        # for i in range(m):
+        #     print('i', i)
+        #     print('len drones', len(drones))
+        #     print('len sheep', len(sheep))
+        #     if i < len(drones)-2 and i < len(sheep)-1:
+        #         F_i += 1/density*np.dot(((density/density_0)**7 - 1),(C_r*drone_gradient[i]+C_s*sheep_gradient[i]))
+        #     elif i < len(drones)-2:
+        #         F_i += 1/density*((density/density_0)**7 - 1)*(C_s*drone_gradient[i])
+        #     elif i < len(sheep)-1:
+        #         F_i += 1/density*((density/density_0)**7 - 1)*(C_r*sheep_gradient[i])
 
-            """
-            if i > len(drones)-2:
-                print('if')
-                F_i += 1/density*((density/density_0)**7 - 1)*(C_s*sheep_gradient[i])
-            elif i > len(sheep)-1:
-                print('elif')
-                F_i += 1/density*((density/density_0)**7 - 1)*(C_r*drone_gradient[i])
-            else:
-                print('else')
-                F_i += 1/density*np.dot(((density/density_0)**7 - 1),(C_r*drone_gradient[i]+C_s*sheep_gradient[i]))
-       """
+        sheep_force = 0
+        drones_force = 0
+        density = (1/self.density(drones, sheep))*((self.density(drones, sheep)/density_0)**7 - 1)
+        for d in drones:
+            drones_force += C_r * np.gradient(self.weight_function(d))
+        for s in sheep:
+            sheep_force += C_s * np.gradient(self.weight_function(s))
+        F_i = density * (drones_force + sheep_force)
         return F_i
 
+
     def shrink_condition(self, drones):
-        
         s_squared = 0
         for drone in drones:
             nearest_distance = np.Inf
