@@ -16,7 +16,7 @@ class PolygonDrone:
         self.max_speed = 19 # Endrer hastigheten når dronene skal støte sauene
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
-        self.velocity = pygame.Vector2(0, 0)
+        self.acceleration = pygame.Vector2(0, 0)
 
         self.direction_index = 0  # 0:clockwise (right), 1:counterclockwise (left)
         self.right_pass = 0  # 0: otherwise, 1: pass z=0 by right flying to z=j
@@ -25,7 +25,7 @@ class PolygonDrone:
         self.possible_allocations = []  # All possible steering points allocations
         self.edge_point = pygame.Vector2(0, 0)  # The first point on the edge
         self.steering_point = pygame.Vector2(0, 0)  # The final point to fly to
-        self.current_position = 'left'
+        self.steering_drive = 0
         
     def draw(self, canvas, font):
         self.figure.center = self.position
@@ -37,16 +37,21 @@ class PolygonDrone:
         canvas.blit(label, label_rect)
 
     def update(self, dt, target_fps):
-        velocity_distance = np.linalg.norm(self.velocity)
-        if velocity_distance > self.max_speed:
-            self.velocity = self.velocity / velocity_distance * self.max_speed
+        acceleration_distance = np.linalg.norm(self.acceleration)
+        if acceleration_distance > self.max_speed:
+            self.acceleration = self.acceleration / acceleration_distance * self.max_speed
         
-        self.position += self.velocity * dt * target_fps
-        self.velocity = pygame.Vector2(0, 0)
+        self.position += self.acceleration * dt * target_fps
+        self.acceleration = pygame.Vector2(0, 0)
+        # self.position += self.velocity
+        # self.velocity += self.acceleration
+        # if self.velocity.magnitude() > self.max_speed:
+        #     self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
+        # self.acceleration = pygame.Vector2(0, 0)
 
     def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
         separation = self.separation(drones)
-        self.velocity += separation * S_WEIGHT
+        # self.acceleration += separation * S_WEIGHT
 
         self.update(dt, target_fps)
 
@@ -60,7 +65,7 @@ class PolygonDrone:
         return steering
 
     def fly_to_position(self, position):
-        self.velocity = (position - self.position) #* (STEP_SIZE / 100)
+        self.acceleration = (position - self.position) * (STEP_SIZE / 100)
 
     # def fly(self, speed, point):
     #     # TODO: implementere som en del av dronen? Formel (18) og (19)
@@ -78,3 +83,19 @@ class PolygonDrone:
     #     self.velocity = pygame.Vector2(self.max_speed * g)
 
     #     print(self.acceleration)
+
+
+# TODO: Få dronene til å kjøre langs extended hull på vei til punktene sine
+            # path = []
+            # temp = []
+            # initial = self.closest_vertex(drone.position, vertices)
+            # final = self.closest_vertex(drone.steering_point, vertices)
+            # for i in range(len(vertices)):
+            #     if i >= vertices.index(initial):
+            #         path.append(vertices[i])
+            #     else:
+            #         temp.append(vertices[i])
+            # path.extend(temp)
+            # drone.travel_path = path[0:path.index(final)]
+            
+            # self.fly_on_edge(drone, vertices, convex_vertices)

@@ -5,7 +5,7 @@ from scipy.spatial import ConvexHull
 from goal import Goal
 
 
-DISTANCE = 30 #30  # drone-to-animal distance (predefined)
+DISTANCE = 20 #30  # drone-to-animal distance (predefined)
 TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
 SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined)
 
@@ -120,11 +120,11 @@ class PolygonMainDrone:
     def fly_on_edge(self, drone, vertices, convex_vertices):
         # THE DRONE FLIES AROUND THE EXTENDED HULL
         if len(drone.travel_path) == 0:
-            drone.max_speed = 3
+            #drone.max_speed = 3
             # BRAKE - stop the drone when it arrives at the final vertex
             drone.fly_to_position(drone.steering_point)
         else:
-            drone.max_speed = 19
+            #drone.max_speed = 8
             # TRANSFER - arc trajectory to the steering point
             new = drone.travel_path.pop(0)
             drone.edge_point = new
@@ -347,52 +347,25 @@ class PolygonMainDrone:
 
             pygame.draw.circle(self.canvas, pygame.Color("yellow"), point, 3)
 
-        """
-        if drone.figure.collidepoint(left_most_point) and drone.steering_drive == 'left_most_point':
-            drone.steering_point = left_point
-            drone.steering_drive = 'left_point'
-        if drone.figure.collidepoint(left_point) and drone.steering_drive == 'left_point':
-            drone.steering_point = left_most_point
-            drone.steering_drive = 'left_most_point'
-        if drone.steering_drive != 'left_most_point' and drone.steering_drive != 'left_point':
-            drone.steering_point = left_point
-            drone.steering_drive = 'left_point'
-        """
-
         for drone in drones:
             i = drones.index(drone)
             # TODO: Dronene kjører til samme punkt og kolliderer
-            if drone.figure.collidepoint(circle_positions[i]) and drone.current_position == 'left':
+            if drone.figure.collidepoint(circle_positions[i]) and drone.steering_drive == 0:
                 drone.steering_point = circle_positions[i+1]
-                drone.current_position = 'right'
-            if drone.figure.collidepoint(circle_positions[i+1]) and drone.current_position == 'right':
+                drone.steering_drive = 1
+            if drone.figure.collidepoint(circle_positions[i+1]) and drone.steering_drive == 1:
                 drone.steering_point = circle_positions[i]
-                drone.current_position = 'left'
-            # if drone.current_position != 'left' and drone.current_position != 'right':
-            #     drone.steering_point = circle_positions[i+1]
-            #     drone.current_position = 'right'
-            if not drone.figure.collidepoint(circle_positions[i]) and drone.current_position == 'left':
+                drone.steering_drive = 0
+            if drone.steering_drive != 0 and drone.steering_drive != 1:
+                drone.steering_point = circle_positions[i+1]
+                drone.steering_drive = 1
+            if not drone.figure.collidepoint(circle_positions[i]) and drone.steering_drive == 0:
                 drone.steering_point = circle_positions[i]
-            if not drone.figure.collidepoint(circle_positions[i+1]) and drone.current_position == 'right':
+            if not drone.figure.collidepoint(circle_positions[i+1]) and drone.steering_drive == 1:
                 drone.steering_point = circle_positions[i+1]
 
-            # TODO: Få dronene til å kjøre langs extended hull på vei til punktene sine
-            # path = []
-            # temp = []
-            # initial = self.closest_vertex(drone.position, vertices)
-            # final = self.closest_vertex(drone.steering_point, vertices)
-            # for i in range(len(vertices)):
-            #     if i >= vertices.index(initial):
-            #         path.append(vertices[i])
-            #     else:
-            #         temp.append(vertices[i])
-            # path.extend(temp)
-            # drone.travel_path = path[0:path.index(final)]
-            
-            # self.fly_on_edge(drone, vertices, convex_vertices)
-
-            # Fly til det gitte punktet
             drone.fly_to_position(drone.steering_point)
+            # self.fly_on_edge(drone, vertices, convex_vertices)
 
 
     def get_indices(self, current, max_length):
@@ -434,14 +407,12 @@ class PolygonMainDrone:
 
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
-            print("Flyr til kanten")
             for drone in drones:
                 self.fly_to_egde(drone, extended_vertices)
 
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
         if self.on_edge == True and self.toward_goal == False and not gather_radius.contains(convex_hull):
             self.allocate_steering_points(drones, extended_vertices)
-            print('on edge')
             for drone in drones:
                 self.fly_on_edge(drone, extended_vertices, convex_vertices)
                 
@@ -452,7 +423,4 @@ class PolygonMainDrone:
             self.toward_goal = False
 
         if self.toward_goal == True and gather_radius.contains(convex_hull):
-            print("På vei til mål")
             self.drive_to_goal(drones, goal, extended_vertices, convex_vertices)
-
-        
