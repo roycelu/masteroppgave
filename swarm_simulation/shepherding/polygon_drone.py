@@ -26,7 +26,8 @@ class PolygonDrone:
         self.possible_allocations = []  # All possible steering points allocations
         self.edge_point = pygame.Vector2(0, 0)  # The first point on the edge
         self.steering_point = pygame.Vector2(0, 0)  # The final point to fly to
-
+        self.steering_drive = 0
+        
     def draw(self, canvas, font):
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
