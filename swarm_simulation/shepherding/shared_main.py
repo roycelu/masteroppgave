@@ -11,6 +11,7 @@ from polygon_drone import PolygonDrone
 from goal import Goal
 from utils import Calculate
 
+METERS_PER_PIXEL = 0.038370147
 
 class SharedMain:
     def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
@@ -87,9 +88,22 @@ class SharedMain:
         if self.dronetype == 'polygon':
             main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
 
+        clock = pygame.time.Clock()
+        prev_time = time.time()
+        dt = 0
+        target_fps = 10
+
         running = True
+
         goals_reached = 0
         while running:
+            # Limit framerate
+            clock.tick(target_fps)
+            # Compute delta time
+            now = time.time()
+            dt = now - prev_time
+            prev_time = now
+
 
             goal_count = np.zeros(len(sheep))
             for event in pygame.event.get():
@@ -111,7 +125,7 @@ class SharedMain:
             sheep_count = 0
             for s in sheep:
                 s.draw(screen, label_font)
-                sheep_id_goal_reached = s.move(self.goal, sheep, drones)
+                sheep_id_goal_reached = s.move(self.goal, sheep, drones, dt, target_fps)
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
                     reached_goal_time_list.append(pygame.time.get_ticks()/1000)
@@ -122,7 +136,7 @@ class SharedMain:
                     
             for drone in drones:
                 drone.draw(screen, label_font)
-                drone.move(self.goal, drones, sheep, self.goal_vector, screen)
+                drone.move(self.goal, drones, sheep, self.goal_vector, screen, dt, target_fps)
         
 
             pygame.display.update()

@@ -5,9 +5,9 @@ from scipy.spatial import ConvexHull
 from goal import Goal
 
 
-DISTANCE = 20 #30  # drone-to-animal distance (predefined)
+DISTANCE = 30 #30  # drone-to-animal distance (predefined)
 TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
-SHEEP_RADIUS = 30 # 60  # the sheep's smallest circle during driving (predefined)
+SHEEP_RADIUS = 60 # 60  # the sheep's smallest circle during driving (predefined)
 
 
 class PolygonMainDrone:
@@ -63,7 +63,7 @@ class PolygonMainDrone:
 
         #     pygame.draw.circle(self.canvas, pygame.Color("gray"), E, 8)
 
-        polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, join_style=2, mitre_limit=10)
+        polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, join_style=2, mitre_limit=1)
         polygon_list = polygon.exterior.coords
         for i in range(len(polygon_list) - 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
@@ -124,7 +124,7 @@ class PolygonMainDrone:
             # BRAKE - stop the drone when it arrives at the final vertex
             drone.fly_to_position(drone.steering_point)
         else:
-            drone.max_speed = 8
+            drone.max_speed = 19
             # TRANSFER - arc trajectory to the steering point
             new = drone.travel_path.pop(0)
             drone.edge_point = new
@@ -337,23 +337,46 @@ class PolygonMainDrone:
 
         # The drone will move towards the goal, hopefully with the sheep flock in front
         com_to_point = pygame.Vector2(self.centre_of_mass - goal_point)
-        left_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 2)
-        right_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 2)
+        left_most_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 2)
+        left_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 1.2)
+        right_most_point = self.centre_of_mass + com_to_point.rotate_rad(np.pi / 2)
+        right_point = self.centre_of_mass + com_to_point.rotate_rad(-np.pi / 1.2)
 
         pygame.draw.circle(self.canvas, pygame.Color("yellow"), left_point, 3)
         pygame.draw.circle(self.canvas, pygame.Color("yellow"), right_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), left_most_point, 3)
+        pygame.draw.circle(self.canvas, pygame.Color("yellow"), right_most_point, 3)
 
         # TODO: Tentativ løsning for å plassere dronene før de støter på sauene
         for drone in drones:
             drone.travel_path = []
+
             if drone.id == 0:
-                drone.steering_point = left_point
+                if drone.figure.collidepoint(left_most_point) and drone.steering_point == left_most_point:
+                    drone.steering_point = left_point
+                if drone.figure.collidepoint(left_point) and drone.steering_point == left_point:                   
+                    drone.steering_point = left_most_point
+                if drone.steering_point != left_most_point and drone.steering_point != left_point:
+                    drone.steering_point = left_most_point
+            
             elif drone.id == 1:
-                drone.steering_point = goal_point
+                if drone.figure.collidepoint(left_point) and drone.steering_point == left_point:
+                    drone.steering_point = right_point
+                if drone.figure.collidepoint(right_point) and drone.steering_point == right_point:                   
+                    drone.steering_point = left_point
+                if drone.steering_point != right_point and drone.steering_point != left_point:
+                    drone.steering_point = left_point
+                
             elif drone.id == 2:
-                drone.steering_point = right_point
-            else:
-                drone.steering_point = goal_point
+                if drone.figure.collidepoint(right_most_point) and drone.steering_point == right_most_point:
+                    drone.steering_point = right_point
+                if drone.figure.collidepoint(right_point) and drone.steering_point == right_point:                   
+                    drone.steering_point = right_most_point
+                if drone.steering_point != right_most_point and drone.steering_point != right_point:
+                    drone.steering_point = right_most_point
+            
+            # else:
+            #     drone.steering_point = goal_point
             drone.fly_to_position(drone.steering_point)
             # self.fly_on_edge(drone, vertices, convex_vertices)
 
@@ -390,10 +413,17 @@ class PolygonMainDrone:
         # The minimum distance of gathering, before the animals need to be driven to a designated location
         gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1)
 
+        for drone in drones:
+            if drone.figure.colliderect(extended_hull):
+                self.on_edge = True
+            else:
+                self.on_edge = False
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
             for drone in drones:
                 self.fly_to_egde(drone, extended_vertices)
+                print('edge')
+
                 # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
                 if drone.figure.colliderect(extended_hull):
                     self.on_edge = True
@@ -412,5 +442,6 @@ class PolygonMainDrone:
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
         if self.on_edge == True and self.toward_goal == False:
             self.allocate_steering_points(drones, extended_vertices)
+            print('allocate')
             for drone in drones:
                 self.fly_on_edge(drone, extended_vertices, convex_vertices)

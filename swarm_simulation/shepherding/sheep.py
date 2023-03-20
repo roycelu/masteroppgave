@@ -6,9 +6,9 @@ Code based on Kubo et al. A-sheep from "Herd guidance by multiple sheepdog agent
 """
 
 SIZE = 3
-MAX_SPEED = 1
-GRAZE_SPEED = 0.2
-PERCEPTION = 30
+MAX_SPEED = 2.77
+GRAZE_SPEED = 0.13 # m/s 
+PERCEPTION = 40
 GRAZE_PERCEPTION = 50
 A_WEIGHT = 0.5
 C_WEIGHT = 2
@@ -39,16 +39,16 @@ class Sheep:
         rect.center = self.position
         canvas.blit(label, rect)
 
-    def update(self, drones):
+    def update(self, drones, dt, target_fps):
         acceleration_distance = np.linalg.norm(self.acceleration)
         if (self.position-drones[0].position).magnitude() <= GRAZE_PERCEPTION or (self.position-drones[1].position).magnitude() <= GRAZE_PERCEPTION or (self.position-drones[2].position).magnitude() <= GRAZE_PERCEPTION:
             self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED
         else:
             self.acceleration = self.acceleration / acceleration_distance * GRAZE_SPEED
 
-        self.position += self.acceleration
+        self.position += self.acceleration * dt * target_fps
 
-    def move(self, goal, sheep, drones):
+    def move(self, goal, sheep, drones, dt, target_fps):
         alignment = self.alignment(sheep)
         cohesion = self.cohesion(sheep)
         separation = self.separation(sheep)
@@ -59,7 +59,7 @@ class Sheep:
         self.acceleration += separation * S_WEIGHT
         self.acceleration += escape * DRONE_SEPARATION
 
-        self.update(drones)
+        self.update(drones, dt, target_fps)
 
         if self.figure.colliderect(goal.figure):
             #print("{id} reached the goal".format(id="sheep" + str(self.id)))

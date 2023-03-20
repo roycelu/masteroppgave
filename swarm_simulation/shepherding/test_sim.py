@@ -6,13 +6,13 @@ from goal import Goal
 import matplotlib.pyplot as plt
 
 
-NO_SHEEP = 20
+NO_SHEEP = 5
 NO_DRONES = 3
-NO_SIMULATIONS = 4 # Antall simuleringer per testtype per drone
-TIME_LIMIT = 20000
-FPS = 50
+NO_SIMULATIONS = 2 # Antall simuleringer per testtype per drone
+TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
+FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['circle', 'polygon'] # 'occlusion']
+DRONETYPES = ['polygon'] # 'circle', 'occlusion']
 INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
 INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 

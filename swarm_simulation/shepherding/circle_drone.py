@@ -3,8 +3,8 @@ import numpy as np
 from sympy import *
 
 SIZE = 10
-MAX_SPEED = 3
-MAX_SPEED_SHEEP = 1.5
+MAX_SPEED = 19 #m/s
+MAX_SPEED_SHEEP = 0.003 #  m/s
 DESIRED_SEPARATION_SHEEP = 20
 PERCEPTION = 100
 
@@ -30,7 +30,7 @@ class CircleDrone:
         label_rect.center = self.position
         canvas.blit(label, label_rect)
 
-    def update(self, sheep):
+    def update(self, sheep, dt, target_fps):
 
         acceleration_distance = np.linalg.norm(self.acceleration)
         if acceleration_distance > MAX_SPEED:
@@ -40,11 +40,11 @@ class CircleDrone:
             if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP):
                 self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED_SHEEP
 
-        self.position += self.acceleration
+        self.position += self.acceleration * dt * target_fps
 
         
 
-    def move(self, goal, drones, sheep, goal_vector, canvas):
+    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
         if self.figure.colliderect(goal.figure):
             self.goal_status = True
 
@@ -77,7 +77,7 @@ class CircleDrone:
         self.acceleration += repulsion * REPULSION
         
 
-        self.update(sheep)
+        self.update(sheep, dt, target_fps)
 
     def chase(self, target):
         return -((self.position-target.position) / np.linalg.norm(self.position - target.position))
