@@ -16,8 +16,7 @@ class PolygonDrone:
         self.max_speed = 19 # Endrer hastigheten når dronene skal støte sauene
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
-        self.velocity = pygame.Vector2(0.5, 0.5)
-        self.acceleration = pygame.Vector2(0, 0)
+        self.velocity = pygame.Vector2(0, 0)
 
         self.direction_index = 0  # 0:clockwise (right), 1:counterclockwise (left)
         self.right_pass = 0  # 0: otherwise, 1: pass z=0 by right flying to z=j
@@ -38,22 +37,16 @@ class PolygonDrone:
         canvas.blit(label, label_rect)
 
     def update(self, dt, target_fps):
-        acceleration_distance = np.linalg.norm(self.acceleration)
-        if acceleration_distance > self.max_speed:
-            self.acceleration = self.acceleration / acceleration_distance * self.max_speed
-        #if (self.position-com).magnitude() <= (flock_radius + DESIRED_SEPARATION_SHEEP):
-        #    self.acceleration = self.acceleration / acceleration_distance * MAX_SPEED_SHEEP # Mindre enn hastigheten til sauene (enn så lenge bare makshastigheten til sauene)
-        print(self.acceleration)
-        self.position += self.acceleration * dt * target_fps
-        # self.position += self.velocity
-        # self.velocity += self.acceleration
-        # if self.velocity.magnitude() > self.max_speed:
-        #     self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
-        # self.acceleration = pygame.Vector2(0, 0)
+        velocity_distance = np.linalg.norm(self.velocity)
+        if velocity_distance > self.max_speed:
+            self.velocity = self.velocity / velocity_distance * self.max_speed
+        
+        self.position += self.velocity * dt * target_fps
+        self.velocity = pygame.Vector2(0, 0)
 
     def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
         separation = self.separation(drones)
-        self.acceleration += separation * S_WEIGHT
+        self.velocity += separation * S_WEIGHT
 
         self.update(dt, target_fps)
 
@@ -67,7 +60,7 @@ class PolygonDrone:
         return steering
 
     def fly_to_position(self, position):
-        self.acceleration = (position - self.position) #* (STEP_SIZE / 100)
+        self.velocity = (position - self.position) #* (STEP_SIZE / 100)
 
     # def fly(self, speed, point):
     #     # TODO: implementere som en del av dronen? Formel (18) og (19)
