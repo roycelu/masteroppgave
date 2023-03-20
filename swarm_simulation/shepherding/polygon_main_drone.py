@@ -364,8 +364,8 @@ class PolygonMainDrone:
             if not drone.figure.collidepoint(circle_positions[i+1]) and drone.steering_drive == 1:
                 drone.steering_point = circle_positions[i+1]
 
-            # drone.fly_to_position(drone.steering_point)
-            self.fly_on_edge(drone, vertices, convex_vertices)
+            drone.fly_to_position(drone.steering_point)
+            # self.fly_on_edge(drone, vertices, convex_vertices)
 
 
     def get_indices(self, current, max_length):
