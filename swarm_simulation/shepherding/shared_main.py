@@ -91,7 +91,7 @@ class SharedMain:
         clock = pygame.time.Clock()
         prev_time = time.time()
         dt = 0
-        target_fps = 10
+        target_fps = 100    # Endre hastighet på simuleringen
 
         running = True
 
