@@ -1,0 +1,5 @@
+Testtype,Gjetetid,Suksessrate
+cooperative_flock,323.28000000000003,100.0
+lone_sheep,1164.24,100.0
+divided_flock,1674.18,100.0
+right_angle,350.1,100.0
