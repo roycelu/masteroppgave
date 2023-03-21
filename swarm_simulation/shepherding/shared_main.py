@@ -86,7 +86,6 @@ class SharedMain:
         clock = pygame.time.Clock()
         prev_time = time.time()
         dt = 0
-        target_fps = 100    # Endre hastighet på simuleringen
 
         running = True
 
@@ -131,7 +130,7 @@ class SharedMain:
                     
             for drone in drones:
                 drone.draw(screen, label_font)
-                drone.move(self.goal, drones, sheep, self.goal_vector, screen, dt, target_fps)
+                drone.move(self.goal, drones, sheep, screen, dt, target_fps)
         
 
             pygame.display.update()

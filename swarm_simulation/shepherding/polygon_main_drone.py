@@ -120,11 +120,9 @@ class PolygonMainDrone:
     def fly_on_edge(self, drone, vertices, convex_vertices):
         # THE DRONE FLIES AROUND THE EXTENDED HULL
         if len(drone.travel_path) == 0:
-            #drone.max_speed = 3
             # BRAKE - stop the drone when it arrives at the final vertex
             drone.fly_to_position(drone.steering_point)
         else:
-            #drone.max_speed = 8
             # TRANSFER - arc trajectory to the steering point
             new = drone.travel_path.pop(0)
             drone.edge_point = new
@@ -424,3 +422,4 @@ class PolygonMainDrone:
 
         if self.toward_goal == True and gather_radius.contains(convex_hull):
             self.drive_to_goal(drones, goal, extended_vertices, convex_vertices)
+        

@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
-from sympy import *
+from utils import Calculate
+
 
 SIZE = 10
 MAX_SPEED = 19 #m/s
@@ -44,16 +45,10 @@ class CircleDrone:
 
         self.velocity = pygame.Vector2(0, 0)
 
-        
 
-    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
-        if self.figure.colliderect(goal.figure):
-            self.goal_status = True
+    def move(self, goal, drones, sheep, canvas, dt, target_fps):
+        com = Calculate.center_of_mass(sheep)
 
-        com = pygame.Vector2(0, 0)
-        for s in sheep:
-            com += s.position
-        com /= len(sheep)
         flock_radius = 0
         furthest_from_goal = 0 
         target = 0
@@ -61,25 +56,23 @@ class CircleDrone:
             distance = np.linalg.norm(s.position-com)
             if distance > flock_radius:
                 flock_radius = distance
-            distance_goal = np.linalg.norm(s.position-goal_vector)
+            distance_goal = np.linalg.norm(s.position-goal.position)
             if distance_goal > furthest_from_goal:
                 furthest_from_goal = distance_goal
                 target = s
-
-        
    
         chase_action = self.chase(target)
         stay_away_action = self.stay_away_target(target)
-        stay_away_goal = self.move_to_goal(goal_vector)
+        stay_away_goal = self.move_to_goal(goal.position)
         repulsion = self.separation(drones, target)
         
         self.velocity += chase_action * CHASE_ACTION
         self.velocity += stay_away_action * AWAY_TARGET_ACTION
         self.velocity += stay_away_goal * AWAY_GOAL
         self.velocity += repulsion * REPULSION
-        
 
         self.update(sheep, dt, target_fps)
+
 
     def chase(self, target):
         return -((self.position-target.position) / np.linalg.norm(self.position - target.position))
@@ -98,5 +91,3 @@ class CircleDrone:
                 repulsion += ((self.position - drone.position) / (np.linalg.norm(self.position - drone.position))**3)
         repulsion /= len(drones)
         return repulsion
-
- 
