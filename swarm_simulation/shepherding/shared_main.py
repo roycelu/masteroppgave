@@ -1,7 +1,6 @@
 import sys
 import pygame, time
 import numpy as np
-from scipy.spatial.transform import Rotation as R
 from sheep import Sheep
 from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
@@ -12,15 +11,15 @@ from utils import Calculate
 
 
 class SharedMain:
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
         self.FPS = FPS
         self.dronetype = dronetype
         self.testtype = testtype
-        self.goal_vector = initial_goal_vector
-        self.goal = initial_goal
+        self.goal_vector = pygame.Vector2(500, 600)
+        self.goal = Goal(self.goal_vector)
         self.sheep_away = False
 
     
@@ -71,7 +70,7 @@ class SharedMain:
         return drone_list
 
 
-    def main(self, time_limit):
+    def main(self, time_limit, target_fps):
         pygame.init()
         pygame.display.set_caption("The shepherding problem")
 
@@ -88,7 +87,6 @@ class SharedMain:
         clock = pygame.time.Clock()
         prev_time = time.time()
         dt = 0
-        target_fps = 100    # Endre hastighet på simuleringen
 
         prev_time_herding = 0
         herd_time = 0
@@ -154,7 +152,7 @@ class SharedMain:
 
             for drone in drones:
                 drone.draw(screen, label_font)
-                drone.move(self.goal, drones, sheep, self.goal_vector, screen, dt, target_fps)
+                drone.move(self.goal, drones, sheep, screen, dt, target_fps)
         
  
 
@@ -210,7 +208,6 @@ class SharedMain:
                     pygame.quit()
                     return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
 
-            # if pygame.time.get_ticks() / (sek * 1000) > 10000:  
             if pygame.time.get_ticks() > time_limit:   
                 successrate = (count / len(self.sheep_positions)) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)

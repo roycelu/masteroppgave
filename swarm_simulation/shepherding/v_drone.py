@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
-from sympy import *
+from utils import Calculate
+
 
 SIZE = 10
 MAX_SPEED = 19 #m/s
@@ -42,15 +43,8 @@ class VDrone:
         self.velocity = pygame.Vector2(0, 0)
 
 
-    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
-        if self.figure.colliderect(goal.figure):
-            self.goal_status = True
-
-        # Centre of mass
-        com = pygame.Vector2(0, 0)
-        for s in sheep:
-            com += s.position
-        com /= len(sheep)
+    def move(self, goal, drones, sheep, canvas, dt, target_fps):
+        com = Calculate.center_of_mass(sheep)
 
         # Radius from com to sheep furthest away
         d_furthest = 0
@@ -62,7 +56,7 @@ class VDrone:
         d_over = DESIRED_SEPARATION_SHEEP
         distance_from_com = d_furthest + d_over
         
-        self.find_steering_point(com, distance_from_com, drones, goal_vector, canvas)
+        self.find_steering_point(com, distance_from_com, drones, goal.position, canvas)
         self.velocity = self.steering_point - self.position
         self.update(sheep, dt, target_fps)
 

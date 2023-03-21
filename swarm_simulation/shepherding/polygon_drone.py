@@ -49,7 +49,7 @@ class PolygonDrone:
         #     self.velocity = self.velocity / self.velocity.magnitude() * self.max_speed
         # self.acceleration = pygame.Vector2(0, 0)
 
-    def move(self, goal, drones, sheep, goal_vector, canvas, dt, target_fps):
+    def move(self, goal, drones, sheep, canvas, dt, target_fps):
         separation = self.separation(drones)
         # self.acceleration += separation * S_WEIGHT
 

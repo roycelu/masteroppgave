@@ -1,25 +1,25 @@
+import pygame
 import pandas as pd
 import numpy as np
-import pygame
-from shared_main import SharedMain
-from goal import Goal
 import matplotlib.pyplot as plt
+from datetime import datetime
+from shared_main import SharedMain
 
 
 NO_SHEEP = 5
 NO_DRONES = 3
 NO_SIMULATIONS = 2 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
+TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['circle', 'polygon', 'v']
-INITIAL_GOAL_VECTOR = pygame.Vector2(500, 600)
-INITIAL_GOAL = Goal(INITIAL_GOAL_VECTOR)
 
-def test(id, no_sheep, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal):
+
+def test(id, no_sheep, no_drones, FPS, dronetype, testtype):
     sheep_positions = get_sheep_list(testtype, no_sheep)
-    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, initial_goal_vector, initial_goal)
-    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT)
+    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype)
+    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
     return successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time
     
 def get_sheep_list(testtype, no_sheep):
@@ -37,8 +37,8 @@ def get_sheep_list(testtype, no_sheep):
             y = np.random.randint(200, 220)
             position_list[i] = pygame.Vector2(x, y) 
         
-        x = np.random.randint(100, 900)
-        y = np.random.randint(100, 900)
+        x = np.random.randint(300, 320)
+        y = np.random.randint(800, 820)
         position_list[-1] = pygame.Vector2(x, y)
     
     if testtype == "divided_flock":
@@ -66,12 +66,11 @@ def main():
     df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_polygon = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
 
-    
     for dronetype in DRONETYPES:
         for testtype in TESTTYPES:
             for id in range(NO_SIMULATIONS):
                 print(dronetype, testtype, id)
-                successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, INITIAL_GOAL_VECTOR, INITIAL_GOAL)
+                successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype)
                 if dronetype == 'circle':
                     df_circle = df_circle.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
                 if dronetype == 'v':
@@ -86,13 +85,13 @@ def main():
     """Make tables"""
     
     df_circle_original = df_circle_original.drop(columns=['Dronetype'])
-    df_circle_original.to_csv('./results/circle.csv', index=False)
+    df_circle_original.to_csv('./results/circle_{date}.csv'.format(date=datetime.now()), index=False)
 
     df_v_original = df_v_original.drop(columns=['Dronetype'])
-    df_v_original.to_csv('./results/v.csv', index=False)
+    df_v_original.to_csv('./results/v_{date}.csv'.format(date=datetime.now()), index=False)
 
     df_polygon_original = df_polygon_original.drop(columns=['Dronetype'])
-    df_polygon_original.to_csv('./results/polygon.csv', index=False)
+    df_polygon_original.to_csv('./results/polygon_{date}.csv'.format(date=datetime.now()), index=False)
 
     """Bar chart for average herd time from successful herding for all algorithms per test"""
     
@@ -231,6 +230,7 @@ def main():
     ind = np.arange(N) # the x locations for the groups
     width = 0.10
 
+    # SUKSESSRATEN FOR SIMULERINGENE
     fig_time, ax_time = plt.subplots()
 
     #TEST
@@ -269,6 +269,7 @@ def main():
     ax_time.legend()
 
     plt.show()
+    fig_time.savefig("./results/gjetetid_{date}.png".format(date=datetime.now()))
 
 
     """Bar chart for successful and unsuccessful herding for all drone algorithms and every testtype"""
@@ -300,7 +301,7 @@ def main():
     
     
     
-
+    # GJENNOMSNITTLIG GJETETID FOR SIMULERINGENE
     fig, ax = plt.subplots()
 
     circle_1 = ax.bar(ind-0.25, circle_success, width, label='Circle Successes')
@@ -329,7 +330,9 @@ def main():
     ax.legend()
 
     plt.show()
-    
+    fig.savefig("./results/suksessrate_{date}.png".format(date=datetime.now()))
+
 
 if __name__ == "__main__":
     main()
+    
