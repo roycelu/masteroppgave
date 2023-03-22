@@ -13,7 +13,7 @@ TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['circle', 'polygon', 'v']
+DRONETYPES = ['polygon', 'circle', 'v']
 
 
 def test(id, no_sheep, no_drones, FPS, dronetype, testtype):

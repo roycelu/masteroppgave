@@ -33,6 +33,7 @@ class VDrone:
     def update(self, sheep, dt, target_fps):
         velocity_distance = np.linalg.norm(self.velocity)
         if velocity_distance > MAX_SPEED:
+            print(True)
             self.velocity = self.velocity / velocity_distance * MAX_SPEED
            
         for s in sheep:
@@ -40,6 +41,7 @@ class VDrone:
                 self.velocity = self.velocity / velocity_distance * MAX_SPEED_SHEEP
 
         self.position += self.velocity * dt * target_fps
+        print(self.velocity)
         self.velocity = pygame.Vector2(0, 0)
 
 
