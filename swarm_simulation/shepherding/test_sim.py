@@ -14,11 +14,12 @@ TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['polygon', 'circle', 'v']
+SHEEPTYPES = ['normal_sheep', 'one_sheep']
 
 
-def test(id, no_sheep, no_drones, FPS, dronetype, testtype):
+def test(id, no_sheep, no_drones, FPS, dronetype, testtype, sheeptype):
     sheep_positions = get_sheep_list(testtype, no_sheep)
-    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype)
+    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, sheeptype)
     successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
     return successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time
     
@@ -65,7 +66,7 @@ def main():
     df_circle = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_polygon = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
-
+    # for sheeptype in SHEEPTYPES:
     for dronetype in DRONETYPES:
         for testtype in TESTTYPES:
             for id in range(NO_SIMULATIONS):

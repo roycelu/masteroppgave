@@ -2,6 +2,7 @@ import sys
 import pygame, time
 import numpy as np
 from sheep import Sheep
+from sheep_one import SheepOne
 from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
@@ -11,7 +12,7 @@ from utils import Calculate
 
 
 class SharedMain:
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, sheeptype):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -21,6 +22,7 @@ class SharedMain:
         self.goal_vector = pygame.Vector2(500, 600)
         self.goal = Goal(self.goal_vector)
         self.sheep_away = False
+        self.sheeptype = sheeptype
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -50,8 +52,12 @@ class SharedMain:
         sheep_list = []
         i = 0
         for position in sheep_positions:
-            sheep_list.append(Sheep(i, position))
+            if self.sheeptype == 'normal_sheep':
+                sheep_list.append(Sheep(i, position))
+            if self.sheeptype == 'one_sheep':
+                sheep_list.append(SheepOne(i, position))
             i += 1
+
         return sheep_list
 
 
