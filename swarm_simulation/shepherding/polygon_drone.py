@@ -2,9 +2,9 @@ import pygame
 import numpy as np
 
 
-SIZE = 8
-MAX_SPEED = 19 # m/s
-MAX_SPEED_SHEEP = 0.003 # m/s
+SIZE = 10
+MAX_SPEED = 19
+MAX_SPEED_SHEEP = 0.003
 STEP_SIZE = 200
 PERCEPTION = 100
 DESIRED_SEPARATION = 20
