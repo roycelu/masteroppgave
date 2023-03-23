@@ -78,7 +78,7 @@ class SheepOne:
     def separation(self, sheep):
 
         distance = self.position-sheep.position
-        if distance.magnitud() < PERCEPTION:
+        if distance.magnitude() < PERCEPTION:
             separation = distance / (np.linalg.norm(distance))**2
             return separation
         else:
@@ -87,7 +87,7 @@ class SheepOne:
     
     def alignment(self, sheep):
         distance = self.position-sheep.position
-        if distance.magnitud() < PERCEPTION:
+        if distance.magnitude() < PERCEPTION:
             alignment = sheep.velocity / np.linalg.norm(sheep.velocity)
             alignment *= (-1)
             return alignment
@@ -97,7 +97,7 @@ class SheepOne:
 
     def cohesion(self, sheep):
         distance = self.position-sheep.position
-        if distance.magnitud() < PERCEPTION:
+        if distance.magnitude() < PERCEPTION:
             cohesion = distance / np.linalg.norm(distance)
             return cohesion
         else:

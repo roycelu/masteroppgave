@@ -14,7 +14,7 @@ TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['polygon', 'circle', 'v']
-SHEEPTYPES = ['normal_sheep', 'one_sheep']
+SHEEPTYPES = ['one_sheep', 'normal_sheep']
 
 
 def test(id, no_sheep, no_drones, FPS, dronetype, testtype, sheeptype):
