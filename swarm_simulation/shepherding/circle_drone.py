@@ -6,7 +6,7 @@ from utils import Calculate
 SIZE = 10
 MAX_SPEED = 19 #m/s
 MAX_SPEED_SHEEP = 0.003 #  m/s
-DESIRED_SEPARATION_SHEEP = 20
+DESIRED_SEPARATION_SHEEP = 15
 PERCEPTION = 100
 
 CHASE_ACTION = 10
@@ -20,7 +20,8 @@ class CircleDrone:
         self.id = id
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
         self.position = initial_position
-        self.velocity = pygame.Vector2(0, 0)
+        self.velocity = pygame.Vector2(0.1, 0.1)
+        self.acceleration = pygame.Vector2(0, 0)
 
     def draw(self, canvas, font):
         self.figure.center = self.position
@@ -32,7 +33,7 @@ class CircleDrone:
         canvas.blit(label, label_rect)
 
     def update(self, sheep, dt, target_fps):
-
+        self.velocity += self.acceleration * dt * target_fps
         velocity_distance = np.linalg.norm(self.velocity)
         if velocity_distance > MAX_SPEED:
             self.velocity = self.velocity / velocity_distance * MAX_SPEED
@@ -43,7 +44,7 @@ class CircleDrone:
 
         self.position += self.velocity * dt * target_fps
 
-        self.velocity = pygame.Vector2(0, 0)
+        self.acceleration = pygame.Vector2(0, 0)
 
 
     def move(self, goal, drones, sheep, canvas, dt, target_fps):
@@ -66,10 +67,10 @@ class CircleDrone:
         stay_away_goal = self.move_to_goal(goal.position)
         repulsion = self.separation(drones, target)
         
-        self.velocity += chase_action * CHASE_ACTION
-        self.velocity += stay_away_action * AWAY_TARGET_ACTION
-        self.velocity += stay_away_goal * AWAY_GOAL
-        self.velocity += repulsion * REPULSION
+        self.acceleration += chase_action * CHASE_ACTION
+        self.acceleration += stay_away_action * AWAY_TARGET_ACTION
+        self.acceleration += stay_away_goal * AWAY_GOAL
+        self.acceleration += repulsion * REPULSION
 
         self.update(sheep, dt, target_fps)
 

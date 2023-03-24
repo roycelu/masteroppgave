@@ -6,7 +6,7 @@ from utils import Calculate
 SIZE = 10
 MAX_SPEED = 19 #m/s
 MAX_SPEED_SHEEP = 0.003 #  m/s
-DESIRED_SEPARATION_SHEEP = 20
+DESIRED_SEPARATION_SHEEP = 15
 PERCEPTION = 100
 
 
@@ -33,7 +33,6 @@ class VDrone:
     def update(self, sheep, dt, target_fps):
         velocity_distance = np.linalg.norm(self.velocity)
         if velocity_distance > MAX_SPEED:
-            print(True)
             self.velocity = self.velocity / velocity_distance * MAX_SPEED
            
         for s in sheep:
@@ -66,8 +65,8 @@ class VDrone:
     def find_steering_point(self, com, distance_from_com, drones, goal, canvas):
         theta = np.pi/6 # = 30, angle is fixed
         
-        com_to_point = pygame.Vector2(com - goal) 
-        point = com + distance_from_com * (com_to_point/com_to_point.length())
+        com_to_goal = pygame.Vector2(com - goal) 
+        point = com + distance_from_com * (com_to_goal/com_to_goal.length())
         pygame.draw.circle(canvas, pygame.Color("brown"), point, 2)
 
         P_left = pygame.Vector2(0, 0)

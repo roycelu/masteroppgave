@@ -8,18 +8,18 @@ from shared_main import SharedMain
 
 NO_SHEEP = 5
 NO_DRONES = 3
-NO_SIMULATIONS = 2 # Antall simuleringer per testtype per drone
+NO_SIMULATIONS = 1 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
-TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
+TESTTYPES = ["lone_sheep", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['polygon', 'circle', 'v']
-SHEEPTYPES = ['one_sheep', 'normal_sheep']
+PERCEPTIONS = [40]#, #30, 40]
 
 
-def test(id, no_sheep, no_drones, FPS, dronetype, testtype, sheeptype):
+def test(id, no_sheep, no_drones, FPS, dronetype, testtype, perception):
     sheep_positions = get_sheep_list(testtype, no_sheep)
-    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, sheeptype)
+    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, perception)
     successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
     return successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time
     
@@ -66,12 +66,12 @@ def main():
     df_circle = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_polygon = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
-    for sheeptype in SHEEPTYPES:
+    for percetion in PERCEPTIONS:
         for dronetype in DRONETYPES:
             for testtype in TESTTYPES:
                 for id in range(NO_SIMULATIONS):
                     print(dronetype, testtype, id)
-                    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, sheeptype)
+                    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, percetion)
                     if dronetype == 'circle':
                         df_circle = df_circle.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
                     if dronetype == 'v':
@@ -101,6 +101,7 @@ def main():
     df_avg_time_circle = df_circle_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'})
     df_avg_time_circle_index = df_avg_time_circle.copy()
     df_avg_time_circle_index.set_index('Testtype', inplace=True, drop=True)
+    df_avg_time_circle_index.style.set_precision(1)
     circle_time = []
     circle_collect_time = []
     circle_herd_time = []
@@ -143,6 +144,7 @@ def main():
     df_avg_time_v = df_v_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'})
     df_avg_time_v_index = df_avg_time_v.copy()
     df_avg_time_v_index.set_index('Testtype', inplace=True, drop=True)
+    df_avg_time_v_index.style.set_precision(1)
     v_time = []
     v_collect_time = []
     v_herd_time = []
@@ -187,6 +189,7 @@ def main():
     df_avg_time_polygon = df_polygon_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'})
     df_avg_time_polygon_index = df_avg_time_polygon.copy()
     df_avg_time_polygon_index.set_index('Testtype', inplace=True, drop=True)
+    df_avg_time_polygon_index.style.set_precision(1)
     polygon_time = []
     polygon_collect_time = []
     polygon_herd_time = []
@@ -229,20 +232,20 @@ def main():
     
     N = 4
     ind = np.arange(N) # the x locations for the groups
-    width = 0.10
+    width = 0.20
 
     # SUKSESSRATEN FOR SIMULERINGENE
     fig_time, ax_time = plt.subplots()
 
     #TEST
-    circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Circle collect')
-    circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Circle herd')
+    circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Circle collect', color='lightcoral')
+    circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Circle herd', color='crimson')
 
-    v_collect = ax_time.bar(ind, v_collect_time, width, label='v collect')
-    v_herd = ax_time.bar(ind, v_herd_time, width, bottom=v_collect_time, label='v herd')
+    v_collect = ax_time.bar(ind, v_collect_time, width, label='v collect', color='lightskyblue')
+    v_herd = ax_time.bar(ind, v_herd_time, width, bottom=v_collect_time, label='v herd', color='dodgerblue')
 
-    polygon_collect = ax_time.bar(ind+0.25, polygon_collect_time, width, label='Polygon collect')
-    polygon_herd = ax_time.bar(ind+0.25, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon herd')
+    polygon_collect = ax_time.bar(ind+0.25, polygon_collect_time, width, label='Polygon collect', color='mediumpurple')
+    polygon_herd = ax_time.bar(ind+0.25, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon herd', color='indigo')
 
     # circle_time = ax_time.bar(ind-0.15, circle_time, width, label='Circle')
     # v_time = ax_time.bar(ind+0.05, v_time, width, label='V')
@@ -253,11 +256,11 @@ def main():
     # ax_time.bar_label(polygon_time, label_type='center')
 
     ax_time.bar_label(circle_collect, label_type='center')
-    ax_time.bar_label(circle_herd, label_type='center')
+    ax_time.bar_label(circle_herd, label_type='edge')
     ax_time.bar_label(v_collect, label_type='center')
-    ax_time.bar_label(v_herd, label_type='center')
+    ax_time.bar_label(v_herd, label_type='edge')
     ax_time.bar_label(polygon_collect, label_type='center')
-    ax_time.bar_label(polygon_herd, label_type='center')
+    ax_time.bar_label(polygon_herd, label_type='edge')
 
     
 
@@ -305,14 +308,14 @@ def main():
     # GJENNOMSNITTLIG GJETETID FOR SIMULERINGENE
     fig, ax = plt.subplots()
 
-    circle_1 = ax.bar(ind-0.25, circle_success, width, label='Circle Successes')
-    circle_2 = ax.bar(ind-0.25, circle_failure, width, label='Circle Failures')
+    circle_1 = ax.bar(ind-0.25, circle_success, width, label='Circle Successes', color='lightcoral')
+    circle_2 = ax.bar(ind-0.25, circle_failure, width, label='Circle Failures', color='crimson')
 
-    v_1 = ax.bar(ind, v_success, width, label='V Successes')
-    v_2 = ax.bar(ind, v_failure, width, label='V Failures')
+    v_1 = ax.bar(ind, v_success, width, label='V Successes', color='lightskyblue')
+    v_2 = ax.bar(ind, v_failure, width, label='V Failures', color='dodgerblue')
 
-    polygon_1 = ax.bar(ind+0.25, polygon_success, width, label='Polygon Successes')
-    polygon_2 = ax.bar(ind+0.25, polygon_failure, width, label='Polygon Failures')
+    polygon_1 = ax.bar(ind+0.25, polygon_success, width, label='Polygon Successes', color='mediumpurple')
+    polygon_2 = ax.bar(ind+0.25, polygon_failure, width, label='Polygon Failures', color='indigo')
 
     ax.bar_label(circle_1, label_type='center')
     ax.bar_label(circle_2, label_type='center')

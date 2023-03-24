@@ -12,7 +12,7 @@ from utils import Calculate
 
 
 class SharedMain:
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, sheeptype):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -22,7 +22,7 @@ class SharedMain:
         self.goal_vector = pygame.Vector2(500, 600)
         self.goal = Goal(self.goal_vector)
         self.sheep_away = False
-        self.sheeptype = sheeptype
+        self.perception = perception
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -52,10 +52,7 @@ class SharedMain:
         sheep_list = []
         i = 0
         for position in sheep_positions:
-            if self.sheeptype == 'normal_sheep':
-                sheep_list.append(Sheep(i, position))
-            if self.sheeptype == 'one_sheep':
-                sheep_list.append(SheepOne(i, position))
+            sheep_list.append(Sheep(i, position, self.perception))
             i += 1
 
         return sheep_list
@@ -189,7 +186,8 @@ class SharedMain:
                 elif self.testtype == "right_angle":
                     sheep_alignment_vector = pygame.Vector2(0, 0)
                     for s in sheep:
-                        sheep_alignment_vector += s.acceleration / np.linalg.norm(s.acceleration)
+                        if np.linalg.norm(s.acceleration) != 0:
+                            sheep_alignment_vector += s.acceleration / np.linalg.norm(s.acceleration)
                     sheep_alignment_vector /= len(sheep)
                     rotation_radians = np.radians(90)
                     newX = sheep_alignment_vector.x * np.cos(rotation_radians) - sheep_alignment_vector.y * np.sin(rotation_radians)
