@@ -45,7 +45,6 @@ class PolygonDrone:
                 self.velocity = self.velocity / velocity_distance * MAX_SPEED_SHEEP
         
         self.position += self.velocity * dt * target_fps
-        print(self.velocity)
         self.velocity = pygame.Vector2(0, 0)
 
     def move(self, goal, drones, sheep, canvas, dt, target_fps):

@@ -12,9 +12,9 @@ NO_SIMULATIONS = 1 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
-TESTTYPES = ["lone_sheep", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['polygon', 'circle', 'v']
-PERCEPTIONS = [40]#, #30, 40]
+TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
+DRONETYPES = ['circle', 'polygon', 'v']
+PERCEPTIONS = [40, 30, 20]
 
 
 def test(id, no_sheep, no_drones, FPS, dronetype, testtype, perception):
@@ -66,12 +66,12 @@ def main():
     df_circle = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
     df_polygon = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
-    for percetion in PERCEPTIONS:
+    for perception in PERCEPTIONS:
         for dronetype in DRONETYPES:
             for testtype in TESTTYPES:
                 for id in range(NO_SIMULATIONS):
-                    print(dronetype, testtype, id)
-                    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, percetion)
+                    print(perception, dronetype, testtype, id)
+                    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, perception)
                     if dronetype == 'circle':
                         df_circle = df_circle.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
                     if dronetype == 'v':

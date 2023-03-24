@@ -2,7 +2,6 @@ import sys
 import pygame, time
 import numpy as np
 from sheep import Sheep
-from sheep_one import SheepOne
 from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
