@@ -1,9 +1,0 @@
-Testtype,Gjetetid,Suksessrate,Oppsamlingstid,Drivetid
-cooperative_flock,118.44,100.0,13.950000000000001,104.49000000000001
-cooperative_flock,150.93,100.0,11.88,139.05
-lone_sheep,398.61,100.0,196.02,202.59
-lone_sheep,151.38,100.0,38.79,112.59
-divided_flock,220.95000000000002,100.0,168.84,52.11
-divided_flock,259.02,100.0,180.54000000000002,78.48
-right_angle,210.33,100.0,16.2,194.13
-right_angle,260.55,100.0,14.22,246.33
