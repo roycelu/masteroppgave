@@ -7,6 +7,7 @@ from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
 from v_drone import VDrone
 from our_drone import OurDrone
+from our_main_drone import OurMainDrone
 from goal import Goal
 from utils import Calculate
 
@@ -86,10 +87,15 @@ class SharedMain:
 
         sheep = self.sheep_behaviour(self.sheep_positions)
         drones = self.drone_behaviour(self.no_drones)
-        main_drone = None
+        
+        polygon_main_drone = None
+        our_main_drone = None
 
         if self.dronetype == 'polygon':
-            main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
+            polygon_main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
+
+        if self.dronetype == 'our':
+            our_main_drone = OurMainDrone(screen, self.goal, drones, sheep)
 
         clock = pygame.time.Clock()
         prev_time = time.time()
@@ -122,8 +128,12 @@ class SharedMain:
 
             centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)
 
-            if main_drone != None:
-                main_drone.run(drones, sheep, self.goal, centre_of_mass)
+            if polygon_main_drone != None:
+                polygon_main_drone.run(drones, sheep, self.goal, centre_of_mass)
+
+            if our_main_drone != None:
+                our_main_drone.run(drones, sheep, self.goal, centre_of_mass)
+
 
             sek = 1/self.FPS
 
@@ -164,7 +174,6 @@ class SharedMain:
                 drone.draw(screen, label_font)
                 drone.move(self.goal, drones, sheep, screen, dt, target_fps)
         
- 
 
             count = 0
             for value in goal_count:

@@ -38,6 +38,16 @@ class PolygonDrone:
     def update(self, sheep, dt, target_fps):
         # Make sure the drone does not move faster than max speed
         velocity_distance = np.linalg.norm(self.velocity)
+        
+        velocity_distance_sheep = 0
+        for s in sheep:
+            velocity_distance_sheep += np.linalg.norm(s.velocity)
+        velocity_distance_sheep /= len(sheep)
+
+        k = np.abs(np.linalg.norm(self.velocity)-velocity_distance_sheep)
+        self.velocity *= k
+        k=0
+
         if velocity_distance > MAX_SPEED:
             self.velocity = self.velocity / velocity_distance * MAX_SPEED
 
@@ -53,4 +63,4 @@ class PolygonDrone:
         self.update(sheep, dt, target_fps)
 
     def fly_to_position(self, position):
-        self.velocity = (position - self.position) * (STEP_SIZE / 100)
+        self.velocity = (position - self.position) #* (STEP_SIZE / 100)
