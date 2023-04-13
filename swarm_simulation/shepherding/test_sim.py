@@ -11,20 +11,22 @@ NO_SHEEP = 5
 NO_DRONES = 3
 NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
-TARGET_FPS = 100 # Hastigheten på simuleringen
+TARGET_FPS = 10 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['circle', 'polygon', 'v']
+DRONETYPES = ['our', 'circle', 'polygon', 'v']
 PERCEPTIONS = [40, 30, 20]
 
 
 def test(id, no_sheep, no_drones, FPS, dronetype, testtype, perception):
+    # Run the simulations
     sheep_positions = get_sheep_list(testtype, no_sheep)
     sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, perception)
     successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
     return successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time
     
 def get_sheep_list(testtype, no_sheep):
+    # Based on the testtype, the sheep are positioned different places
     position_list = [x for x in range(no_sheep)]
     
     if testtype == "cooperative_flock":
@@ -69,6 +71,7 @@ def main():
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
 
+    # Run all the different variations of the simulations
     for perception in PERCEPTIONS:
         df_circle = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
         df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
@@ -89,8 +92,7 @@ def main():
         df_v_original = df_v.copy()
         df_polygon_original = df_polygon.copy()
 
-        """Make tables"""
-        
+        # Make tables for all the data
         df_circle_original = df_circle_original.drop(columns=['Dronetype'])
         df_circle_original.to_csv('{path}/circle_{p}.csv'.format(path=dir_path, p=perception), index=False)
 
@@ -99,6 +101,7 @@ def main():
 
         df_polygon_original = df_polygon_original.drop(columns=['Dronetype'])
         df_polygon_original.to_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception), index=False)
+
 
         """Bar chart for average herd time from successful herding for all algorithms per test"""
         
@@ -143,7 +146,6 @@ def main():
             circle_time.append(0)
             circle_collect_time.append(0)
             circle_herd_time.append(0)
-
         
         # V
         df_v_success = df_v.loc[df_v['Suksessrate'] == 100]
@@ -236,14 +238,13 @@ def main():
             polygon_herd_time.append(0)
 
         
+        # Make figure
         N = 4
         ind = np.arange(N) # the x locations for the groups
         width = 0.20
 
-        # SUKSESSRATEN FOR SIMULERINGENE
         fig_time, ax_time = plt.subplots()
 
-        #TEST
         circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Circle collect', color='lightcoral')
         circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Circle herd', color='crimson')
 
@@ -253,21 +254,12 @@ def main():
         polygon_collect = ax_time.bar(ind+0.25, polygon_collect_time, width, label='Polygon collect', color='mediumpurple')
         polygon_herd = ax_time.bar(ind+0.25, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon herd', color='indigo')
 
-        # circle_time = ax_time.bar(ind-0.15, circle_time, width, label='Circle')
-        # v_time = ax_time.bar(ind+0.05, v_time, width, label='V')
-        # polygon_time = ax_time.bar(ind+0.25, polygon_time, width, label='Polygon')
-
-        # ax_time.bar_label(circle_time, label_type='center')
-        # ax_time.bar_label(v_time, label_type='center')
-        # ax_time.bar_label(polygon_time, label_type='center')
-
         ax_time.bar_label(circle_collect, label_type='center')
         ax_time.bar_label(circle_herd, label_type='edge')
         ax_time.bar_label(v_collect, label_type='center')
         ax_time.bar_label(v_herd, label_type='edge')
         ax_time.bar_label(polygon_collect, label_type='center')
         ax_time.bar_label(polygon_herd, label_type='edge')
-        
 
         ax_time.set_xlabel('Testtypes')
         ax_time.set_ylabel('Gjetetid')
@@ -277,13 +269,13 @@ def main():
         ax_time.set_title('Gjenomsnittlig gjetetid for hver dronealgoritme per testtype, p={}'.format(perception))
         ax_time.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-        # plt.show()
         fig_time.savefig("{path}/gjetetid_{p}.png".format(path=dir_path, p=perception), bbox_inches='tight')
         plt.close(fig_time)
 
 
         """Bar chart for successful and unsuccessful herding for all drone algorithms and every testtype"""
-        # Find successful and unsuccessful herding for Circle algorithm per test
+
+        # Find successful and unsuccessful herding for circle algorithm per test
         df_circle['Suksess'] = np.where(df_circle['Suksessrate'] == 100, 1, 0)
         df_circle['Failure'] = np.where(df_circle['Suksessrate'] != 100, -1, 0)
         df_circle = df_circle.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Suksess': 'sum', 'Failure':'sum'})
@@ -291,7 +283,6 @@ def main():
         circle_success = df_circle['Suksess']
         circle_failure = df_circle['Failure']
         
-
         # Find successful and unsuccessful herding for v algorithm per test
         df_v['Suksess'] = np.where(df_v['Suksessrate'] == 100, 1, 0)
         df_v['Failure'] = np.where(df_v['Suksessrate'] != 100, -1, 0)
@@ -300,7 +291,6 @@ def main():
         v_success = df_v['Suksess']
         v_failure = df_v['Failure']
         
-
         # Find successful and unsuccessful herding for Polygon algorithm per test
         df_polygon['Suksess'] = np.where(df_polygon['Suksessrate'] == 100, 1, 0)
         df_polygon['Failure'] = np.where(df_polygon['Suksessrate'] != 100, -1, 0)
@@ -310,7 +300,7 @@ def main():
         polygon_failure = df_polygon['Failure']
         
         
-        # GJENNOMSNITTLIG GJETETID FOR SIMULERINGENE
+        # Make figure
         fig, ax = plt.subplots()
 
         circle_1 = ax.bar(ind-0.25, circle_success, width, label='Circle Successes', color='lightcoral')
@@ -338,7 +328,6 @@ def main():
         ax.set_title('Number of success and failure by testtype, p={}'.format(perception))
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-        # plt.show()
         fig.savefig("{path}/suksessrate_{p}.png".format(path=dir_path, p=perception), bbox_inches='tight')
         plt.close(fig)
 

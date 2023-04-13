@@ -43,6 +43,7 @@ class Sheep:
     def update(self, drones, dt, target_fps):
         self.velocity += self.acceleration * dt * target_fps
 
+        # Make sure sheep doesn't move faster than max speed
         velocity_distance = np.linalg.norm(self.velocity)
         if (self.position-drones[0].position).magnitude() <= GRAZE_PERCEPTION or (self.position-drones[1].position).magnitude() <= GRAZE_PERCEPTION or (self.position-drones[2].position).magnitude() <= GRAZE_PERCEPTION:
             self.velocity = self.velocity / velocity_distance * MAX_SPEED
@@ -53,11 +54,13 @@ class Sheep:
         self.acceleration = pygame.Vector2(0,0)
 
     def move(self, goal, sheep, drones, dt, target_fps):
+        # Find forces acting on sheep
         alignment = self.alignment(sheep)
         cohesion = self.cohesion(sheep)
         separation = self.separation(sheep)
         escape = self.escape(drones)  # Move away from predators
 
+        # Update acceleration
         self.acceleration += alignment * A_WEIGHT
         self.acceleration += cohesion * C_WEIGHT
         self.acceleration += separation * S_WEIGHT
@@ -66,12 +69,10 @@ class Sheep:
         self.update(drones, dt, target_fps)
 
         if self.figure.colliderect(goal.figure):
-            #print("{id} reached the goal".format(id="sheep" + str(self.id)))
             return True
             
-
-
     def separation(self, sheep):
+        # Sheep should move away from other sheep to avoid collisions
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
@@ -82,6 +83,7 @@ class Sheep:
         return total
     
     def alignment(self, sheep):
+        # Sheep should move in same direction as other sheep in close proximity
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
@@ -92,6 +94,7 @@ class Sheep:
         return total
 
     def cohesion(self, sheep):
+        # Sheep should move together with the flock
         total = pygame.Vector2(0, 0)
         for s in sheep:
             distance = self.position-s.position
@@ -103,6 +106,7 @@ class Sheep:
         return total
     
     def escape(self, drones):
+        # Sheep should move away from drones
         total = pygame.Vector2(0, 0)
         for drone in drones:
             distance = self.position-drone.position

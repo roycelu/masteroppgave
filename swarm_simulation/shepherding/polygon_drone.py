@@ -36,10 +36,12 @@ class PolygonDrone:
         canvas.blit(label, label_rect)
 
     def update(self, sheep, dt, target_fps):
+        # Make sure the drone does not move faster than max speed
         velocity_distance = np.linalg.norm(self.velocity)
         if velocity_distance > MAX_SPEED:
             self.velocity = self.velocity / velocity_distance * MAX_SPEED
 
+        # If the drone is close to the sheep, make sure the drone does not move faster than the sheep
         for s in sheep:
             if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION) and velocity_distance != 0:
                 self.velocity = self.velocity / velocity_distance * MAX_SPEED_SHEEP

@@ -6,6 +6,7 @@ from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
 from v_drone import VDrone
+from our_drone import OurDrone
 from goal import Goal
 from utils import Calculate
 
@@ -48,6 +49,7 @@ class SharedMain:
 
 
     def sheep_behaviour(self, sheep_positions):
+        # Create sheep
         sheep_list = []
         i = 0
         for position in sheep_positions:
@@ -58,6 +60,7 @@ class SharedMain:
 
 
     def drone_behaviour(self, n):
+        # Create drones
         drone_list = [x for x in range(n)]
         for i in drone_list:
             x = np.random.randint(200, 220)
@@ -69,6 +72,8 @@ class SharedMain:
                 drone_list[i] = VDrone(i, position)
             if self.dronetype == "polygon":
                 drone_list[i] = PolygonDrone(i, position)
+            if self.dronetype == "our":
+                drone_list[i] = OurDrone(i, position)
         return drone_list
 
 
@@ -126,9 +131,12 @@ class SharedMain:
             reached_goal_number = []
             sheep_count = 0
             all_sheep = False
+
+            # Make sheep move
             for s in sheep:
                 s.draw(screen, label_font)
                 sheep_id_goal_reached = s.move(self.goal, sheep, drones, dt, target_fps)
+                # Keep track of whether sheep have reached the goal or not
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
                     reached_goal_time_list.append(pygame.time.get_ticks()/1000)
@@ -151,7 +159,7 @@ class SharedMain:
                 herd_time += (curr_time - prev_time_herding)
                 prev_time_herding = curr_time
      
-
+            # Make drones move
             for drone in drones:
                 drone.draw(screen, label_font)
                 drone.move(self.goal, drones, sheep, screen, dt, target_fps)
@@ -166,19 +174,14 @@ class SharedMain:
                     break
 
             
+            # If the test i "right angle", make new goal when first goal is reached
             if count == len(self.sheep_positions):
                 if goals_reached == 1 and self.testtype == "right_angle":
                     successrate = (count / len(self.sheep_positions)) * 100
                     herdtime = pygame.time.get_ticks() / (sek * 1000)
-                    # print('herdtime 1', herdtime)
-                    # print('prev_time herding 1', prev_time_herding)
                     herd_time += (pygame.time.get_ticks() - prev_time_herding)
-                    # print('collect time 1', collect_time)
-                    # print('herd time 1', herd_time)
                     herd_time /= (sek * 1000)
                     collect_time /= (sek * 1000)
-                    # print('collect time 1 after', collect_time)
-                    # print('herd time 1 after', herd_time)
                     pygame.quit()
                     return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
                 
@@ -199,30 +202,18 @@ class SharedMain:
                 else:
                     successrate = (count / len(self.sheep_positions)) * 100
                     herdtime = pygame.time.get_ticks() / (sek * 1000)
-                    # print('herdtime 2', herdtime)
-                    # print('prev_time herding 2', prev_time_herding)
                     herd_time += (pygame.time.get_ticks() - prev_time_herding)
-                    # print('collect time 2', collect_time)
-                    # print('herd time 2', herd_time)
                     herd_time /= (sek * 1000)
                     collect_time /= (sek * 1000)
-                    # print('collect time 2 after', collect_time)
-                    # print('herd time 2 after', herd_time)
                     pygame.quit()
                     return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
 
             if pygame.time.get_ticks() > time_limit:   
                 successrate = (count / len(self.sheep_positions)) * 100
                 herdtime = pygame.time.get_ticks() / (sek * 1000)
-                # print('herdtime 3', herdtime)
-                # print('prev_time herding 3', prev_time_herding)
                 herd_time += (pygame.time.get_ticks() - prev_time_herding)
-                # print('collect time 3', collect_time)
-                # print('herd time 3', herd_time)
                 herd_time /= (sek * 1000)
                 collect_time /= (sek * 1000)
-                # print('collect time 3 after', collect_time)
-                # print('herd time 3 after', herd_time)
                 pygame.quit()     
                 return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time 
 

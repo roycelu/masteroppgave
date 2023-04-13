@@ -10,7 +10,7 @@ DESIRED_SEPARATION_SHEEP = 15
 PERCEPTION = 100
 
 
-class VDrone:
+class OurDrone:
     def __init__(self, id, initial_position):
         self.id = id
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)
@@ -63,7 +63,7 @@ class VDrone:
 
 
     def find_steering_point(self, com, distance_from_com, drones, goal, canvas):
-        theta = np.pi/6 # = 30, angle is fixed
+        theta = np.pi/8 # = 30, angle is fixed
         
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
@@ -74,22 +74,32 @@ class VDrone:
         P_right = pygame.Vector2(0, 0)
 
         if self.id == 0:
-            P_left = point
-            P_center = com + (point - com).rotate_rad(theta)
-            P_right = com + (point - com).rotate_rad(2 * theta)
+            P_left = com + (point - com).rotate_rad(theta)
+            P_center = point
+            P_right = com + (point - com).rotate_rad(-theta)
 
-            pygame.draw.circle(canvas, pygame.Color("blue"), P_center, 5)
-            pygame.draw.circle(canvas, pygame.Color("blue"), P_left, 3)
-            pygame.draw.circle(canvas, pygame.Color("blue"), P_right, 3)
+            # pygame.draw.circle(canvas, pygame.Color("blue"), P_center, 5)
+            # pygame.draw.circle(canvas, pygame.Color("blue"), P_left, 3)
+            # pygame.draw.circle(canvas, pygame.Color("blue"), P_right, 3)
 
         if self.id == 1:
-            P_right = point
-            P_center = com + (point - com).rotate_rad(-theta)
+            P_right = com + (point - com).rotate_rad(theta)
+            P_center = com + (point - com).rotate_rad(1.5 * theta) 
+            P_left = com + (point - com).rotate_rad(2 * theta)
+
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_center, 5)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_left, 3)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_right, 3)
+
+        if self.id == 2:
+            P_right = com + (point - com).rotate_rad(-theta)
+            P_center = com + (point - com).rotate_rad(1.5 * -theta) 
             P_left = com + (point - com).rotate_rad(2 * -theta)
 
-            pygame.draw.circle(canvas, pygame.Color("yellow"), P_center, 5)
-            pygame.draw.circle(canvas, pygame.Color("yellow"), P_left, 3)
-            pygame.draw.circle(canvas, pygame.Color("yellow"), P_right, 3)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_center, 5)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_left, 3)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_right, 3)
+            
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
