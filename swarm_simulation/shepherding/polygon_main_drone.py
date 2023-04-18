@@ -236,8 +236,8 @@ class PolygonMainDrone:
 
         # Remark 5: Each drone is allocated to each steering point, if there is enough of steering points to be allocated, or else the drone stand by
         x = 0
-        if len(steering_points) <= len(drones):
-            x = len(steering_points) - len(drones)
+        if len(steering_points) < len(drones):
+            x = len(drones) - len(steering_points) 
             if x < 0:
                 x = 0
 

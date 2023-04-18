@@ -48,13 +48,13 @@ class PolygonDrone:
         self.velocity *= k
         k=0
 
-        if velocity_distance > MAX_SPEED:
-            self.velocity = self.velocity / velocity_distance * MAX_SPEED
+        if np.linalg.norm(self.velocity) > MAX_SPEED:
+            self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
 
         # If the drone is close to the sheep, make sure the drone does not move faster than the sheep
         for s in sheep:
             if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION) and velocity_distance != 0:
-                self.velocity = self.velocity / velocity_distance * MAX_SPEED_SHEEP
+                self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
         
         self.position += self.velocity * dt * target_fps
         self.velocity = pygame.Vector2(0, 0)

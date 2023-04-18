@@ -6,8 +6,8 @@ from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
 from v_drone import VDrone
-from our_drone import OurDrone
-from our_main_drone import OurMainDrone
+from our_drone_polygon import OurDronePolygon
+from our_main_drone_polygon import OurMainDronePolygon
 from goal import Goal
 from utils import Calculate
 
@@ -74,7 +74,7 @@ class SharedMain:
             if self.dronetype == "polygon":
                 drone_list[i] = PolygonDrone(i, position)
             if self.dronetype == "our":
-                drone_list[i] = OurDrone(i, position)
+                drone_list[i] = OurDronePolygon(i, position)
         return drone_list
 
 
@@ -95,7 +95,7 @@ class SharedMain:
             polygon_main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
 
         if self.dronetype == 'our':
-            our_main_drone = OurMainDrone(screen, self.goal, drones, sheep)
+            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep)
 
         clock = pygame.time.Clock()
         prev_time = time.time()
