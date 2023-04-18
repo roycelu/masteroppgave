@@ -17,13 +17,15 @@ TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['polygon', 'circle', 'v']
 PERCEPTIONS = [40, 30, 20]
 
+pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
+
 
 def test(id, no_sheep, no_drones, FPS, dronetype, testtype, perception):
     # Run the simulations
     sheep_positions = get_sheep_list(testtype, no_sheep)
     sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, perception)
-    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
-    return successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time
+    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herdtime = sim.main(TIME_LIMIT, TARGET_FPS)
+    return round(successrate,2), round(herdtime,2), reached_goal_times, reached_goal_number, round(collect_time,2), round(actual_herdtime,2)
     
 def get_sheep_list(testtype, no_sheep):
     # Based on the testtype, the sheep are positioned different places
@@ -36,14 +38,14 @@ def get_sheep_list(testtype, no_sheep):
             position_list[i] = pygame.Vector2(x, y) 
     
     if testtype == "lone_sheep":
-        for i in range(len(position_list)-1):
-            x = np.random.randint(400, 420)
-            y = np.random.randint(200, 220)
+        for i in range(len(position_list)):
+            if i == len(position_list)-1:
+                x = np.random.randint(200, 220)
+                y = np.random.randint(400, 420)
+            else:
+                x = np.random.randint(400, 420)
+                y = np.random.randint(200, 220)
             position_list[i] = pygame.Vector2(x, y) 
-        
-        x = np.random.randint(300, 320)
-        y = np.random.randint(800, 820)
-        position_list[-1] = pygame.Vector2(x, y)
     
     if testtype == "divided_flock":
         middle_index = len(position_list)//2
@@ -107,10 +109,9 @@ def main():
         
         # Circle
         df_circle_success = df_circle.loc[df_circle['Suksessrate'] == 100]
-        df_avg_time_circle = df_circle_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'})
+        df_avg_time_circle = df_circle_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'}).round(2) # Runder av til to desimaler
         df_avg_time_circle_index = df_avg_time_circle.copy()
         df_avg_time_circle_index.set_index('Testtype', inplace=True, drop=True)
-        df_avg_time_circle_index.style.set_precision(1)
         circle_time = []
         circle_collect_time = []
         circle_herd_time = []
@@ -149,10 +150,9 @@ def main():
         
         # V
         df_v_success = df_v.loc[df_v['Suksessrate'] == 100]
-        df_avg_time_v = df_v_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'})
+        df_avg_time_v = df_v_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'}).round(2) # Runder av til to desimaler
         df_avg_time_v_index = df_avg_time_v.copy()
         df_avg_time_v_index.set_index('Testtype', inplace=True, drop=True)
-        df_avg_time_v_index.style.set_precision(1)
         v_time = []
         v_collect_time = []
         v_herd_time = []
@@ -194,10 +194,9 @@ def main():
 
         # Polygon
         df_polygon_success = df_polygon.loc[df_polygon['Suksessrate'] == 100]
-        df_avg_time_polygon = df_polygon_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'})
+        df_avg_time_polygon = df_polygon_success.groupby(['Testtype', 'Dronetype'], as_index=False).aggregate({'Gjetetid':'mean', 'Oppsamlingstid':'mean', 'Drivetid':'mean'}).round(2) # Runder av til to desimaler
         df_avg_time_polygon_index = df_avg_time_polygon.copy()
         df_avg_time_polygon_index.set_index('Testtype', inplace=True, drop=True)
-        df_avg_time_polygon_index.style.set_precision(1)
         polygon_time = []
         polygon_collect_time = []
         polygon_herd_time = []
@@ -243,30 +242,30 @@ def main():
         ind = np.arange(N) # the x locations for the groups
         width = 0.20
 
+        # GJENNOMSNITTLIG GJETETID FOR SIMULERINGENE
         fig_time, ax_time = plt.subplots()
 
-        circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Circle collect', color='lightcoral')
-        circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Circle herd', color='crimson')
+        circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Sirkel: samletid = {}'.format(circle_collect_time), color='lightcoral')
+        circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Sirkel: drivetid = {}'.format(circle_herd_time), color='crimson')
 
-        v_collect = ax_time.bar(ind, v_collect_time, width, label='v collect', color='lightskyblue')
-        v_herd = ax_time.bar(ind, v_herd_time, width, bottom=v_collect_time, label='v herd', color='dodgerblue')
+        v_collect = ax_time.bar(ind, v_collect_time, width, label='V: samletid = {}'.format(v_collect_time), color='lightskyblue')
+        v_herd = ax_time.bar(ind, v_herd_time, width, bottom=v_collect_time, label='V: drivetid = {}'.format(v_herd_time), color='dodgerblue')
 
-        polygon_collect = ax_time.bar(ind+0.25, polygon_collect_time, width, label='Polygon collect', color='mediumpurple')
-        polygon_herd = ax_time.bar(ind+0.25, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon herd', color='indigo')
+        polygon_collect = ax_time.bar(ind+0.25, polygon_collect_time, width, label='Polygon: samletid = {}'.format(polygon_collect_time), color='mediumpurple')
+        polygon_herd = ax_time.bar(ind+0.25, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='indigo')
+        
+        ax_time.bar_label(circle_herd, circle_time, rotation=90, padding=5)
+        ax_time.bar_label(v_herd, v_time, rotation=90, padding=5)
+        ax_time.bar_label(polygon_herd, polygon_time, rotation=90, padding=5)
 
-        ax_time.bar_label(circle_collect, label_type='center')
-        ax_time.bar_label(circle_herd, label_type='edge')
-        ax_time.bar_label(v_collect, label_type='center')
-        ax_time.bar_label(v_herd, label_type='edge')
-        ax_time.bar_label(polygon_collect, label_type='center')
-        ax_time.bar_label(polygon_herd, label_type='edge')
+        ax_time.margins(y=0.2)
 
-        ax_time.set_xlabel('Testtypes')
-        ax_time.set_ylabel('Gjetetid')
+        ax_time.set_xlabel('Testscenarioer')
+        ax_time.set_ylabel('Gjennomsnittlig gjetetid')
         ax_time.set_xticks(ind)
         ax_time.set_xticklabels(["Cooperative flock", "Lone sheep", "Divided flock", "Right angle"])
 
-        ax_time.set_title('Gjenomsnittlig gjetetid for hver dronealgoritme per testtype, p={}'.format(perception))
+        ax_time.set_title('Gjenomsnittlig total gjetetid, p={}'.format(perception))
         ax_time.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
         fig_time.savefig("{path}/gjetetid_{p}.png".format(path=dir_path, p=perception), bbox_inches='tight')
@@ -300,32 +299,34 @@ def main():
         polygon_failure = df_polygon['Failure']
         
         
-        # Make figure
+        # SUKSESSRATEN FOR SIMULERINGENE
         fig, ax = plt.subplots()
 
-        circle_1 = ax.bar(ind-0.25, circle_success, width, label='Circle Successes', color='lightcoral')
-        circle_2 = ax.bar(ind-0.25, circle_failure, width, label='Circle Failures', color='crimson')
+        circle_1 = ax.bar(ind-0.25, circle_success, width, label='Sirkel: suksess', color='lightcoral')
+        circle_2 = ax.bar(ind-0.25, circle_failure, width, label='Sirkel: mislykket', color='crimson')
 
-        v_1 = ax.bar(ind, v_success, width, label='V Successes', color='lightskyblue')
-        v_2 = ax.bar(ind, v_failure, width, label='V Failures', color='dodgerblue')
+        v_1 = ax.bar(ind, v_success, width, label='V: suksess', color='lightskyblue')
+        v_2 = ax.bar(ind, v_failure, width, label='V: mislykket', color='dodgerblue')
 
-        polygon_1 = ax.bar(ind+0.25, polygon_success, width, label='Polygon Successes', color='mediumpurple')
-        polygon_2 = ax.bar(ind+0.25, polygon_failure, width, label='Polygon Failures', color='indigo')
+        polygon_1 = ax.bar(ind+0.25, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
+        polygon_2 = ax.bar(ind+0.25, polygon_failure, width, label='Polygon: mislykket', color='indigo')
 
-        ax.bar_label(circle_1, label_type='center')
-        ax.bar_label(circle_2, label_type='center')
-        ax.bar_label(v_1, label_type='center')
-        ax.bar_label(v_2, label_type='center')
-        ax.bar_label(polygon_1, label_type='center')
-        ax.bar_label(polygon_2, label_type='center')
+        ax.bar_label(circle_1, padding=2)
+        ax.bar_label(circle_2, padding=2)
+        ax.bar_label(v_1, padding=2)
+        ax.bar_label(v_2, padding=2)
+        ax.bar_label(polygon_1, padding=2)
+        ax.bar_label(polygon_2, padding=2)
+
+        ax.margins(y=0.1)
 
         ax.axhline(0, color='grey', linewidth=0.8)
-        ax.set_xlabel('Testtypes')
-        ax.set_ylabel('Simuleringer')
+        ax.set_xlabel('Testscenarioer')
+        ax.set_ylabel('Antall simuleringer')
         ax.set_xticks(ind)
         ax.set_xticklabels(["Cooperative flock", "Lone sheep", "Divided flock", "Right angle"])
 
-        ax.set_title('Number of success and failure by testtype, p={}'.format(perception))
+        ax.set_title('Antall simuleringer som er suksess og mislykket, p={}'.format(perception))
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
         fig.savefig("{path}/suksessrate_{p}.png".format(path=dir_path, p=perception), bbox_inches='tight')

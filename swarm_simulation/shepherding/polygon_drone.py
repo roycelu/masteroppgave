@@ -63,4 +63,4 @@ class PolygonDrone:
         self.update(sheep, dt, target_fps)
 
     def fly_to_position(self, position):
-        self.velocity = (position - self.position) #* (STEP_SIZE / 100)
+        self.velocity = (position - self.position) * (STEP_SIZE / 100)
