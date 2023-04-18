@@ -197,8 +197,8 @@ class SharedMain:
                 elif self.testtype == "right_angle":
                     sheep_alignment_vector = pygame.Vector2(0, 0)
                     for s in sheep:
-                        if np.linalg.norm(s.acceleration) != 0:
-                            sheep_alignment_vector += s.acceleration / np.linalg.norm(s.acceleration)
+                        if np.linalg.norm(s.velocity) != 0:
+                            sheep_alignment_vector += s.velocity / np.linalg.norm(s.velocity)
                     sheep_alignment_vector /= len(sheep)
                     rotation_radians = np.radians(90)
                     newX = sheep_alignment_vector.x * np.cos(rotation_radians) - sheep_alignment_vector.y * np.sin(rotation_radians)
