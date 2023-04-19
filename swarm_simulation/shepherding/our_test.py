@@ -14,9 +14,9 @@ TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 10 # Hastigheten på simuleringen
 FPS = 30
 
-TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-COLLECT_TYPE = ['polygon', 'furthest']
-DRIVE_TYPE = ['sync', 'async']
+TEST_TYPE = ["lone_sheep", "lone_sheep", "divided_flock", "right_angle"]
+COLLECT_TYPE = ['furthest', 'polygon']
+DRIVE_TYPE = ['async', 'sync']
 ANGLE = [40, 30, 20]
 
 
@@ -69,7 +69,7 @@ def get_sheep_list(testtype, no_sheep):
 
 def main():    
     # Make a new directory to save the results
-    dir_path = './ourresults/{}'.format(str(datetime.now()))
+    dir_path = './results/{}'.format(str(datetime.now()))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
 
