@@ -4,6 +4,7 @@ import numpy as np
 from sheep import Sheep
 from our_drone_polygon import OurDronePolygon
 from our_drone_furthest import OurDroneFurthest
+from our_main_drone_furthest import OurMainDroneFurthest
 from our_main_drone_polygon import OurMainDronePolygon
 from goal import Goal
 from utils import Calculate
@@ -22,6 +23,7 @@ class Main:
         self.sheep_away = False
         self.drive_type = drive_type
         self.theta = theta
+        self.perception = 40
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -65,9 +67,9 @@ class Main:
             x = np.random.randint(200, 220)
             y = np.random.randint(200, 220)
             position = pygame.Vector2(x, y)
-            if self.collect_type == "our_polygon":
+            if self.collect_type == "polygon":
                 drone_list[i] = OurDronePolygon(i, position)
-            if self.collect_type == "our_furthest":
+            if self.collect_type == "furthest":
                 drone_list[i] = OurDroneFurthest(i, position)
         return drone_list
 
@@ -84,8 +86,12 @@ class Main:
         
         our_main_drone = None
 
-        if self.dronetype == 'our_polygon':
-            our_main_drone_polygon = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta)
+        if self.collect_type == 'polygon':
+            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta, self.drive_type)
+        if self.collect_type == 'furthest':
+            our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta, self.drive_type)
+
+        
 
         clock = pygame.time.Clock()
         prev_time = time.time()
@@ -118,8 +124,9 @@ class Main:
 
             centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)
 
-            if our_main_drone_polygon != None:
-                our_main_drone_polygon.run(drones, sheep, self.goal, centre_of_mass)
+            if our_main_drone != None:
+                our_main_drone.run(drones, sheep, self.goal, centre_of_mass)
+
 
             sek = 1/self.FPS
 
