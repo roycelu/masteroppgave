@@ -1,6 +1,9 @@
+from datetime import datetime
+import os
 import sys
 import pygame, time
 import numpy as np
+import math
 from sheep import Sheep
 from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
@@ -13,7 +16,7 @@ from utils import Calculate
 
 
 class SharedMain:
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, results_path):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -24,6 +27,7 @@ class SharedMain:
         self.goal = Goal(self.goal_vector)
         self.sheep_away = False
         self.perception = perception
+        self.results_path = results_path
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -78,7 +82,27 @@ class SharedMain:
         return drone_list
 
 
-    def main(self, time_limit, target_fps):
+    def capture_screenshot(self, clock_time, screen, capture_times):
+        time = math.ceil(clock_time) # TODO: Finne en bedre måte å runde av 'clock_time' til nærmeste 'capture_time', typ 48 => 50 hvis neste 'clock_time' er over 50+
+        if time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
+
+            # Creates a directory to save the screenshots, if it not already exists
+            path = '{}/screenshots/{}_{}'.format(self.results_path, self.dronetype, time)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            
+            # Take the screenshot and save it
+            print("klikk klikk", clock_time, time)
+            text = pygame.font.SysFont("Times New Roman", 25)
+            text = text.render('TestID: {}  |  Tid: {}  |  Testscenario: {}  |  Dronemetode: {}  |  Synsrekkevidde: {}'.format(self.id, time, self.testtype, self.dronetype, self.perception), True, pygame.Color("black"), pygame.Color("white"))
+            rect = text.get_rect()
+            rect.left, rect.bottom = 10, screen.get_height()-10
+            screen.blit(text, rect)
+            image = screen.copy()
+            pygame.image.save(image, '{path}/{id}_{t}{p}.png'.format(path=path, id=self.id, t=self.testtype, p=self.perception))        
+
+
+    def main(self, time_limit, target_fps, capture_times):
         pygame.init()
         pygame.display.set_caption("The shepherding problem")
 
@@ -88,14 +112,11 @@ class SharedMain:
         sheep = self.sheep_behaviour(self.sheep_positions)
         drones = self.drone_behaviour(self.no_drones)
         
-        polygon_main_drone = None
-        our_main_drone = None
-
+        main_drone = None
         if self.dronetype == 'polygon':
-            polygon_main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
-
+            main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
         if self.dronetype == 'our':
-            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep)
+            main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep)
 
         clock = pygame.time.Clock()
         prev_time = time.time()
@@ -128,11 +149,8 @@ class SharedMain:
 
             centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)
 
-            if polygon_main_drone != None:
-                polygon_main_drone.run(drones, sheep, self.goal, centre_of_mass)
-
-            if our_main_drone != None:
-                our_main_drone.run(drones, sheep, self.goal, centre_of_mass)
+            if main_drone != None:
+                main_drone.run(drones, sheep, self.goal, centre_of_mass)
 
 
             sek = 1/self.FPS
@@ -183,6 +201,10 @@ class SharedMain:
                     break
 
             
+            # Øyeblikksbilder av simuleringen på gitte tidspunkt
+            self.capture_screenshot(pygame.time.get_ticks() / (sek * 1000), screen, capture_times)
+
+
             # If the test i "right angle", make new goal when first goal is reached
             if count == len(self.sheep_positions):
                 if goals_reached == 1 and self.testtype == "right_angle":
@@ -204,7 +226,8 @@ class SharedMain:
                     newX = sheep_alignment_vector.x * np.cos(rotation_radians) - sheep_alignment_vector.y * np.sin(rotation_radians)
                     newY = sheep_alignment_vector.x * np.sin(rotation_radians) + sheep_alignment_vector.y * np.cos(rotation_radians)
                     vector = pygame.Vector2(newX, newY)
-                    self.goal_vector += vector*200
+                    vector.scale_to_length(200) # Sørger for lik avstand hver gang
+                    self.goal_vector += vector
                     self.goal = Goal(self.goal_vector)
                     goals_reached += 1    
                 
@@ -224,8 +247,8 @@ class SharedMain:
                 herd_time /= (sek * 1000)
                 collect_time /= (sek * 1000)
                 pygame.quit()     
-                return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time 
-
+                return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
 
             pygame.display.update()
             pygame.time.Clock().tick_busy_loop(self.FPS)
+            

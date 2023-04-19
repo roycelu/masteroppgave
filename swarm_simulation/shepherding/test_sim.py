@@ -14,17 +14,18 @@ TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-DRONETYPES = ['polygon', 'circle', 'v']
+DRONETYPES = ['circle', 'polygon', 'v']
 PERCEPTIONS = [40, 30, 20]
+CAPTURE_TIMES = [50, 150, 300, 500, 750, 1000, 1500, 2000]
 
 pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
 
 
-def test(id, no_sheep, no_drones, FPS, dronetype, testtype, perception):
+def test(id, no_sheep, no_drones, FPS, dronetype, testtype, perception, dir_path):
     # Run the simulations
     sheep_positions = get_sheep_list(testtype, no_sheep)
-    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, perception)
-    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herdtime = sim.main(TIME_LIMIT, TARGET_FPS)
+    sim = SharedMain(id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, dir_path)
+    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herdtime = sim.main(TIME_LIMIT, TARGET_FPS, CAPTURE_TIMES)
     return round(successrate,2), round(herdtime,2), reached_goal_times, reached_goal_number, round(collect_time,2), round(actual_herdtime,2)
     
 def get_sheep_list(testtype, no_sheep):
@@ -82,7 +83,7 @@ def main():
             for testtype in TESTTYPES:
                 for id in range(NO_SIMULATIONS):
                     print(perception, dronetype, testtype, id)
-                    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, perception)
+                    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, perception, dir_path)
                     if dronetype == 'circle':
                         df_circle = df_circle.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
                     if dronetype == 'v':
