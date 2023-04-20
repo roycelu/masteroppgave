@@ -1,0 +1,172 @@
+import pygame
+import numpy as np
+import shapely.geometry as shp
+from scipy.spatial import ConvexHull
+from goal import Goal
+from itertools import permutations
+
+
+DISTANCE = 20 #30  # drone-to-animal distance (predefined)
+TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
+SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined)
+
+
+class OurMainDroneFurthest:
+    def __init__(self, canvas, goal, drones, sheeps, theta, drive_type):
+        self.canvas = canvas
+
+        self.main_goal = goal
+        self.goal = Goal(goal.position)
+        self.drones = drones
+        self.sheeps = sheeps
+
+        self.centre_of_mass = pygame.Vector2(0, 0)
+
+        self.on_edge = False
+        self.toward_goal = False
+
+        self.theta = theta
+        self.drive_type = drive_type
+
+
+    def allocate_steering_points(self, drones, sheep, com, goal):
+        # Find sheep behind center of mass relative to the goal
+        com_goal = com - goal.position
+        steering_points = []
+        flocks = []
+        for s in sheep:
+            s_com = com - s.position
+            angle = com_goal.angle_to(s_com)
+            #pygame.draw.circle(self.canvas, pygame.Color('blue'), s.position, 5)
+            if abs(angle) > 45:
+                steering_points.append(s.position)
+                flocks.append([s])
+                #pygame.draw.circle(self.canvas, pygame.Color('pink'), s.position, 8)
+        # Group sheep so as to consider them as one if they are within 5 px of each other
+        i = 0
+        for list_f in flocks:
+            print('flock', flocks)
+            com = pygame.Vector2(0,0)
+            for sheep in list_f:
+                com += sheep.position
+            com /= len(list_f)
+            
+            for element in flocks[flocks.index(list_f)+1:]:
+                for sheep in element:
+                    if sheep.position.distance_to(com) < 15:
+                        list_f.append(sheep)
+
+        com_list = []
+        for list_f in flocks:
+            com_p = pygame.Vector2(0,0)
+            for sheep in list_f:
+                com_p += sheep.position
+            com_p /= len(list_f)
+            com_list.append(com_p)
+            pygame.draw.circle(self.canvas, pygame.Color("lightblue"), com_p, 5)
+            pygame.draw.line(self.canvas, pygame.Color('lightblue'), (10,10), (10,20))
+        
+        
+        # Find the N sheep furthest away from the center of mass (the steering points)
+        # (Bubble) sorting based on the distance from the centre of mass
+        steering_sheep = []
+        if len(com_list) > 1:
+            for m in range(len(com_list)):
+                for n in range(len(com_list) - m - 1):
+                    d = com.distance_to(com_list[n])
+                    d2 = com.distance_to(com_list[n + 1])
+                    if d < d2:
+                        com_list[n], com_list[n + 1] = com_list[n + 1], com_list[n]
+            steering_sheep = com_list[:3]
+        else:
+            steering_sheep = com_list[:3]
+
+        # Find shortest total travel distance for all drones to the different variations of steeringpoints
+        shortest_total = np.inf
+        shortest_points = (2,0,1)
+        perm = permutations([0,1,2],2)
+        perm2 = permutations([0,1,2])
+
+        if len(steering_sheep) == 0 or len(steering_sheep) == 1:
+            print(steering_sheep)
+            return
+
+        elif len(steering_sheep) == 2:
+            print(22222222)
+            flock1len = len(flocks[0])
+            flock2len = len(flocks[1])
+            
+            for i in list(perm):
+                dist0 = drones[i[0]].position.distance_to(steering_sheep[0])
+                dist1 = drones[i[1]].position.distance_to(steering_sheep[1])
+                total = dist0+dist1
+                if total < shortest_total:
+                    shortest_total = total
+                    shortest_points = i
+            
+            for drone in drones:
+                if drone.id not in shortest_points:
+                    shortest_points.append(drone.id)
+                    if flock1len > flock2len:
+                        steering_points.append(steering_sheep[0])
+                    elif flock2len > flock1len:
+                        steering_points.append(steering_sheep[1])
+                    else:
+                        for point in steering_points:
+                            if drone.position.distance_to(point) < shortest_dist:
+                                shortest_dist = drone.position.distance_to(point)
+                                steering = point
+                        steering_points.append(steering)
+            
+            ny2 = shortest_points
+            ny = steering_points
+            unik = np.unique(steering_points)
+            index = ny.index(unik)
+            ny2.pop(index)
+
+            j = 0
+            for i in shortest_points:
+                drones[shortest_points[j]].find_steering_point_gather_sheep_two(steering_sheep[j], com, ny2)
+                j += 1
+
+        elif len(steering_sheep) == 3:
+            print(333333)
+            for i in list(perm2):
+                dist0 = drones[i[0]].position.distance_to(steering_sheep[0])
+                dist1 = drones[i[1]].position.distance_to(steering_sheep[1])
+                dist2 = drones[i[2]].position.distance_to(steering_sheep[2])
+                total = dist0+dist1+dist2
+                if total < shortest_total:
+                    shortest_total = total
+                    shortest_points = i
+            j = 0
+            for i in shortest_points:
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com)
+                j += 1
+    
+
+    def run(self, drones, sheeps, goal, centre_of_mass):
+        #self.centre_of_mass = centre_of_mass
+
+        # The minimum distance of gathering, before the animals need to be driven to a designated location
+        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), centre_of_mass, SHEEP_RADIUS, 1)
+        sheep_list = []
+        for s in sheeps:
+            if not gather_radius.contains(s.figure):
+                sheep_list.append(s)
+        if len(sheep_list) > 0:
+            self.allocate_steering_points(drones, sheeps, centre_of_mass, goal)
+            print('allocate')
+
+        else:
+            print('v-formasjon')
+            for drone in drones:
+                if self.drive_type == "sync":
+                    drone.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta)
+ 
+                if self.drive_type == "async":
+                    drone.find_steering_point_async(sheeps, goal, centre_of_mass, self.theta)
+            
+            
+
+        

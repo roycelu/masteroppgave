@@ -226,25 +226,81 @@ class OurDroneFurthest:
 
     
 
-    def find_steering_point_gather_sheep(self, sheep, com):
+    def find_steering_point_gather_sheep(self, sheep_pos, com):
         # Radius from com to sheep furthest away
-        d_furthest = sheep.position.distance_to(com)
+        d_furthest = sheep_pos.distance_to(com)
+
+        d_over = DESIRED_SEPARATION_SHEEP
+        distance_from_com = d_furthest + d_over
+    
+        theta = np.pi/6 # = 30, angle is fixed
+        sheeppos_to_com = pygame.Vector2(sheep_pos - com) 
+        point = sheep_pos + d_over * (sheeppos_to_com/sheeppos_to_com.length())
+
+        P_left = pygame.Vector2(0, 0)
+        P_center = pygame.Vector2(0, 0)
+        P_right = pygame.Vector2(0, 0)
+
+        P_left = sheep_pos + (point - sheep_pos).rotate_rad(theta)
+        P_center = point
+        P_right = sheep_pos + (point - sheep_pos).rotate_rad(-theta)
+
+        # Fly between P_left -> P_center -> P_right -> ...
+        if self.current_position == 'left' and self.figure.collidepoint(P_left):
+            self.current_position = 'center'
+            self.direction = 'right'
+            self.steering_point_v = P_center
+        if self.current_position == 'right' and self.figure.collidepoint(P_right):
+            self.current_position = 'center'
+            self.direction = 'left'
+            self.steering_point_v = P_center
+        if self.current_position == 'center' and self.figure.collidepoint(P_center) and self.direction == 'right':
+            self.current_position = 'right'
+            self.steering_point_v = P_right
+        if self.current_position == 'center' and self.figure.collidepoint(P_center) and self.direction == 'left':
+            self.current_position = 'left'
+            self.steering_point_v = P_left
+        if self.current_position == 'left' and not self.figure.collidepoint(P_left):
+            self.steering_point_v = P_left
+        if self.current_position == 'right' and not self.figure.collidepoint(P_right):
+            self.steering_point_v = P_right
+        if self.current_position == 'center' and not self.figure.collidepoint(P_center):
+            self.steering_point_v = P_center
+
+
+        self.velocity = self.steering_point_v - self.position
+
+
+    def find_steering_point_gather_sheep_two(self, sheep_pos, com, shortest_points):
+        # Radius from com to sheep furthest away
+        d_furthest = sheep_pos.distance_to(com)
 
         d_over = DESIRED_SEPARATION_SHEEP
         distance_from_com = d_furthest + d_over
     
         theta = np.pi/6 # = 30, angle is fixed
         
-        sheeppos_to_com = pygame.Vector2(sheep.position - com) 
-        point = sheep.position + d_over * (sheeppos_to_com/sheeppos_to_com.length())
+        sheeppos_to_com = pygame.Vector2(sheep_pos - com) 
+        point = sheep_pos + d_over * (sheeppos_to_com/sheeppos_to_com.length())
 
         P_left = pygame.Vector2(0, 0)
         P_center = pygame.Vector2(0, 0)
         P_right = pygame.Vector2(0, 0)
 
-        P_left = sheep.position + (point - sheep.position).rotate_rad(theta)
-        P_center = point
-        P_right = sheep.position + (point - sheep.position).rotate_rad(-theta)
+
+        for d in shortest_points:
+            if d == self.id:
+                index = shortest_points[d]
+                if index == 0:
+                    P_left = point
+                    P_center = com + (point - com).rotate_rad(theta)
+                    P_right = com + (point - com).rotate_rad(2 * theta)
+
+                if index == 1:
+                    P_right = point
+                    P_center = com + (point - com).rotate_rad(-theta)
+                    P_left = com + (point - com).rotate_rad(2 * -theta)
+
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
