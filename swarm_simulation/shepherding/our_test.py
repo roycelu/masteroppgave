@@ -11,7 +11,7 @@ NO_SHEEP = 5
 NO_DRONES = 3
 NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
-TARGET_FPS = 10 # Hastigheten på simuleringen
+TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 
 TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
@@ -24,8 +24,8 @@ def test(id, no_sheep, no_drones, FPS, collect_type, drive_type, testtype, angle
     # Run the simulations
     sheep_positions = get_sheep_list(testtype, no_sheep)
     sim = Main(id, sheep_positions, no_drones, FPS, collect_type, drive_type, testtype, angle)
-    successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
-    return successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, herd_time
+    successrate, herdtime, collect_time, herd_time = sim.main(TIME_LIMIT, TARGET_FPS)
+    return successrate, herdtime, collect_time, herd_time
     
 def get_sheep_list(testtype, no_sheep):
     # Based on the testtype, the sheep are positioned different places
@@ -38,14 +38,14 @@ def get_sheep_list(testtype, no_sheep):
             position_list[i] = pygame.Vector2(x, y) 
     
     if testtype == "lone_sheep":
-        for i in range(len(position_list)-1):
-            x = np.random.randint(400, 420)
-            y = np.random.randint(200, 220)
-            position_list[i] = pygame.Vector2(x, y) 
-        
-        x = np.random.randint(300, 320)
-        y = np.random.randint(800, 820)
-        position_list[-1] = pygame.Vector2(x, y)
+        for i in range(len(position_list)):
+            if i == len(position_list)-1:
+                x = np.random.randint(200, 220)
+                y = np.random.randint(400, 420)
+            else:
+                x = np.random.randint(400, 420)
+                y = np.random.randint(200, 220)
+            position_list[i] = pygame.Vector2(x, y)
     
     if testtype == "divided_flock":
         middle_index = len(position_list)//2
@@ -148,8 +148,9 @@ def main():
             polygon_collect_time.append(0)
             polygon_herd_time.append(0)
 
-        # Furthest
-
+        # TODO: Furthest
+        furthest_collect_time = [0 for i in TEST_TYPE]
+        furthest_herd_time = [0 for i in TEST_TYPE]
 
 
         
