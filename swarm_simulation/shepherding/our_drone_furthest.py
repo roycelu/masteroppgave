@@ -290,15 +290,15 @@ class OurDroneFurthest:
         P_right = pygame.Vector2(0, 0)
 
 
-        for d in shortest_points:
-            if d == self.id:
-                index = shortest_points[d]
-                if index == 0:
+        for drone_id in shortest_points:
+            if drone_id == self.id:
+                side = shortest_points.index(drone_id)
+                if side == 0:
                     P_left = point
                     P_center = com + (point - com).rotate_rad(theta)
                     P_right = com + (point - com).rotate_rad(2 * theta)
 
-                if index == 1:
+                if side == 1:
                     P_right = point
                     P_center = com + (point - com).rotate_rad(-theta)
                     P_left = com + (point - com).rotate_rad(2 * -theta)

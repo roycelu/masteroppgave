@@ -1,7 +1,6 @@
 import pygame
 import numpy as np
-import shapely.geometry as shp
-from scipy.spatial import ConvexHull
+import pandas as pd
 from goal import Goal
 from itertools import permutations
 
@@ -45,7 +44,6 @@ class OurMainDroneFurthest:
         # Group sheep so as to consider them as one if they are within 5 px of each other
         i = 0
         for list_f in flocks:
-            print('flock', flocks)
             com_new = pygame.Vector2(0,0)
             for sheep in list_f:
                 com_new += sheep.position
@@ -87,9 +85,9 @@ class OurMainDroneFurthest:
         perm2 = permutations([0,1,2])
 
         if len(steering_sheep) == 0 or len(steering_sheep) == 1:
+            print(11111111111)
             if len(steering_sheep) == 1:
-                pygame.draw.circle(self.canvas, pygame.Color("lightblue"), steering_sheep, 5)
-            print(steering_sheep)
+                pygame.draw.circle(self.canvas, pygame.Color("lightblue"), steering_sheep[0], 5)
             return
 
         elif len(steering_sheep) == 2:
@@ -105,32 +103,33 @@ class OurMainDroneFurthest:
                 total = dist0+dist1
                 if total < shortest_total:
                     shortest_total = total
-                    shortest_points = i
+                    shortest_points = list(i)
             
+            shortest_dist = np.inf
             for drone in drones:
                 if drone.id not in shortest_points:
                     shortest_points.append(drone.id)
                     if flock1len > flock2len:
-                        steering_points.append(steering_sheep[0])
+                        print(9)
+                        print(steering_sheep, steering_sheep[0])
+                        steering_sheep.append(steering_sheep[0])
                     elif flock2len > flock1len:
-                        steering_points.append(steering_sheep[1])
+                        print(8)
+                        steering_sheep.append(steering_sheep[1])
                     else:
-                        for point in steering_points:
+                        print(7)
+                        steering = steering_sheep[0]
+                        for point in steering_sheep:
                             if drone.position.distance_to(point) < shortest_dist:
                                 shortest_dist = drone.position.distance_to(point)
                                 steering = point
-                        steering_points.append(steering)
+                        steering_sheep.append(steering)
             
-            ny2 = shortest_points
-            ny = steering_points
-            unik = np.unique(steering_points)
-            index = ny.index(unik)
-            ny2.pop(index)
+            duplicate_index = np.where(pd.Series(steering_sheep).duplicated(keep=False))[0] # Duplikater [første_index, ..., siste_index]
 
-            j = 0
-            for i in shortest_points:
-                drones[shortest_points[j]].find_steering_point_gather_sheep_two(steering_sheep[j], com, ny2)
-                j += 1
+            for j in range(len(shortest_points)):
+                drones[shortest_points[j]].find_steering_point_gather_sheep_two(steering_sheep[j], com, [duplicate_index[0], duplicate_index[-1]])
+
 
         elif len(steering_sheep) == 3:
             for point in steering_sheep:
@@ -164,7 +163,7 @@ class OurMainDroneFurthest:
             print('allocate')
 
         else:
-            print('v-formasjon')
+            # print('v-formasjon')
             for drone in drones:
                 if self.drive_type == "sync":
                     drone.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta)
