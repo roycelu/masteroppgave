@@ -38,6 +38,11 @@ class OurDroneFurthest:
         self.dist2 = 0
         self.dist3 = 0
 
+
+        self.P_leftie = pygame.Vector2(0, 0)
+        self.P_centerie = pygame.Vector2(0, 0)
+        self.P_rightie = pygame.Vector2(0, 0)
+
     def draw(self, canvas, font):
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
@@ -102,6 +107,7 @@ class OurDroneFurthest:
         P_center = pygame.Vector2(0, 0)
         P_right = pygame.Vector2(0, 0)
 
+        
         if self.id == 0:
             P_left = com + (point - com).rotate(theta)
             P_center = point
@@ -143,7 +149,7 @@ class OurDroneFurthest:
 
         self.velocity = self.steering_point_v - self.position
 
-    def find_steering_point_sync(self, sheep, goal, com, steering, theta):
+    def find_steering_point_sync(self, sheep, goal, com, theta, steering_sync, canvas):
         goal = goal.position
         #com = Calculate.center_of_mass(sheep)
 
@@ -158,7 +164,8 @@ class OurDroneFurthest:
         distance_from_com = d_furthest + d_over
     
         #theta = np.pi/5 # = 30, angle is fixed
-        
+        pygame.draw.circle(canvas, pygame.Color("blue"), com, 20)
+        pygame.draw.circle(canvas, pygame.Color("blue"), goal, 25)
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
 
@@ -181,46 +188,21 @@ class OurDroneFurthest:
             P_center = com + (point - com).rotate_rad(1.5 * -theta) 
             P_left = com + (point - com).rotate_rad(2 * -theta)
             
+        self.P_leftie = P_left
+        self.P_centerie = P_center
+        self.P_rightie = P_right
+        
+        # Fly between P_left -> P_center -> P_right -> ...
 
-        if steering:
-            print('true')
-            # Fly between P_left -> P_center -> P_right -> ...
-            if self.current_position == 'left' and self.figure.collidepoint(P_left):
-                self.current_position = 'center'
-                self.direction = 'right'
-                self.steering_point_v = P_center
-                self.collides_with_point = True
-            if self.current_position == 'right' and self.figure.collidepoint(P_right):
-                self.current_position = 'center'
-                self.direction = 'left'
-                self.steering_point_v = P_center
-                self.collides_with_point = True
-            if self.current_position == 'center' and self.figure.collidepoint(P_center) and self.direction == 'right':
-                self.current_position = 'right'
-                self.steering_point_v = P_right
-                self.collides_with_point = True
-            if self.current_position == 'center' and self.figure.collidepoint(P_center) and self.direction == 'left':
-                self.current_position = 'left'
-                self.steering_point_v = P_left
-                self.collides_with_point = True
-            if self.current_position == 'left' and not self.figure.collidepoint(P_left):
-                self.steering_point_v = P_left
-                self.collides_with_point = False
-            if self.current_position == 'right' and not self.figure.collidepoint(P_right):
-                self.steering_point_v = P_right
-                self.collides_with_point = False
-            if self.current_position == 'center' and not self.figure.collidepoint(P_center):
-                self.steering_point_v = P_center
-                self.collides_with_point = False
-        else:
-            print('false')
+        if steering_sync == 'left':
             self.steering_point_v = P_left
-            if self.figure.collidepoint(P_left):
-                self.collides_with_point = True
-                self.direction = 'right'
-                self.current_position = 'left'
-            else:
-                self.collides_with_point = False
+            print(self.id, 'left')
+        if steering_sync == 'right':
+            self.steering_point_v = P_right
+            print(self.id, 'right')
+        if steering_sync == 'center':
+            print(self.id, 'center')
+            self.steering_point_v = P_center
 
         self.velocity = self.steering_point_v - self.position
 

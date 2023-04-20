@@ -28,6 +28,9 @@ class OurMainDroneFurthest:
         self.theta = theta
         self.drive_type = drive_type
 
+        self.current_point = 'left'
+        self.direction = 'right'
+
 
     def allocate_steering_points(self, drones, sheep, com, goal):
         # Find sheep behind center of mass relative to the goal
@@ -105,7 +108,7 @@ class OurMainDroneFurthest:
                 total = dist0+dist1
                 if total < shortest_total:
                     shortest_total = total
-                    shortest_points = i
+                    shortest_points = [i]
             
             for drone in drones:
                 if drone.id not in shortest_points:
@@ -165,12 +168,51 @@ class OurMainDroneFurthest:
 
         else:
             print('v-formasjon')
-            for drone in drones:
-                if self.drive_type == "sync":
-                    drone.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta)
+            if self.drive_type == "sync":    
+                print(self.current_point)    
+                if self.current_point == 'left':
+                    left = True
+                    for d in drones:
+                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'left', self.canvas)
+                        if d.figure.collidepoint(d.P_leftie) == False:
+                            left = False
+                    if left:
+                        self.current_point = 'center'
+                        self.direction = 'right'
+                if self.current_point == 'right':
+                    right = True
+                    for d in drones:
+                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'right', self.canvas)
+                        if d.figure.collidepoint(d.P_rightie) == False:
+                            right = False
+                    if right:
+                        self.current_point = 'center'
+                        self.direction = 'left'
+                if self.current_point == 'center' and self.direction == 'right':
+                    center1 = True
+                    for d in drones:
+                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'center', self.canvas)
+                        if d.figure.collidepoint(d.P_centerie) == False:
+                            center1 = False
+                    if center1:
+                        self.current_point = 'right'
+                        self.direction = 'left'
+                if self.current_point == 'center' and self.direction == 'left':
+                    center2 = True
+                    for d in drones:
+                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'center', self.canvas)
+                        if d.figure.collidepoint(d.P_centerie) == False:
+                            center2 = False
+                    if center2:
+                        self.current_point = 'left'
+                        self.direction = 'right'
+                
+                
+                        #drone.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta)
  
-                if self.drive_type == "async":
-                    drone.find_steering_point_async(sheeps, goal, centre_of_mass, self.theta)
+            if self.drive_type == "async":
+                for dro in drones:
+                    dro.find_steering_point_async(sheeps, goal, centre_of_mass, self.theta)
             
             
 
