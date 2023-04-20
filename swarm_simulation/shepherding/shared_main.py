@@ -3,7 +3,6 @@ import os
 import sys
 import pygame, time
 import numpy as np
-import math
 from sheep import Sheep
 from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
@@ -83,23 +82,30 @@ class SharedMain:
 
 
     def capture_screenshot(self, clock_time, screen, capture_times):
-        time = math.ceil(clock_time) # TODO: Finne en bedre måte å runde av 'clock_time' til nærmeste 'capture_time', typ 48 => 50 hvis neste 'clock_time' er over 50+
-        if time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
+        time = int(round(clock_time, -1)) # Runder av tiden til nærmste 10'er
+        # Take the screenshot every 10 simulation
+        if self.id % 10 == 0 and time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
 
             # Creates a directory to save the screenshots, if it not already exists
-            path = '{}/screenshots/{}_{}'.format(self.results_path, self.dronetype, time)
+            path = '{}/screenshots/{}_{}'.format(self.results_path, self.id, self.dronetype)
             if not os.path.exists(path):
                 os.makedirs(path)
             
-            # Take the screenshot and save it
-            print("klikk klikk", clock_time, time)
+            # print("klikk klikk", clock_time, time)
             text = pygame.font.SysFont("Times New Roman", 25)
-            text = text.render('TestID: {}  |  Tid: {}  |  Testscenario: {}  |  Dronemetode: {}  |  Synsrekkevidde: {}'.format(self.id, time, self.testtype, self.dronetype, self.perception), True, pygame.Color("black"), pygame.Color("white"))
+            text = text.render('Testscenario: {}  |  Synsrekkevidde: {}'.format(self.testtype, self.perception), True, pygame.Color("black"), pygame.Color("white"))
             rect = text.get_rect()
             rect.left, rect.bottom = 10, screen.get_height()-10
             screen.blit(text, rect)
+
+            text2 = pygame.font.SysFont("Times New Roman", 25)
+            text2 = text2.render('TestID: {}  |  Tid: {} | Dronemetode: {}'.format(self.id, time, self.dronetype), True, pygame.Color("black"), pygame.Color("white"))
+            rect = text2.get_rect()
+            rect.left, rect.bottom = 10, screen.get_height()-15-rect.height
+            screen.blit(text2, rect)
+            
             image = screen.copy()
-            pygame.image.save(image, '{path}/{id}_{t}{p}.png'.format(path=path, id=self.id, t=self.testtype, p=self.perception))        
+            pygame.image.save(image, '{path}/{time}_{t}{p}.png'.format(path=path, time=time, t=self.testtype, p=self.perception))        
 
 
     def main(self, time_limit, target_fps, capture_times):
