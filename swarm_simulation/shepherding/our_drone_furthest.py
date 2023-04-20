@@ -7,7 +7,7 @@ from itertools import permutations
 SIZE = 10
 MAX_SPEED = 19 #m/s
 MAX_SPEED_SHEEP = 0.003 #  m/s
-DESIRED_SEPARATION_SHEEP = 15
+DESIRED_SEPARATION_SHEEP = 25
 PERCEPTION = 100
 
 STEP_SIZE = 200
@@ -226,12 +226,14 @@ class OurDroneFurthest:
 
     
 
-    def find_steering_point_gather_sheep(self, sheep_pos, com):
+    def find_steering_point_gather_sheep(self, sheep_pos, com, canvas):
+        pygame.draw.circle(canvas, pygame.Color("orange"), com, 5)
+        pygame.draw.circle(canvas, pygame.Color("purple"), sheep_pos, 5)
         # Radius from com to sheep furthest away
-        d_furthest = sheep_pos.distance_to(com)
+        dist = sheep_pos.distance_to(com)
 
         d_over = DESIRED_SEPARATION_SHEEP
-        distance_from_com = d_furthest + d_over
+        distance_from_com = dist + d_over
     
         theta = np.pi/6 # = 30, angle is fixed
         sheeppos_to_com = pygame.Vector2(sheep_pos - com) 

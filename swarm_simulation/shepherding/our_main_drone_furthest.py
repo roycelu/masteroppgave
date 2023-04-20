@@ -46,14 +46,14 @@ class OurMainDroneFurthest:
         i = 0
         for list_f in flocks:
             print('flock', flocks)
-            com = pygame.Vector2(0,0)
+            com_new = pygame.Vector2(0,0)
             for sheep in list_f:
-                com += sheep.position
-            com /= len(list_f)
+                com_new += sheep.position
+            com_new /= len(list_f)
             
             for element in flocks[flocks.index(list_f)+1:]:
                 for sheep in element:
-                    if sheep.position.distance_to(com) < 15:
+                    if sheep.position.distance_to(com_new) < 20:
                         list_f.append(sheep)
 
         com_list = []
@@ -63,7 +63,6 @@ class OurMainDroneFurthest:
                 com_p += sheep.position
             com_p /= len(list_f)
             com_list.append(com_p)
-            pygame.draw.circle(self.canvas, pygame.Color("lightblue"), com_p, 5)
             pygame.draw.line(self.canvas, pygame.Color('lightblue'), (10,10), (10,20))
         
         
@@ -83,15 +82,19 @@ class OurMainDroneFurthest:
 
         # Find shortest total travel distance for all drones to the different variations of steeringpoints
         shortest_total = np.inf
-        shortest_points = (2,0,1)
+        shortest_points = [2,0,1]
         perm = permutations([0,1,2],2)
         perm2 = permutations([0,1,2])
 
         if len(steering_sheep) == 0 or len(steering_sheep) == 1:
+            if len(steering_sheep) == 1:
+                pygame.draw.circle(self.canvas, pygame.Color("lightblue"), steering_sheep, 5)
             print(steering_sheep)
             return
 
         elif len(steering_sheep) == 2:
+            for point in steering_sheep:
+                pygame.draw.circle(self.canvas, pygame.Color("lightblue"), point, 5)
             print(22222222)
             flock1len = len(flocks[0])
             flock2len = len(flocks[1])
@@ -130,6 +133,8 @@ class OurMainDroneFurthest:
                 j += 1
 
         elif len(steering_sheep) == 3:
+            for point in steering_sheep:
+                pygame.draw.circle(self.canvas, pygame.Color("lightblue"), point, 5)
             print(333333)
             for i in list(perm2):
                 dist0 = drones[i[0]].position.distance_to(steering_sheep[0])
@@ -141,7 +146,7 @@ class OurMainDroneFurthest:
                     shortest_points = i
             j = 0
             for i in shortest_points:
-                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com)
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.canvas)
                 j += 1
     
 
