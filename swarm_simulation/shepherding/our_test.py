@@ -17,7 +17,7 @@ FPS = 30
 TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 COLLECT_TYPE = ['furthest', 'polygon']
 DRIVE_TYPE = ['sync', 'async']
-ANGLE = [40, 30, 20]
+ANGLE = [np.pi/4, np.pi/6, np.pi/9] # Vinkel i radianer (45, 30, 20)
 
 
 def test(id, no_sheep, no_drones, FPS, collect_type, drive_type, testtype, angle):
