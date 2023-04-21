@@ -16,7 +16,7 @@ FPS = 30
 
 TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 COLLECT_TYPE = ['furthest', 'polygon']
-DRIVE_TYPE = ['sync', 'sync']
+DRIVE_TYPE = ['sync', 'async']
 ANGLE = [40, 30, 20]
 
 
@@ -69,7 +69,7 @@ def get_sheep_list(testtype, no_sheep):
 
 def main():    
     # Make a new directory to save the results
-    dir_path = './results/{}'.format(str(datetime.now()))
+    dir_path = './our_results/{}'.format(str(datetime.now()))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
 
