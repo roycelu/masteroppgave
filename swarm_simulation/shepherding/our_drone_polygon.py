@@ -95,25 +95,15 @@ class OurDronePolygon:
             P_center = point
             P_right = com + (point - com).rotate(-theta)
 
-            pygame.draw.circle(self.canvas, pygame.Color("blue"), P_center, 5)
-            pygame.draw.circle(self.canvas, pygame.Color("purple"), P_left, 5)
-
         if self.id == 1:
             P_right = com + (point - com).rotate(theta)
             P_center = com + (point - com).rotate(2 * theta) 
             P_left = com + (point - com).rotate(3 * theta)
 
-            pygame.draw.circle(self.canvas, pygame.Color("red"), P_center, 5)
-            pygame.draw.circle(self.canvas, pygame.Color("pink"), P_left, 5)
-
         if self.id == 2:
             P_left = com + (point - com).rotate(-theta)
             P_center = com + (point - com).rotate(2 * -theta) 
-            P_right = com + (point - com).rotate(3 * -theta)
-
-            pygame.draw.circle(self.canvas, pygame.Color("yellow"), P_center, 5)
-            pygame.draw.circle(self.canvas, pygame.Color("brown"), P_left, 5)
-            
+            P_right = com + (point - com).rotate(3 * -theta)            
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
