@@ -69,7 +69,7 @@ def get_sheep_list(testtype, no_sheep):
 
 def main():    
     # Make a new directory to save the results
-    dir_path = './results/{}'.format(str(datetime.now()))
+    dir_path = './our_results/{}'.format(str(datetime.now()))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
 

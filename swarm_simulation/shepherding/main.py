@@ -87,7 +87,7 @@ class Main:
         our_main_drone = None
 
         if self.collect_type == 'polygon':
-            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta, self.drive_type)
+            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta)
         if self.collect_type == 'furthest':
             our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta, self.drive_type)
 
