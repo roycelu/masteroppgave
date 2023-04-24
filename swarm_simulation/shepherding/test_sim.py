@@ -9,8 +9,8 @@ from shared_main import SharedMain
 
 NO_SHEEP = 5
 NO_DRONES = 3
-NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
-TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
+NO_SIMULATIONS = 2 # Antall simuleringer per testtype per drone
+TIME_LIMIT = 5000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
@@ -116,38 +116,16 @@ def main():
         circle_time = []
         circle_collect_time = []
         circle_herd_time = []
-        if (df_avg_time_circle['Testtype'].eq('cooperative_flock')).any():
-            circle_time.append(df_avg_time_circle_index.loc['cooperative_flock', 'Gjetetid'])
-            circle_collect_time.append(df_avg_time_circle_index.loc['cooperative_flock', 'Oppsamlingstid'])
-            circle_herd_time.append(df_avg_time_circle_index.loc['cooperative_flock', 'Drivetid'])
-        else:
-            circle_time.append(0)
-            circle_collect_time.append(0)
-            circle_herd_time.append(0)
-        if (df_avg_time_circle['Testtype'].eq('lone_sheep')).any():
-            circle_time.append(df_avg_time_circle_index.loc['lone_sheep', 'Gjetetid'])
-            circle_collect_time.append(df_avg_time_circle_index.loc['lone_sheep', 'Oppsamlingstid'])
-            circle_herd_time.append(df_avg_time_circle_index.loc['lone_sheep', 'Drivetid'])
-        else:
-            circle_time.append(0)
-            circle_collect_time.append(0)
-            circle_herd_time.append(0)
-        if (df_avg_time_circle['Testtype'].eq('divided_flock')).any():
-            circle_time.append(df_avg_time_circle_index.loc['divided_flock', 'Gjetetid'])
-            circle_collect_time.append(df_avg_time_circle_index.loc['divided_flock', 'Oppsamlingstid'])
-            circle_herd_time.append(df_avg_time_circle_index.loc['divided_flock', 'Drivetid'])
-        else:
-            circle_time.append(0)
-            circle_collect_time.append(0)
-            circle_herd_time.append(0)
-        if (df_avg_time_circle['Testtype'].eq('right_angle')).any():
-            circle_time.append(df_avg_time_circle_index.loc['right_angle', 'Gjetetid'])
-            circle_collect_time.append(df_avg_time_circle_index.loc['right_angle', 'Oppsamlingstid'])
-            circle_herd_time.append(df_avg_time_circle_index.loc['right_angle', 'Drivetid'])
-        else:
-            circle_time.append(0)
-            circle_collect_time.append(0)
-            circle_herd_time.append(0)
+        for testt in TESTTYPES:
+            if (df_avg_time_circle['Testtype'] == testt).any():
+                circle_row = df_avg_time_circle.loc[(df_avg_time_circle['Testtype'] == testt)]
+                circle_time.append(circle_row['Gjetetid'].iloc[0])
+                circle_collect_time.append(circle_row['Oppsamlingstid'].iloc[0])
+                circle_herd_time.append(circle_row['Drivetid'].iloc[0])
+            else:
+                circle_time.append(0)
+                circle_collect_time.append(0)
+                circle_herd_time.append(0)
         
         # V
         df_v_success = df_v.loc[df_v['Suksessrate'] == 100]
@@ -157,41 +135,18 @@ def main():
         v_time = []
         v_collect_time = []
         v_herd_time = []
-        if (df_avg_time_v['Testtype'].eq('cooperative_flock')).any():
-            v_time.append(df_avg_time_v_index.loc['cooperative_flock', 'Gjetetid'])
-            v_collect_time.append(df_avg_time_v_index.loc['cooperative_flock', 'Oppsamlingstid'])
-            v_herd_time.append(df_avg_time_v_index.loc['cooperative_flock', 'Drivetid'])
-        else:
-            v_time.append(0)
-            v_collect_time.append(0)
-            v_herd_time.append(0)
+        # TODO Jeg er ikke sikker på om denne måten å gjøre det på faktisk blir riktig :/
+        for testt in TESTTYPES:
+            if (df_avg_time_v['Testtype'] == testt).any():
+                v_row = df_avg_time_v.loc[(df_avg_time_v['Testtype'] == testt)]
+                v_time.append(v_row['Gjetetid'].iloc[0])
+                v_collect_time.append(v_row['Oppsamlingstid'].iloc[0])
+                v_herd_time.append(v_row['Drivetid'].iloc[0])
+            else:
+                v_time.append(0)
+                v_collect_time.append(0)
+                v_herd_time.append(0)
 
-        if (df_avg_time_v['Testtype'].eq('lone_sheep')).any():
-            v_time.append(df_avg_time_v_index.loc['lone_sheep', 'Gjetetid'])
-            v_collect_time.append(df_avg_time_v_index.loc['lone_sheep', 'Oppsamlingstid'])
-            v_herd_time.append(df_avg_time_v_index.loc['lone_sheep', 'Drivetid'])
-        else:
-            v_time.append(0)
-            v_collect_time.append(0)
-            v_herd_time.append(0)
-
-        if (df_avg_time_v['Testtype'].eq('divided_flock')).any():
-            v_time.append(df_avg_time_v_index.loc['divided_flock', 'Gjetetid'])
-            v_collect_time.append(df_avg_time_v_index.loc['divided_flock', 'Oppsamlingstid'])
-            v_herd_time.append(df_avg_time_v_index.loc['divided_flock', 'Drivetid'])
-        else:
-            v_time.append(0)
-            v_collect_time.append(0)
-            v_herd_time.append(0)
-
-        if (df_avg_time_v['Testtype'].eq('right_angle')).any():
-            v_time.append(df_avg_time_v_index.loc['right_angle', 'Gjetetid'])
-            v_collect_time.append(df_avg_time_v_index.loc['right_angle', 'Oppsamlingstid'])
-            v_herd_time.append(df_avg_time_v_index.loc['right_angle', 'Drivetid'])
-        else:
-            v_time.append(0)
-            v_collect_time.append(0)
-            v_herd_time.append(0)
 
         # Polygon
         df_polygon_success = df_polygon.loc[df_polygon['Suksessrate'] == 100]
@@ -201,41 +156,16 @@ def main():
         polygon_time = []
         polygon_collect_time = []
         polygon_herd_time = []
-        if (df_avg_time_polygon['Testtype'].eq('cooperative_flock')).any():
-            polygon_time.append(df_avg_time_polygon_index.loc['cooperative_flock', 'Gjetetid'])
-            polygon_collect_time.append(df_avg_time_polygon_index.loc['cooperative_flock', 'Oppsamlingstid'])
-            polygon_herd_time.append(df_avg_time_polygon_index.loc['cooperative_flock', 'Drivetid'])
-        else:
-            polygon_time.append(0)
-            polygon_collect_time.append(0)
-            polygon_herd_time.append(0)
-
-        if (df_avg_time_polygon['Testtype'].eq('lone_sheep')).any():
-            polygon_time.append(df_avg_time_polygon_index.loc['lone_sheep', 'Gjetetid'])
-            polygon_collect_time.append(df_avg_time_polygon_index.loc['lone_sheep', 'Oppsamlingstid'])
-            polygon_herd_time.append(df_avg_time_polygon_index.loc['lone_sheep', 'Drivetid'])
-        else:
-            polygon_time.append(0)
-            polygon_collect_time.append(0)
-            polygon_herd_time.append(0)
-
-        if (df_avg_time_polygon['Testtype'].eq('divided_flock')).any():
-            polygon_time.append(df_avg_time_polygon_index.loc['divided_flock', 'Gjetetid'])
-            polygon_collect_time.append(df_avg_time_polygon_index.loc['divided_flock', 'Oppsamlingstid'])
-            polygon_herd_time.append(df_avg_time_polygon_index.loc['divided_flock', 'Drivetid'])
-        else:
-            polygon_time.append(0)
-            polygon_collect_time.append(0)
-            polygon_herd_time.append(0)
-
-        if (df_avg_time_polygon['Testtype'].eq('right_angle')).any():
-            polygon_time.append(df_avg_time_polygon_index.loc['right_angle', 'Gjetetid'])
-            polygon_collect_time.append(df_avg_time_polygon_index.loc['right_angle', 'Oppsamlingstid'])
-            polygon_herd_time.append(df_avg_time_polygon_index.loc['right_angle', 'Drivetid'])
-        else:
-            polygon_time.append(0)
-            polygon_collect_time.append(0)
-            polygon_herd_time.append(0)
+        for testt in TESTTYPES:
+            if (df_avg_time_polygon['Testtype'] == testt).any():
+                polygon_row = df_avg_time_polygon.loc[(df_avg_time_polygon['Testtype'] == testt)]
+                polygon_time.append(polygon_row['Gjetetid'].iloc[0])
+                polygon_collect_time.append(polygon_row['Oppsamlingstid'].iloc[0])
+                polygon_herd_time.append(polygon_row['Drivetid'].iloc[0])
+            else:
+                polygon_time.append(0)
+                polygon_collect_time.append(0)
+                polygon_herd_time.append(0)
 
         
         # Make figure

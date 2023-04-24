@@ -11,7 +11,7 @@ SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined
 
 
 class OurMainDronePolygon:
-    def __init__(self, canvas, goal, drones, sheeps, theta):
+    def __init__(self, canvas, goal, drones, sheeps, theta, drive_type):
         self.canvas = canvas
 
         self.main_goal = goal
@@ -25,6 +25,7 @@ class OurMainDronePolygon:
         self.toward_goal = False
 
         self.theta = theta
+        self.drive_type = drive_type
 
 
     def convex_hull(self, sheeps):
@@ -315,13 +316,13 @@ class OurMainDronePolygon:
 
 
     def run(self, drones, sheeps, goal, centre_of_mass):
-        self.centre_of_mass = centre_of_mass
+        #self.centre_of_mass = centre_of_mass
 
         convex_vertices, convex_hull = self.convex_hull(sheeps)
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
 
         # The minimum distance of gathering, before the animals need to be driven to a designated location
-        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1)
+        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), centre_of_mass, SHEEP_RADIUS, 1)
 
         # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
         for drone in drones:
@@ -352,10 +353,7 @@ class OurMainDronePolygon:
             else:
                 steering = False
             for drone in drones:
-                drone.find_steering_point_sync(sheeps, goal, centre_of_mass, steering, self.theta)
-            # else:
-            #     for drone in drones:
-            #         drone.find_steering_point_sync(sheeps, goal, centre_of_mass, False)
-
+                drone.find_steering_point_async(sheeps, goal, centre_of_mass, steering, self.theta)
+        
 
         

@@ -70,7 +70,8 @@ class OurDronePolygon:
     def move(self, goal, drones, sheep, canvas, dt, target_fps):
         self.update(sheep, dt, target_fps)
 
-    def find_steering_point_async(self, sheep, goal, com, theta):
+    def find_steering_point_async(self, sheep, goal, com, steering, angle):
+        theta = angle*np.pi/180
         goal = goal.position
         #com = Calculate.center_of_mass(sheep)
 
@@ -174,7 +175,6 @@ class OurDronePolygon:
             
 
         if steering:
-            print('true')
             # Fly between P_left -> P_center -> P_right -> ...
             if self.current_position == 'left' and self.figure.collidepoint(P_left):
                 self.current_position = 'center'
@@ -204,7 +204,6 @@ class OurDronePolygon:
                 self.steering_point_v = P_center
                 self.collides_with_point = False
         else:
-            print('false')
             self.steering_point_v = P_left
             if self.figure.collidepoint(P_left):
                 self.collides_with_point = True

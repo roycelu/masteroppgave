@@ -88,7 +88,6 @@ class OurMainDroneFurthest:
         perm2 = permutations([0,1,2])
 
         if len(steering_sheep) == 0 or len(steering_sheep) == 1:
-            print(11111111111)
             if len(steering_sheep) == 1:
                 pygame.draw.circle(self.canvas, pygame.Color("lightblue"), steering_sheep[0], 5)
             return
@@ -96,7 +95,6 @@ class OurMainDroneFurthest:
         elif len(steering_sheep) == 2:
             for point in steering_sheep:
                 pygame.draw.circle(self.canvas, pygame.Color("lightblue"), point, 5)
-            print(22222222)
             flock1len = len(flocks[0])
             flock2len = len(flocks[1])
             
@@ -113,14 +111,10 @@ class OurMainDroneFurthest:
                 if drone.id not in shortest_points:
                     shortest_points.append(drone.id)
                     if flock1len > flock2len:
-                        print(9)
-                        print(steering_sheep, steering_sheep[0])
                         steering_sheep.append(steering_sheep[0])
                     elif flock2len > flock1len:
-                        print(8)
                         steering_sheep.append(steering_sheep[1])
                     else:
-                        print(7)
                         steering = steering_sheep[0]
                         for point in steering_sheep:
                             if drone.position.distance_to(point) < shortest_dist:
@@ -137,7 +131,6 @@ class OurMainDroneFurthest:
         elif len(steering_sheep) == 3:
             for point in steering_sheep:
                 pygame.draw.circle(self.canvas, pygame.Color("lightblue"), point, 5)
-            print(333333)
             for i in list(perm2):
                 dist0 = drones[i[0]].position.distance_to(steering_sheep[0])
                 dist1 = drones[i[1]].position.distance_to(steering_sheep[1])
@@ -163,12 +156,9 @@ class OurMainDroneFurthest:
                 sheep_list.append(s)
         if len(sheep_list) > 0:
             self.allocate_steering_points(drones, sheeps, centre_of_mass, goal)
-            print('allocate')
 
         else:
-            print('v-formasjon')
             if self.drive_type == "sync":    
-                print(self.current_point)    
                 if self.current_point == 'left':
                     left = True
                     for d in drones:

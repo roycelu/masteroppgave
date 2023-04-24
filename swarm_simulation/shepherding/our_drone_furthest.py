@@ -196,12 +196,9 @@ class OurDroneFurthest:
 
         if steering_sync == 'left':
             self.steering_point_v = P_left
-            print(self.id, 'left')
         if steering_sync == 'right':
             self.steering_point_v = P_right
-            print(self.id, 'right')
         if steering_sync == 'center':
-            print(self.id, 'center')
             self.steering_point_v = P_center
 
         self.velocity = self.steering_point_v - self.position
