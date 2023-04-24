@@ -70,10 +70,8 @@ class OurDronePolygon:
     def move(self, goal, drones, sheep, canvas, dt, target_fps):
         self.update(sheep, dt, target_fps)
 
-    def find_steering_point_async(self, sheep, goal, com, steering, angle):
-        theta = angle*np.pi/180
+    def find_steering_point_async(self, sheep, goal, com, steering, theta):
         goal = goal.position
-        #com = Calculate.center_of_mass(sheep)
 
         # Radius from com to sheep furthest away
         d_furthest = 0
@@ -84,9 +82,7 @@ class OurDronePolygon:
 
         d_over = DESIRED_SEPARATION_SHEEP
         distance_from_com = d_furthest + d_over
-    
-        #theta = np.pi/5 # = 30, angle is fixed
-        
+            
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
 
@@ -95,19 +91,28 @@ class OurDronePolygon:
         P_right = pygame.Vector2(0, 0)
 
         if self.id == 0:
-            P_left = com + (point - com).rotate_rad(theta)
+            P_left = com + (point - com).rotate(theta)
             P_center = point
-            P_right = com + (point - com).rotate_rad(-theta)
+            P_right = com + (point - com).rotate(-theta)
+
+            pygame.draw.circle(self.canvas, pygame.Color("blue"), P_center, 5)
+            pygame.draw.circle(self.canvas, pygame.Color("purple"), P_left, 5)
 
         if self.id == 1:
-            P_right = com + (point - com).rotate_rad(theta)
-            P_center = com + (point - com).rotate_rad(1.5 * theta) 
-            P_left = com + (point - com).rotate_rad(2 * theta)
+            P_right = com + (point - com).rotate(theta)
+            P_center = com + (point - com).rotate(2 * theta) 
+            P_left = com + (point - com).rotate(3 * theta)
+
+            pygame.draw.circle(self.canvas, pygame.Color("red"), P_center, 5)
+            pygame.draw.circle(self.canvas, pygame.Color("pink"), P_left, 5)
 
         if self.id == 2:
-            P_right = com + (point - com).rotate_rad(-theta)
-            P_center = com + (point - com).rotate_rad(1.5 * -theta) 
-            P_left = com + (point - com).rotate_rad(2 * -theta)
+            P_left = com + (point - com).rotate(-theta)
+            P_center = com + (point - com).rotate(2 * -theta) 
+            P_right = com + (point - com).rotate(3 * -theta)
+
+            pygame.draw.circle(self.canvas, pygame.Color("yellow"), P_center, 5)
+            pygame.draw.circle(self.canvas, pygame.Color("brown"), P_left, 5)
             
 
         # Fly between P_left -> P_center -> P_right -> ...
@@ -137,7 +142,6 @@ class OurDronePolygon:
 
     def find_steering_point_sync(self, sheep, goal, com, steering, theta):
         goal = goal.position
-        #com = Calculate.center_of_mass(sheep)
 
         # Radius from com to sheep furthest away
         d_furthest = 0
@@ -148,9 +152,7 @@ class OurDronePolygon:
 
         d_over = DESIRED_SEPARATION_SHEEP
         distance_from_com = d_furthest + d_over
-    
-        #theta = np.pi/5 # = 30, angle is fixed
-        
+            
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
 
@@ -159,19 +161,19 @@ class OurDronePolygon:
         P_right = pygame.Vector2(0, 0)
 
         if self.id == 0:
-            P_left = com + (point - com).rotate_rad(theta)
+            P_left = com + (point - com).rotate(theta)
             P_center = point
-            P_right = com + (point - com).rotate_rad(-theta)
+            P_right = com + (point - com).rotate(-theta)
 
         if self.id == 1:
-            P_right = com + (point - com).rotate_rad(theta)
-            P_center = com + (point - com).rotate_rad(1.5 * theta) 
-            P_left = com + (point - com).rotate_rad(2 * theta)
+            P_right = com + (point - com).rotate(theta)
+            P_center = com + (point - com).rotate(2 * theta) 
+            P_left = com + (point - com).rotate(3 * theta)
 
         if self.id == 2:
-            P_right = com + (point - com).rotate_rad(-theta)
-            P_center = com + (point - com).rotate_rad(1.5 * -theta) 
-            P_left = com + (point - com).rotate_rad(2 * -theta)
+            P_right = com + (point - com).rotate(-theta)
+            P_center = com + (point - com).rotate(2 * -theta) 
+            P_left = com + (point - com).rotate(2 * -theta)
             
 
         if steering:

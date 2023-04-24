@@ -125,7 +125,7 @@ class OurMainDroneFurthest:
             duplicate_index = np.where(pd.Series(steering_sheep).duplicated(keep=False))[0] # Duplikater [første_index, ..., siste_index]
 
             for j in range(len(shortest_points)):
-                drones[shortest_points[j]].find_steering_point_gather_sheep_two(steering_sheep[j], com, [duplicate_index[0], duplicate_index[-1]])
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, [duplicate_index[0], duplicate_index[-1]])
 
 
         elif len(steering_sheep) == 3:
@@ -141,7 +141,7 @@ class OurMainDroneFurthest:
                     shortest_points = i
             j = 0
             for i in shortest_points:
-                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.canvas)
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta)
                 j += 1
     
 

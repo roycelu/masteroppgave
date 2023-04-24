@@ -24,6 +24,7 @@ class OurDroneFurthest:
         self.direction = 'right'
         self.current_position = 'left'
         self.collides_with_point = False
+        self.theta = 0 # vinkel i grader
 
         self.direction_index = 0  # 0:clockwise (right), 1:counterclockwise (left)
         self.right_pass = 0  # 0: otherwise, 1: pass z=0 by right flying to z=j
@@ -37,7 +38,6 @@ class OurDroneFurthest:
         self.dist1 = 0
         self.dist2 = 0
         self.dist3 = 0
-
 
         self.P_leftie = pygame.Vector2(0, 0)
         self.P_centerie = pygame.Vector2(0, 0)
@@ -86,7 +86,7 @@ class OurDroneFurthest:
 
     def find_steering_point_async(self, sheep, goal, com, theta):
         goal = goal.position
-        #com = Calculate.center_of_mass(sheep)
+        self.theta = theta
 
         # Radius from com to sheep furthest away
         d_furthest = 0
@@ -97,9 +97,7 @@ class OurDroneFurthest:
 
         d_over = DESIRED_SEPARATION_SHEEP
         distance_from_com = d_furthest + d_over
-    
-        #theta = np.pi/5 # = 30, angle is fixed
-        
+            
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
 
@@ -107,7 +105,6 @@ class OurDroneFurthest:
         P_center = pygame.Vector2(0, 0)
         P_right = pygame.Vector2(0, 0)
 
-        
         if self.id == 0:
             P_left = com + (point - com).rotate(theta)
             P_center = point
@@ -115,14 +112,13 @@ class OurDroneFurthest:
 
         if self.id == 1:
             P_right = com + (point - com).rotate(theta)
-            P_center = com + (point - com).rotate(1.5 * theta) 
-            P_left = com + (point - com).rotate(2 * theta)
+            P_center = com + (point - com).rotate(2 * theta) 
+            P_left = com + (point - com).rotate(3 * theta)
 
         if self.id == 2:
             P_right = com + (point - com).rotate(-theta)
-            P_center = com + (point - com).rotate(1.5 * -theta) 
-            P_left = com + (point - com).rotate(2 * -theta)
-            
+            P_center = com + (point - com).rotate(2 * -theta) 
+            P_left = com + (point - com).rotate(3 * -theta)
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
@@ -146,12 +142,12 @@ class OurDroneFurthest:
         if self.current_position == 'center' and not self.figure.collidepoint(P_center):
             self.steering_point_v = P_center
 
-
         self.velocity = self.steering_point_v - self.position
 
-    def find_steering_point_sync(self, sheep, goal, com, theta, steering_sync, canvas):
+
+    def find_steering_point_sync(self, sheep, goal, com, theta, steering_sync):
         goal = goal.position
-        #com = Calculate.center_of_mass(sheep)
+        self.theta = theta
 
         # Radius from com to sheep furthest away
         d_furthest = 0
@@ -163,9 +159,6 @@ class OurDroneFurthest:
         d_over = DESIRED_SEPARATION_SHEEP
         distance_from_com = d_furthest + d_over
     
-        #theta = np.pi/5 # = 30, angle is fixed
-        pygame.draw.circle(canvas, pygame.Color("blue"), com, 20)
-        pygame.draw.circle(canvas, pygame.Color("blue"), goal, 25)
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
 
@@ -174,26 +167,25 @@ class OurDroneFurthest:
         P_right = pygame.Vector2(0, 0)
 
         if self.id == 0:
-            P_left = com + (point - com).rotate_rad(theta)
+            P_left = com + (point - com).rotate(theta)
             P_center = point
-            P_right = com + (point - com).rotate_rad(-theta)
+            P_right = com + (point - com).rotate(-theta)
 
         if self.id == 1:
-            P_right = com + (point - com).rotate_rad(theta)
-            P_center = com + (point - com).rotate_rad(1.5 * theta) 
-            P_left = com + (point - com).rotate_rad(2 * theta)
+            P_right = com + (point - com).rotate(theta)
+            P_center = com + (point - com).rotate(2 * theta) 
+            P_left = com + (point - com).rotate(3 * theta)
 
         if self.id == 2:
-            P_right = com + (point - com).rotate_rad(-theta)
-            P_center = com + (point - com).rotate_rad(1.5 * -theta) 
-            P_left = com + (point - com).rotate_rad(2 * -theta)
+            P_left = com + (point - com).rotate(-theta)
+            P_center = com + (point - com).rotate(2 * -theta) 
+            P_right = com + (point - com).rotate(3 * -theta)
             
         self.P_leftie = P_left
         self.P_centerie = P_center
         self.P_rightie = P_right
         
         # Fly between P_left -> P_center -> P_right -> ...
-
         if steering_sync == 'left':
             self.steering_point_v = P_left
         if steering_sync == 'right':
@@ -203,18 +195,10 @@ class OurDroneFurthest:
 
         self.velocity = self.steering_point_v - self.position
 
-    
 
-    def find_steering_point_gather_sheep(self, sheep_pos, com, canvas):
-        pygame.draw.circle(canvas, pygame.Color("orange"), com, 5)
-        pygame.draw.circle(canvas, pygame.Color("purple"), sheep_pos, 5)
-        # Radius from com to sheep furthest away
-        dist = sheep_pos.distance_to(com)
-
+    def find_steering_point_gather_sheep(self, sheep_pos, com, theta, shortest_points = []):
         d_over = DESIRED_SEPARATION_SHEEP
-        distance_from_com = dist + d_over
-    
-        theta = np.pi/6 # = 30, angle is fixed
+        self.theta = theta # angle set by test.py
         sheeppos_to_com = pygame.Vector2(sheep_pos - com) 
         point = sheep_pos + d_over * (sheeppos_to_com/sheeppos_to_com.length())
 
@@ -222,9 +206,23 @@ class OurDroneFurthest:
         P_center = pygame.Vector2(0, 0)
         P_right = pygame.Vector2(0, 0)
 
-        P_left = sheep_pos + (point - sheep_pos).rotate_rad(theta)
-        P_center = point
-        P_right = sheep_pos + (point - sheep_pos).rotate_rad(-theta)
+        if len(shortest_points) > 0:
+            for drone_id in shortest_points:
+                if drone_id == self.id:
+                    side = shortest_points.index(drone_id)
+                    if side == 0:
+                        P_left = point
+                        P_center = com + (point - com).rotate_rad(theta)
+                        P_right = com + (point - com).rotate_rad(2 * theta)
+
+                    if side == 1:
+                        P_right = point
+                        P_center = com + (point - com).rotate_rad(-theta)
+                        P_left = com + (point - com).rotate_rad(2 * -theta)
+        else:
+            P_left = sheep_pos + (point - sheep_pos).rotate_rad(theta)
+            P_center = point
+            P_right = sheep_pos + (point - sheep_pos).rotate_rad(-theta)
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
@@ -248,64 +246,4 @@ class OurDroneFurthest:
         if self.current_position == 'center' and not self.figure.collidepoint(P_center):
             self.steering_point_v = P_center
 
-
         self.velocity = self.steering_point_v - self.position
-
-
-    def find_steering_point_gather_sheep_two(self, sheep_pos, com, shortest_points):
-        # Radius from com to sheep furthest away
-        d_furthest = sheep_pos.distance_to(com)
-
-        d_over = DESIRED_SEPARATION_SHEEP
-        distance_from_com = d_furthest + d_over
-    
-        theta = np.pi/6 # = 30, angle is fixed
-        
-        sheeppos_to_com = pygame.Vector2(sheep_pos - com) 
-        point = sheep_pos + d_over * (sheeppos_to_com/sheeppos_to_com.length())
-
-        P_left = pygame.Vector2(0, 0)
-        P_center = pygame.Vector2(0, 0)
-        P_right = pygame.Vector2(0, 0)
-
-
-        for drone_id in shortest_points:
-            if drone_id == self.id:
-                side = shortest_points.index(drone_id)
-                if side == 0:
-                    P_left = point
-                    P_center = com + (point - com).rotate_rad(theta)
-                    P_right = com + (point - com).rotate_rad(2 * theta)
-
-                if side == 1:
-                    P_right = point
-                    P_center = com + (point - com).rotate_rad(-theta)
-                    P_left = com + (point - com).rotate_rad(2 * -theta)
-
-
-        # Fly between P_left -> P_center -> P_right -> ...
-        if self.current_position == 'left' and self.figure.collidepoint(P_left):
-            self.current_position = 'center'
-            self.direction = 'right'
-            self.steering_point_v = P_center
-        if self.current_position == 'right' and self.figure.collidepoint(P_right):
-            self.current_position = 'center'
-            self.direction = 'left'
-            self.steering_point_v = P_center
-        if self.current_position == 'center' and self.figure.collidepoint(P_center) and self.direction == 'right':
-            self.current_position = 'right'
-            self.steering_point_v = P_right
-        if self.current_position == 'center' and self.figure.collidepoint(P_center) and self.direction == 'left':
-            self.current_position = 'left'
-            self.steering_point_v = P_left
-        if self.current_position == 'left' and not self.figure.collidepoint(P_left):
-            self.steering_point_v = P_left
-        if self.current_position == 'right' and not self.figure.collidepoint(P_right):
-            self.steering_point_v = P_right
-        if self.current_position == 'center' and not self.figure.collidepoint(P_center):
-            self.steering_point_v = P_center
-
-
-        self.velocity = self.steering_point_v - self.position
-
-

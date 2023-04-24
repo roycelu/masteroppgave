@@ -9,8 +9,8 @@ from main import Main
 
 NO_SHEEP = 5
 NO_DRONES = 3
-NO_SIMULATIONS = 1 # Antall simuleringer per testtype per drone
-TIME_LIMIT = 5000 # 50 sekunder for sauene å bevege seg maks 1000m
+NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
+TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 100 # Hastigheten på simuleringen
 FPS = 30
 
