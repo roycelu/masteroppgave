@@ -110,7 +110,7 @@ class SharedMain:
 
     def main(self, time_limit, target_fps, capture_times):
         pygame.init()
-        pygame.display.set_caption("The shepherding problem")
+        pygame.display.set_caption("The shepherding problem - existing methods")
 
         screen = pygame.display.set_mode((1000, 1000))
         label_font = pygame.font.SysFont("Times New Roman", 12)

@@ -75,7 +75,7 @@ class Main:
 
     def main(self, time_limit, target_fps):
         pygame.init()
-        pygame.display.set_caption("The shepherding problem")
+        pygame.display.set_caption("The shepherding problem - our method")
 
         screen = pygame.display.set_mode((1000, 1000))
         label_font = pygame.font.SysFont("Times New Roman", 12)
