@@ -9,13 +9,13 @@ from main import Main
 
 NO_SHEEP = 5
 NO_DRONES = 3
-NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
+NO_SIMULATIONS = 2 # Antall simuleringer per testtype per drone
 TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
-TARGET_FPS = 100 # Hastigheten på simuleringen
+TARGET_FPS = 10 # Hastigheten på simuleringen
 FPS = 30
 
-TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
-COLLECT_TYPE = ['polygon', 'furthest']
+TEST_TYPE = ["lone_sheep", "lone_sheep", "divided_flock", "right_angle"]
+COLLECT_TYPE = ['furthest', 'furthest']
 DRIVE_TYPE = ['async']#, 'sync']
 ANGLE = [20, 30, 40]
 
