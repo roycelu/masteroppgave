@@ -91,7 +91,6 @@ class Main:
         if self.collect_type == 'furthest':
             our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta, self.drive_type)
 
-        
 
         clock = pygame.time.Clock()
         prev_time = time.time()
