@@ -11,7 +11,7 @@ from utils import Calculate
 
 
 class Main:
-    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, drive_type, testtype, theta):
+    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, testtype, theta):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -21,7 +21,6 @@ class Main:
         self.goal_vector = pygame.Vector2(500, 600)
         self.goal = Goal(self.goal_vector)
         self.sheep_away = False
-        self.drive_type = drive_type
         self.theta = theta
         self.perception = 40
 
@@ -87,9 +86,9 @@ class Main:
         our_main_drone = None
 
         if self.collect_type == 'polygon':
-            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta, self.drive_type)
+            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta)
         if self.collect_type == 'furthest':
-            our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta, self.drive_type)
+            our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta)
 
 
         clock = pygame.time.Clock()
@@ -189,8 +188,8 @@ class Main:
                 elif self.testtype == "right_angle":
                     sheep_alignment_vector = pygame.Vector2(0, 0)
                     for s in sheep:
-                        if np.linalg.norm(s.acceleration) != 0:
-                            sheep_alignment_vector += s.acceleration / np.linalg.norm(s.acceleration)
+                        if np.linalg.norm(s.velocity) != 0:
+                            sheep_alignment_vector += s.velocity / np.linalg.norm(s.velocity)
                     sheep_alignment_vector /= len(sheep)
                     rotation_radians = np.radians(90)
                     newX = sheep_alignment_vector.x * np.cos(rotation_radians) - sheep_alignment_vector.y * np.sin(rotation_radians)

@@ -11,7 +11,7 @@ SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined
 
 
 class OurMainDroneFurthest:
-    def __init__(self, canvas, goal, drones, sheeps, theta, drive_type):
+    def __init__(self, canvas, goal, drones, sheeps, theta):
         self.canvas = canvas
 
         self.main_goal = goal
@@ -25,7 +25,6 @@ class OurMainDroneFurthest:
         self.toward_goal = False
 
         self.theta = theta
-        self.drive_type = drive_type
 
         self.current_point = 'left'
         self.direction = 'right'
@@ -87,11 +86,12 @@ class OurMainDroneFurthest:
         perm = permutations([0,1,2],2)
         perm2 = permutations([0,1,2])
 
+        # If there is only one group of sheep, herd them in a V-formation with all three drones
         if len(steering_sheep) == 0 or len(steering_sheep) == 1:
-            if len(steering_sheep) == 1:
-                pygame.draw.circle(self.canvas, pygame.Color("lightblue"), steering_sheep[0], 5)
-            return
+            for dro in drones:
+                dro.find_steering_point(self.sheeps, goal, com, self.theta)
 
+        # If there are two groups, send two drones to the group with the most sheep and one to the other
         elif len(steering_sheep) == 2:
             for point in steering_sheep:
                 pygame.draw.circle(self.canvas, pygame.Color("lightblue"), point, 5)
@@ -123,11 +123,11 @@ class OurMainDroneFurthest:
                         steering_sheep.append(steering)
             
             duplicate_index = np.where(pd.Series(steering_sheep).duplicated(keep=False))[0] # Duplikater [første_index, ..., siste_index]
-
+            print('duplicate_index', duplicate_index)
             for j in range(len(shortest_points)):
-                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, [duplicate_index[0], duplicate_index[-1]])
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, self.canvas, [duplicate_index[0], duplicate_index[-1]])
 
-
+        # If there are three groups, each drone moves to the one that makes for the shortest total travel distance
         elif len(steering_sheep) == 3:
             for point in steering_sheep:
                 pygame.draw.circle(self.canvas, pygame.Color("lightblue"), point, 5)
@@ -141,7 +141,7 @@ class OurMainDroneFurthest:
                     shortest_points = i
             j = 0
             for i in shortest_points:
-                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta)
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, self.canvas)
                 j += 1
     
 
@@ -158,50 +158,5 @@ class OurMainDroneFurthest:
             self.allocate_steering_points(drones, sheeps, centre_of_mass, goal)
 
         else:
-            if self.drive_type == "sync":    
-                if self.current_point == 'left':
-                    left = True
-                    for d in drones:
-                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'left')
-                        if d.figure.collidepoint(d.P_leftie) == False:
-                            left = False
-                    if left:
-                        self.current_point = 'center'
-                        self.direction = 'right'
-                if self.current_point == 'right':
-                    right = True
-                    for d in drones:
-                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'right')
-                        if d.figure.collidepoint(d.P_rightie) == False:
-                            right = False
-                    if right:
-                        self.current_point = 'center'
-                        self.direction = 'left'
-                if self.current_point == 'center' and self.direction == 'right':
-                    center1 = True
-                    for d in drones:
-                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'center')
-                        if d.figure.collidepoint(d.P_centerie) == False:
-                            center1 = False
-                    if center1:
-                        self.current_point = 'right'
-                        self.direction = 'left'
-                if self.current_point == 'center' and self.direction == 'left':
-                    center2 = True
-                    for d in drones:
-                        d.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, 'center')
-                        if d.figure.collidepoint(d.P_centerie) == False:
-                            center2 = False
-                    if center2:
-                        self.current_point = 'left'
-                        self.direction = 'right'
-                
-                        #drone.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta, '')
- 
-            if self.drive_type == "async":
-                for drone in drones:
-                    drone.find_steering_point_async(sheeps, goal, centre_of_mass, self.theta)
-            
-            
-
-        
+            for dro in drones:
+                dro.find_steering_point(sheeps, goal, centre_of_mass, self.theta)
