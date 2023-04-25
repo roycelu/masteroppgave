@@ -357,7 +357,7 @@ class OurMainDronePolygon:
                 if self.drive_type == 'async':
                     drone.find_steering_point_async(sheeps, goal, centre_of_mass, steering, self.theta)
                 if self.drive_type == 'sync':
-                    drone.find_steering_point_sync(sheeps, goal, centre_of_mass, self.theta)
+                    drone.find_steering_point_sync(sheeps, goal, centre_of_mass, steering, self.theta)
         
 
         
