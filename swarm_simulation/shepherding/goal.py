@@ -12,7 +12,7 @@ class Goal:
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("red"), self.figure)
 
-        label = font.render("GOAL", True, pygame.Color("black"))
-        rect = label.get_rect()
-        rect.center = self.position
-        canvas.blit(label, rect)
+        # label = font.render("GOAL", True, pygame.Color("black"))
+        # rect = label.get_rect()
+        # rect.center = self.position
+        # canvas.blit(label, rect)

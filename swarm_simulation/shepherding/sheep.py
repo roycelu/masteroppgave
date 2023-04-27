@@ -35,10 +35,10 @@ class Sheep:
             border_radius=int(SIZE),
         )
 
-        label = font.render(str(self.id), True, pygame.Color("black"))
-        rect = label.get_rect()
-        rect.center = self.position
-        canvas.blit(label, rect)
+        # label = font.render(str(self.id), True, pygame.Color("black"))
+        # rect = label.get_rect()
+        # rect.center = self.position
+        # canvas.blit(label, rect)
 
     def update(self, drones, dt, target_fps):
         self.velocity += self.acceleration * dt * target_fps

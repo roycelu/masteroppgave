@@ -31,12 +31,12 @@ class SharedMain:
     
     def draw_center_of_mass(self, canvas, font, sheep):
         center_of_mass = Calculate.center_of_mass(sheep)
-        pygame.draw.circle(canvas, pygame.Color("gray"), center_of_mass, 1, 2)
+        pygame.draw.circle(canvas, pygame.Color("black"), center_of_mass, 2)
 
-        label = font.render("COM", True, pygame.Color("black"))
-        rect = label.get_rect()
-        rect.center = center_of_mass
-        canvas.blit(label, rect)
+        # label = font.render("COM", True, pygame.Color("black"))
+        # rect = label.get_rect()
+        # rect.center = center_of_mass
+        # canvas.blit(label, rect)
 
         flock_radius = 0
         for s in sheep:
@@ -45,9 +45,6 @@ class SharedMain:
                 flock_radius = distance
         
         pygame.draw.circle(canvas, pygame.Color("purple"), center_of_mass, flock_radius, 1)
-
-        potential_field = flock_radius + 50
-        pygame.draw.circle(canvas, pygame.Color("pink"), center_of_mass, potential_field, 1)
 
         return center_of_mass
 
@@ -150,7 +147,7 @@ class SharedMain:
                     pygame.quit()
                     sys.exit()
 
-            screen.fill(pygame.Color("darkgreen"))
+            screen.fill(pygame.Color("palegreen3"))
             self.goal.draw(screen, label_font)
 
             centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)

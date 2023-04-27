@@ -11,7 +11,7 @@ SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined
 
 
 class OurMainDronePolygon:
-    def __init__(self, canvas, goal, drones, sheeps, theta, drive_type):
+    def __init__(self, canvas, goal, drones, sheeps, theta):
         self.canvas = canvas
 
         self.main_goal = goal
@@ -25,7 +25,7 @@ class OurMainDronePolygon:
         self.toward_goal = False
 
         self.theta = theta
-        self.drive_type = drive_type
+
 
 
     def convex_hull(self, sheeps):

@@ -27,10 +27,10 @@ class CircleDrone:
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
 
-        label = font.render(str(self.id), True, pygame.Color("white"))
-        label_rect = label.get_rect()
-        label_rect.center = self.position
-        canvas.blit(label, label_rect)
+        # label = font.render(str(self.id), True, pygame.Color("white"))
+        # label_rect = label.get_rect()
+        # label_rect.center = self.position
+        # canvas.blit(label, label_rect)
 
     def update(self, sheep, dt, target_fps):
         self.velocity += self.acceleration * dt * target_fps

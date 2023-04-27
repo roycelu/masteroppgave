@@ -37,7 +37,7 @@ class PolygonMainDrone:
         for i in hull.vertices:
             points.append(positions[i])
 
-        figure = pygame.draw.polygon(self.canvas, pygame.Color("black"), points, 1)
+        figure = pygame.draw.polygon(self.canvas, pygame.Color("palegreen3"), points, 1)
         return points, figure
 
 
@@ -50,9 +50,9 @@ class PolygonMainDrone:
         for i in range(len(polygon_list) - 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
             extended_hull.append(point)
-            pygame.draw.circle(self.canvas, pygame.Color("gray"), point, 5)
+            pygame.draw.circle(self.canvas, pygame.Color("red4"), point, 2)
 
-        figure = pygame.draw.polygon(self.canvas, pygame.Color("gray"), extended_hull, 2)
+        figure = pygame.draw.polygon(self.canvas, pygame.Color("red4"), extended_hull, 2)
         return extended_hull, figure
 
 
@@ -93,7 +93,7 @@ class PolygonMainDrone:
                 edge_vertices[0] = pygame.Vector2(vertices[j])
                 edge_vertices[1] = pygame.Vector2(vertices[j + 1])
 
-        pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 3)
+        # pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 3)
 
         drone.edge_point = closest_point
         drone.fly_to_position(closest_point)
@@ -295,13 +295,13 @@ class PolygonMainDrone:
         # Find the vector between center of mass and goal
         com_to_goal = pygame.Vector2(self.centre_of_mass - goal.position)
 
-        # Visual line between the goal and the centre of mass
-        pygame.draw.line(
-            self.canvas,
-            pygame.Color("yellow"),
-            self.centre_of_mass + 5 * com_to_goal,
-            goal.position,
-        )
+        # # Visual line between the goal and the centre of mass
+        # pygame.draw.line(
+        #     self.canvas,
+        #     pygame.Color("yellow"),
+        #     self.centre_of_mass + 5 * com_to_goal,
+        #     goal.position,
+        # )
 
         # Find the point furthest away from the centre of mass
         speed = -np.inf
@@ -312,8 +312,8 @@ class PolygonMainDrone:
         # Compute the point moving from centroid and the goal, formula (43)
         goal_point = self.centre_of_mass + speed * (com_to_goal / com_to_goal.length())
 
-        # Visually display the goal_point
-        pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 3)
+        # # Visually display the goal_point
+        # pygame.draw.circle(self.canvas, pygame.Color("yellow"), goal_point, 3)
 
         # The drone will move towards the goal, hopefully with the sheep flock in front
         com_to_point = pygame.Vector2(self.centre_of_mass - goal_point)
@@ -325,7 +325,7 @@ class PolygonMainDrone:
             point = self.centre_of_mass + com_to_point.rotate_rad(angle)
             circle_positions.append(point)
 
-            pygame.draw.circle(self.canvas, pygame.Color("yellow"), point, 3)
+            # pygame.draw.circle(self.canvas, pygame.Color("yellow"), point, 3)
 
         for drone in drones:
             i = drones.index(drone)
@@ -376,7 +376,7 @@ class PolygonMainDrone:
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
 
         # The minimum distance of gathering, before the animals need to be driven to a designated location
-        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), self.centre_of_mass, SHEEP_RADIUS, 1)
+        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("palegreen3"), self.centre_of_mass, SHEEP_RADIUS, 1)
 
         # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
         for drone in drones:

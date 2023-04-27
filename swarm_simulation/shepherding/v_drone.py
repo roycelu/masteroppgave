@@ -25,10 +25,10 @@ class VDrone:
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
 
-        label = font.render(str(self.id), True, pygame.Color("white"))
-        label_rect = label.get_rect()
-        label_rect.center = self.position
-        canvas.blit(label, label_rect)
+        # label = font.render(str(self.id), True, pygame.Color("white"))
+        # label_rect = label.get_rect()
+        # label_rect.center = self.position
+        # canvas.blit(label, label_rect)
 
     def update(self, sheep, dt, target_fps):
         velocity_distance = np.linalg.norm(self.velocity)
@@ -78,18 +78,18 @@ class VDrone:
             P_center = com + (point - com).rotate_rad(theta)
             P_right = com + (point - com).rotate_rad(2 * theta)
 
-            pygame.draw.circle(canvas, pygame.Color("blue"), P_center, 5)
-            pygame.draw.circle(canvas, pygame.Color("blue"), P_left, 3)
-            pygame.draw.circle(canvas, pygame.Color("blue"), P_right, 3)
+            # pygame.draw.circle(canvas, pygame.Color("blue"), P_center, 5)
+            # pygame.draw.circle(canvas, pygame.Color("blue"), P_left, 3)
+            # pygame.draw.circle(canvas, pygame.Color("blue"), P_right, 3)
 
         if self.id == 1:
             P_right = point
             P_center = com + (point - com).rotate_rad(-theta)
             P_left = com + (point - com).rotate_rad(2 * -theta)
 
-            pygame.draw.circle(canvas, pygame.Color("yellow"), P_center, 5)
-            pygame.draw.circle(canvas, pygame.Color("yellow"), P_left, 3)
-            pygame.draw.circle(canvas, pygame.Color("yellow"), P_right, 3)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_center, 5)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_left, 3)
+            # pygame.draw.circle(canvas, pygame.Color("yellow"), P_right, 3)
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
