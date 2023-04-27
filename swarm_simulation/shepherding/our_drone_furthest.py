@@ -49,10 +49,10 @@ class OurDroneFurthest:
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
 
-        label = font.render(str(self.id), True, pygame.Color("white"))
-        label_rect = label.get_rect()
-        label_rect.center = self.position
-        canvas.blit(label, label_rect)
+        # label = font.render(str(self.id), True, pygame.Color("white"))
+        # label_rect = label.get_rect()
+        # label_rect.center = self.position
+        # canvas.blit(label, label_rect)
 
 
     def update(self, sheep, dt, target_fps):
@@ -190,9 +190,9 @@ class OurDroneFurthest:
             P_center = point
             P_right = sheep_pos + (point - sheep_pos).rotate(-theta)
 
-        pygame.draw.circle(screen, pygame.Color("yellow"), P_left, 5)
-        pygame.draw.circle(screen, pygame.Color("brown"), P_center, 5)
-        pygame.draw.circle(screen, pygame.Color("yellow"), P_right, 5)
+        # pygame.draw.circle(screen, pygame.Color("yellow"), P_left, 5)
+        # pygame.draw.circle(screen, pygame.Color("brown"), P_center, 2)
+        # pygame.draw.circle(screen, pygame.Color("yellow"), P_right, 5)
 
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):

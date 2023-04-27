@@ -40,7 +40,7 @@ class OurMainDronePolygon:
         for i in hull.vertices:
             points.append(positions[i])
 
-        figure = pygame.draw.polygon(self.canvas, pygame.Color("black"), points, 1)
+        figure = pygame.draw.polygon(self.canvas, pygame.Color("palegreen3"), points, 1)
         return points, figure
 
 
@@ -53,9 +53,9 @@ class OurMainDronePolygon:
         for i in range(len(polygon_list) - 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
             extended_hull.append(point)
-            pygame.draw.circle(self.canvas, pygame.Color("gray"), point, 5)
+            pygame.draw.circle(self.canvas, pygame.Color("red4"), point, 2)
 
-        figure = pygame.draw.polygon(self.canvas, pygame.Color("gray"), extended_hull, 2)
+        figure = pygame.draw.polygon(self.canvas, pygame.Color("red4"), extended_hull, 2)
         return extended_hull, figure
 
 
@@ -96,7 +96,7 @@ class OurMainDronePolygon:
                 edge_vertices[0] = pygame.Vector2(vertices[j])
                 edge_vertices[1] = pygame.Vector2(vertices[j + 1])
 
-        pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 3)
+        # pygame.draw.circle(self.canvas, pygame.Color("purple"), closest_point, 3)
 
         drone.edge_point = closest_point
         drone.fly_to_position(closest_point)
@@ -320,7 +320,7 @@ class OurMainDronePolygon:
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
 
         # The minimum distance of gathering, before the animals need to be driven to a designated location
-        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("orange"), centre_of_mass, SHEEP_RADIUS, 1)
+        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("palegreen3"), centre_of_mass, SHEEP_RADIUS, 1)
 
         # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
         for drone in drones:
