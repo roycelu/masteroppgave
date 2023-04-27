@@ -15,7 +15,7 @@ from utils import Calculate
 
 
 class SharedMain:
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, results_path, theta):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, results_path, theta = 0):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -82,7 +82,7 @@ class SharedMain:
     def capture_screenshot(self, clock_time, screen, capture_times):
         time = int(round(clock_time, -1)) # Runder av tiden til nærmste 10'er
         # Take the screenshot every 10 simulation
-        if self.id % 10 == 0 and time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
+        if self.id % 20 == 0 and time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
 
             # Creates a directory to save the screenshots, if it not already exists
             path = '{}/screenshots/{}_{}'.format(self.results_path, self.id, self.dronetype)

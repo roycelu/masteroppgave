@@ -1,3 +1,4 @@
+import os
 import sys
 import pygame, time
 import numpy as np
@@ -11,7 +12,7 @@ from utils import Calculate
 
 
 class Main:
-    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, testtype, theta):
+    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, testtype, theta, results_path):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -23,6 +24,7 @@ class Main:
         self.sheep_away = False
         self.theta = theta
         self.perception = 40
+        self.results_path = results_path
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -68,9 +70,36 @@ class Main:
             if self.collect_type == "furthest":
                 drone_list[i] = OurDroneFurthest(i, position)
         return drone_list
+    
+
+    def capture_screenshot(self, clock_time, screen, capture_times):
+        time = int(round(clock_time, -1)) # Runder av tiden til nærmste 10'er
+        # Take the screenshot every 20 simulation
+        if self.id % 20 == 0 and time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
+
+            # Creates a directory to save the screenshots, if it not already exists
+            path = '{}/screenshots/{}_{}'.format(self.results_path, self.id, self.collect_type)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            
+            # print("klikk klikk", clock_time, time)
+            text = pygame.font.SysFont("Times New Roman", 25)
+            text = text.render('Testscenario: {}  |  Vinkel: {}'.format(self.testtype, self.theta), True, pygame.Color("black"), pygame.Color("white"))
+            rect = text.get_rect()
+            rect.left, rect.bottom = 10, screen.get_height()-10
+            screen.blit(text, rect)
+
+            text2 = pygame.font.SysFont("Times New Roman", 25)
+            text2 = text2.render('TestID: {}  |  Tid: {} | Dronemetode: {}'.format(self.id, time, self.collect_type), True, pygame.Color("black"), pygame.Color("white"))
+            rect = text2.get_rect()
+            rect.left, rect.bottom = 10, screen.get_height()-15-rect.height
+            screen.blit(text2, rect)
+            
+            image = screen.copy()
+            pygame.image.save(image, '{path}/{time}_{t}{a}.png'.format(path=path, time=time, t=self.testtype, a=self.theta))        
 
 
-    def main(self, time_limit, target_fps):
+    def main(self, time_limit, target_fps, capture_times):
         pygame.init()
         pygame.display.set_caption("The shepherding problem - our method")
 
@@ -169,6 +198,10 @@ class Main:
                     count += 1
                 else:
                     break
+
+
+            # Øyeblikksbilder av simuleringen på gitte tidspunkt
+            self.capture_screenshot(pygame.time.get_ticks() / (sek * 1000), screen, capture_times)
 
             
             # If the test i "right angle", make new goal when first goal is reached
