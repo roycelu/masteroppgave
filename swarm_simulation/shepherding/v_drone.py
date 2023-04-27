@@ -67,7 +67,7 @@ class VDrone:
         
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
-        pygame.draw.circle(canvas, pygame.Color("brown"), point, 2)
+        # pygame.draw.circle(canvas, pygame.Color("brown"), point, 2)
 
         P_left = pygame.Vector2(0, 0)
         P_center = pygame.Vector2(0, 0)

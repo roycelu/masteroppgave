@@ -191,7 +191,7 @@ class OurDroneFurthest:
             P_right = sheep_pos + (point - sheep_pos).rotate(-theta)
 
         # pygame.draw.circle(screen, pygame.Color("yellow"), P_left, 5)
-        pygame.draw.circle(screen, pygame.Color("brown"), P_center, 2)
+        # pygame.draw.circle(screen, pygame.Color("brown"), P_center, 2)
         # pygame.draw.circle(screen, pygame.Color("yellow"), P_right, 5)
 
         # Fly between P_left -> P_center -> P_right -> ...
