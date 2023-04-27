@@ -63,7 +63,7 @@ class VDrone:
 
 
     def find_steering_point(self, com, distance_from_com, drones, goal, canvas):
-        theta = np.pi/6 # = 30, angle is fixed
+        theta = 20 # = 30, angle is fixed
         
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
@@ -75,8 +75,8 @@ class VDrone:
 
         if self.id == 0:
             P_left = point
-            P_center = com + (point - com).rotate_rad(theta)
-            P_right = com + (point - com).rotate_rad(2 * theta)
+            P_center = com + (point - com).rotate(theta)
+            P_right = com + (point - com).rotate(2 * theta)
 
             # pygame.draw.circle(canvas, pygame.Color("blue"), P_center, 5)
             # pygame.draw.circle(canvas, pygame.Color("blue"), P_left, 3)
@@ -84,8 +84,8 @@ class VDrone:
 
         if self.id == 1:
             P_right = point
-            P_center = com + (point - com).rotate_rad(-theta)
-            P_left = com + (point - com).rotate_rad(2 * -theta)
+            P_center = com + (point - com).rotate(-theta)
+            P_left = com + (point - com).rotate(2 * -theta)
 
             # pygame.draw.circle(canvas, pygame.Color("yellow"), P_center, 5)
             # pygame.draw.circle(canvas, pygame.Color("yellow"), P_left, 3)

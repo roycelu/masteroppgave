@@ -8,14 +8,14 @@ from circle_drone import CircleDrone
 from polygon_main_drone import PolygonMainDrone
 from polygon_drone import PolygonDrone
 from v_drone import VDrone
-from our_drone_polygon import OurDronePolygon
-from our_main_drone_polygon import OurMainDronePolygon
+from our_drone_furthest import OurDroneFurthest
+from our_main_drone_furthest import OurMainDroneFurthest
 from goal import Goal
 from utils import Calculate
 
 
 class SharedMain:
-    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, results_path):
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, results_path, theta):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -27,6 +27,7 @@ class SharedMain:
         self.sheep_away = False
         self.perception = perception
         self.results_path = results_path
+        self.theta = theta
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -74,7 +75,7 @@ class SharedMain:
             if self.dronetype == "polygon":
                 drone_list[i] = PolygonDrone(i, position)
             if self.dronetype == "our":
-                drone_list[i] = OurDronePolygon(i, position)
+                drone_list[i] = OurDroneFurthest(i, position)
         return drone_list
 
 
@@ -119,7 +120,7 @@ class SharedMain:
         if self.dronetype == 'polygon':
             main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
         if self.dronetype == 'our':
-            main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep)
+            main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta)
 
         clock = pygame.time.Clock()
         prev_time = time.time()
