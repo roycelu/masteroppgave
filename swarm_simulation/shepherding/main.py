@@ -154,7 +154,6 @@ class Main:
 
             sek = 1/self.FPS
 
-            reached_goal_time_list = []
             reached_goal_number = []
             sheep_count = 0
             all_sheep = False
@@ -166,7 +165,6 @@ class Main:
                 # Keep track of whether sheep have reached the goal or not
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
-                    reached_goal_time_list.append(pygame.time.get_ticks()/1000)
                     sheep_count += 1
                     reached_goal_number.append(sheep_count)
                 else:
