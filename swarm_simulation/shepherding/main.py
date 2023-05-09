@@ -154,7 +154,6 @@ class Main:
 
             sek = 1/self.FPS
 
-            reached_goal_number = []
             sheep_count = 0
             all_sheep = False
 
@@ -166,7 +165,6 @@ class Main:
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
                     sheep_count += 1
-                    reached_goal_number.append(sheep_count)
                 else:
                     goal_count[s.id] = 0
                 
