@@ -16,7 +16,7 @@ FPS = 30
 TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 COLLECT_TYPE = ['polygon', 'furthest']
 ANGLE = [10, 15, 20, 25, 30]
-CAPTURE_TIMES = [x for x in range(50, 5000, 200)]
+CAPTURE_TIMES = [x for x in range(50, TIME_LIMIT, 200)]
 
 pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
 

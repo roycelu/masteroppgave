@@ -16,7 +16,7 @@ FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['circle', 'polygon', 'v']
 PERCEPTIONS = [20, 30, 40]
-CAPTURE_TIMES = [x for x in range(50, 5000, 200)]
+CAPTURE_TIMES = [x for x in range(50, TIME_LIMIT, 200)]
 
 pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
 
