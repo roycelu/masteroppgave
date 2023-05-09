@@ -10,12 +10,12 @@ from shared_main import SharedMain
 NO_SHEEP = 5
 NO_DRONES = 3
 NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
-TIME_LIMIT = 500000 # 50 sekunder for sauene å bevege seg maks 1000m
+TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 10 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 DRONETYPES = ['circle', 'polygon', 'v']
-PERCEPTIONS = [40, 30, 20]
+PERCEPTIONS = [20, 30, 40]
 CAPTURE_TIMES = [x for x in range(50, 5000, 200)]
 
 pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
@@ -176,11 +176,11 @@ def main():
         # GJENNOMSNITTLIG GJETETID FOR SIMULERINGENE
         fig_time, ax_time = plt.subplots()
 
-        circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Sirkel: samletid = {}'.format(circle_collect_time), color='lightcoral')
-        circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Sirkel: drivetid = {}'.format(circle_herd_time), color='crimson')
+        circle_collect = ax_time.bar(ind-0.25, circle_collect_time, width, label='Sirkel: samletid = {}'.format(circle_collect_time), color='moccasin')
+        circle_herd = ax_time.bar(ind-0.25, circle_herd_time, width, bottom=circle_collect_time, label='Sirkel: drivetid = {}'.format(circle_herd_time), color='orange')
 
-        v_collect = ax_time.bar(ind, v_collect_time, width, label='V: samletid = {}'.format(v_collect_time), color='lightskyblue')
-        v_herd = ax_time.bar(ind, v_herd_time, width, bottom=v_collect_time, label='V: drivetid = {}'.format(v_herd_time), color='dodgerblue')
+        v_collect = ax_time.bar(ind, v_collect_time, width, label='V: samletid = {}'.format(v_collect_time), color='lightgreen')
+        v_herd = ax_time.bar(ind, v_herd_time, width, bottom=v_collect_time, label='V: drivetid = {}'.format(v_herd_time), color='seagreen')
 
         polygon_collect = ax_time.bar(ind+0.25, polygon_collect_time, width, label='Polygon: samletid = {}'.format(polygon_collect_time), color='mediumpurple')
         polygon_herd = ax_time.bar(ind+0.25, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='indigo')
@@ -233,11 +233,11 @@ def main():
         # SUKSESSRATEN FOR SIMULERINGENE
         fig, ax = plt.subplots()
 
-        circle_1 = ax.bar(ind-0.25, circle_success, width, label='Sirkel: suksess', color='lightcoral')
-        circle_2 = ax.bar(ind-0.25, circle_failure, width, label='Sirkel: mislykket', color='crimson')
+        circle_1 = ax.bar(ind-0.25, circle_success, width, label='Sirkel: suksess', color='moccasin')
+        circle_2 = ax.bar(ind-0.25, circle_failure, width, label='Sirkel: mislykket', color='orange')
 
-        v_1 = ax.bar(ind, v_success, width, label='V: suksess', color='lightskyblue')
-        v_2 = ax.bar(ind, v_failure, width, label='V: mislykket', color='dodgerblue')
+        v_1 = ax.bar(ind, v_success, width, label='V: suksess', color='lightgreen')
+        v_2 = ax.bar(ind, v_failure, width, label='V: mislykket', color='seagreen')
 
         polygon_1 = ax.bar(ind+0.25, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
         polygon_2 = ax.bar(ind+0.25, polygon_failure, width, label='Polygon: mislykket', color='indigo')

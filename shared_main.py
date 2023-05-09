@@ -1,30 +1,33 @@
+from datetime import datetime
 import os
 import sys
 import pygame, time
 import numpy as np
 from sheep import Sheep
-from our_drone_polygon import OurDronePolygon
+from circle_drone import CircleDrone
+from polygon_main_drone import PolygonMainDrone
+from polygon_drone import PolygonDrone
+from v_drone import VDrone
 from our_drone_furthest import OurDroneFurthest
 from our_main_drone_furthest import OurMainDroneFurthest
-from our_main_drone_polygon import OurMainDronePolygon
 from goal import Goal
 from utils import Calculate
 
 
-class Main:
-    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, testtype, theta, results_path):
+class SharedMain:
+    def __init__(self, id, sheep_positions, no_drones, FPS, dronetype, testtype, perception, results_path, theta = 0):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
         self.FPS = FPS
-        self.collect_type = collect_type
+        self.dronetype = dronetype
         self.testtype = testtype
         self.goal_vector = pygame.Vector2(500, 600)
         self.goal = Goal(self.goal_vector)
         self.sheep_away = False
-        self.theta = theta
-        self.perception = 40
+        self.perception = perception
         self.results_path = results_path
+        self.theta = theta
 
     
     def draw_center_of_mass(self, canvas, font, sheep):
@@ -65,43 +68,47 @@ class Main:
             x = np.random.randint(200, 220)
             y = np.random.randint(200, 220)
             position = pygame.Vector2(x, y)
-            if self.collect_type == "polygon":
-                drone_list[i] = OurDronePolygon(i, position)
-            if self.collect_type == "furthest":
+            if self.dronetype == "circle":
+                drone_list[i] = CircleDrone(i, position)
+            if self.dronetype == 'v':
+                drone_list[i] = VDrone(i, position)
+            if self.dronetype == "polygon":
+                drone_list[i] = PolygonDrone(i, position)
+            if self.dronetype == "our":
                 drone_list[i] = OurDroneFurthest(i, position)
         return drone_list
-    
+
 
     def capture_screenshot(self, clock_time, screen, capture_times):
         time = int(round(clock_time, -1)) # Runder av tiden til nærmste 10'er
-        # Take the screenshot every 20 simulation
+        # Take the screenshot every 10 simulation
         if self.id % 20 == 0 and time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
 
             # Creates a directory to save the screenshots, if it not already exists
-            path = '{}/screenshots/{}_{}'.format(self.results_path, self.id, self.collect_type)
+            path = '{}/screenshots/{}_{}'.format(self.results_path, self.id, self.dronetype)
             if not os.path.exists(path):
                 os.makedirs(path)
             
             # print("klikk klikk", clock_time, time)
             text = pygame.font.SysFont("Times New Roman", 25)
-            text = text.render('Testscenario: {}  |  Vinkel: {}'.format(self.testtype, self.theta), True, pygame.Color("black"), pygame.Color("white"))
+            text = text.render('Testscenario: {}  |  Synsrekkevidde: {}'.format(self.testtype, self.perception), True, pygame.Color("black"), pygame.Color("white"))
             rect = text.get_rect()
             rect.left, rect.bottom = 10, screen.get_height()-10
             screen.blit(text, rect)
 
             text2 = pygame.font.SysFont("Times New Roman", 25)
-            text2 = text2.render('TestID: {}  |  Tid: {} | Dronemetode: {}'.format(self.id, time, self.collect_type), True, pygame.Color("black"), pygame.Color("white"))
+            text2 = text2.render('TestID: {}  |  Tid: {} | Dronemetode: {}'.format(self.id, time, self.dronetype), True, pygame.Color("black"), pygame.Color("white"))
             rect = text2.get_rect()
             rect.left, rect.bottom = 10, screen.get_height()-15-rect.height
             screen.blit(text2, rect)
             
             image = screen.copy()
-            pygame.image.save(image, '{path}/{time}_{t}{a}.png'.format(path=path, time=time, t=self.testtype, a=self.theta))        
+            pygame.image.save(image, '{path}/{time}_{t}{p}.png'.format(path=path, time=time, t=self.testtype, p=self.perception))        
 
 
     def main(self, time_limit, target_fps, capture_times):
         pygame.init()
-        pygame.display.set_caption("The shepherding problem - our method")
+        pygame.display.set_caption("The shepherding problem - existing methods")
 
         screen = pygame.display.set_mode((1000, 1000))
         label_font = pygame.font.SysFont("Times New Roman", 12)
@@ -109,13 +116,11 @@ class Main:
         sheep = self.sheep_behaviour(self.sheep_positions)
         drones = self.drone_behaviour(self.no_drones)
         
-        our_main_drone = None
-
-        if self.collect_type == 'polygon':
-            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta)
-        if self.collect_type == 'furthest':
-            our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta)
-
+        main_drone = None
+        if self.dronetype == 'polygon':
+            main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
+        if self.dronetype == 'our':
+            main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta)
 
         clock = pygame.time.Clock()
         prev_time = time.time()
@@ -148,11 +153,12 @@ class Main:
 
             centre_of_mass = self.draw_center_of_mass(screen, label_font, sheep)
 
-            if our_main_drone != None:
-                our_main_drone.run(drones, sheep, self.goal, centre_of_mass)
+            if main_drone != None:
+                main_drone.run(drones, sheep, self.goal, centre_of_mass)
 
 
-            sek = 1/self.FPS
+            # sek = 1/self.FPS
+            seconds = pygame.time.get_ticks() / (1000)
 
             reached_goal_time_list = []
             reached_goal_number = []
@@ -166,9 +172,7 @@ class Main:
                 # Keep track of whether sheep have reached the goal or not
                 if sheep_id_goal_reached:
                     goal_count[s.id] = 1
-                    reached_goal_time_list.append(pygame.time.get_ticks()/1000)
                     sheep_count += 1
-                    reached_goal_number.append(sheep_count)
                 else:
                     goal_count[s.id] = 0
                 
@@ -199,21 +203,21 @@ class Main:
                 else:
                     break
 
-
-            # Øyeblikksbilder av simuleringen på gitte tidspunkt
-            self.capture_screenshot(pygame.time.get_ticks() / (sek * 1000), screen, capture_times)
-
             
+            # Øyeblikksbilder av simuleringen på gitte tidspunkt
+            self.capture_screenshot(seconds, screen, capture_times)
+
+
             # If the test i "right angle", make new goal when first goal is reached
             if count == len(self.sheep_positions):
                 if goals_reached == 1 and self.testtype == "right_angle":
                     successrate = (count / len(self.sheep_positions)) * 100
-                    herdtime = pygame.time.get_ticks() / (sek * 1000)
+                    herdtime = seconds
                     herd_time += (pygame.time.get_ticks() - prev_time_herding)
-                    herd_time /= (sek * 1000)
-                    collect_time /= (sek * 1000)
+                    herd_time /= (1000)
+                    collect_time /= (1000)
                     pygame.quit()
-                    return successrate, herdtime, collect_time, herd_time
+                    return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
                 
                 elif self.testtype == "right_angle":
                     sheep_alignment_vector = pygame.Vector2(0, 0)
@@ -225,28 +229,29 @@ class Main:
                     newX = sheep_alignment_vector.x * np.cos(rotation_radians) - sheep_alignment_vector.y * np.sin(rotation_radians)
                     newY = sheep_alignment_vector.x * np.sin(rotation_radians) + sheep_alignment_vector.y * np.cos(rotation_radians)
                     vector = pygame.Vector2(newX, newY)
-                    self.goal_vector += vector*200
+                    vector.scale_to_length(200) # Sørger for lik avstand hver gang
+                    self.goal_vector += vector
                     self.goal = Goal(self.goal_vector)
                     goals_reached += 1    
                 
                 else:
                     successrate = (count / len(self.sheep_positions)) * 100
-                    herdtime = pygame.time.get_ticks() / (sek * 1000)
+                    herdtime = seconds
                     herd_time += (pygame.time.get_ticks() - prev_time_herding)
-                    herd_time /= (sek * 1000)
-                    collect_time /= (sek * 1000)
+                    herd_time /= (1000)
+                    collect_time /= (1000)
                     pygame.quit()
-                    return successrate, herdtime, collect_time, herd_time
+                    return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
 
-            if pygame.time.get_ticks() > time_limit:   
+            if seconds > time_limit:   
                 successrate = (count / len(self.sheep_positions)) * 100
-                herdtime = pygame.time.get_ticks() / (sek * 1000)
+                herdtime = seconds
                 herd_time += (pygame.time.get_ticks() - prev_time_herding)
-                herd_time /= (sek * 1000)
-                collect_time /= (sek * 1000)
+                herd_time /= (1000)
+                collect_time /= (1000)
                 pygame.quit()     
-                return successrate, herdtime, collect_time, herd_time 
-
+                return successrate, herdtime, reached_goal_time_list, reached_goal_number, collect_time, herd_time
 
             pygame.display.update()
             pygame.time.Clock().tick_busy_loop(self.FPS)
+            

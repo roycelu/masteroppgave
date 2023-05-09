@@ -63,7 +63,7 @@ class VDrone:
 
 
     def find_steering_point(self, com, distance_from_com, drones, goal, canvas):
-        theta = 20 # = 30, angle is fixed
+        theta = 35 # angle with highest success rate from the studies
         
         com_to_goal = pygame.Vector2(com - goal) 
         point = com + distance_from_com * (com_to_goal/com_to_goal.length())
