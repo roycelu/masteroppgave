@@ -1,1 +1,0 @@
-Oppdaget feil med testscenarioet "right angle" som ikke oppdaterte det neste målet når sauene kom til mål i første omgang, derfor er gj.snittstiden noen ganger lavere for dette tilfellet enn "Cooperative flock".

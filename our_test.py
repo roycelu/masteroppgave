@@ -10,13 +10,13 @@ from main import Main
 NO_SHEEP = 5
 NO_DRONES = 3
 NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
-TIME_LIMIT = 500000 # 50 sekunder for sauene å bevege seg maks 1000
+TIME_LIMIT = 50000 # 50 sekunder for sauene å bevege seg maks 1000
 TARGET_FPS = 10 # Hastigheten på simuleringen
 FPS = 30
 TEST_TYPE = ["cooperative_flock", "lone_sheep", "divided_flock", "right_angle"]
 COLLECT_TYPE = ['polygon', 'furthest']
 ANGLE = [10, 15, 20, 25, 30]
-CAPTURE_TIMES = [x for x in range(50, 5000, 200)]
+CAPTURE_TIMES = [x for x in range(50, TIME_LIMIT, 200)]
 
 pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
 
@@ -144,13 +144,14 @@ def main():
                         furthest_collect_time.append(0)
                         furthest_herd_time.append(0)
 
-        plt.plot(ANGLE, polygon_collect_time, label='Polygon, samletid', color='cornflowerblue', marker='o')
-        plt.plot(ANGLE, polygon_herd_time, label='Polygon, drivetid', color='skyblue', marker='o')
-        plt.plot(ANGLE, polygon_time, label='Polygon, totaltid', color='mediumblue', marker='o')
 
-        plt.plot(ANGLE, furthest_collect_time, label='Furthest, samletid', color='crimson', marker='o')
-        plt.plot(ANGLE, furthest_herd_time, label='Furthest, drivetid', color='lightcoral', marker='o')
+        plt.plot(ANGLE, furthest_collect_time, label='Furthest, samletid', color='lightcoral', marker='o')
+        plt.plot(ANGLE, furthest_herd_time, label='Furthest, drivetid', color='crimson', marker='o')
         plt.plot(ANGLE, furthest_time, label='Furthest, totaltid', color='darkred', marker='o')
+
+        plt.plot(ANGLE, polygon_collect_time, label='Polygon, samletid', color='skyblue', marker='o')
+        plt.plot(ANGLE, polygon_herd_time, label='Polygon, drivetid', color='cornflowerblue', marker='o')
+        plt.plot(ANGLE, polygon_time, label='Polygon, totaltid', color='mediumblue', marker='o')
 
         plt.xlabel('Vinkel i grader')
         plt.ylabel('Gjennomsnittlig total gjetetid')
@@ -202,8 +203,8 @@ def main():
         furthest_collect = ax_time.bar(ind-0.1, furthest_collect_time, width, label='Furthest: samletid = {}'.format(furthest_collect_time), color='lightcoral')
         furthest_herd = ax_time.bar(ind-0.1, furthest_herd_time, width, bottom=furthest_collect_time, label='Furthest: drivetid = {}'.format(furthest_herd_time), color='crimson')
 
-        polygon_collect = ax_time.bar(ind+0.1, polygon_collect_time, width, label='Polygon: samletid = {}'.format(polygon_collect_time), color='mediumpurple')
-        polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='indigo')
+        polygon_collect = ax_time.bar(ind+0.1, polygon_collect_time, width, label='Polygon: samletid = {}'.format(polygon_collect_time), color='skyblue')
+        polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='cornflowerblue')
 
         ax_time.bar_label(furthest_herd, furthest_time, rotation=90, padding=5)
         ax_time.bar_label(polygon_herd, polygon_time, rotation=90, padding=5)
@@ -255,11 +256,11 @@ def main():
             # Make figure
             fig, ax = plt.subplots()
 
-            furthest_1 = ax.bar(ind-0.1, f_success, width, label='Furthest: suksess', color='lightskyblue')
-            furthest_2 = ax.bar(ind-0.1, f_failure, width, label='Furthest: mislykket', color='dodgerblue')
+            furthest_1 = ax.bar(ind-0.1, f_success, width, label='Furthest: suksess', color='lightcoral')
+            furthest_2 = ax.bar(ind-0.1, f_failure, width, label='Furthest: mislykket', color='crimson')
 
-            polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='Polygon: suksess', color='lightsalmon')
-            polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='Polygon: mislykket', color='indianred')
+            polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='Polygon: suksess', color='skyblue')
+            polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='Polygon: mislykket', color='cornflowerblue')
 
   
             ax.bar_label(furthest_1, padding=2)

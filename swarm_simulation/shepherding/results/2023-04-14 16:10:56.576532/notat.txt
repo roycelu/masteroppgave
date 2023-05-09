@@ -1,1 +1,0 @@
-Trodde antall desimaler var fikset, men det gjaldt visst bare i csv-tabellene og ikke i selve diagrammene.
