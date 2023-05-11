@@ -10,11 +10,11 @@ from shared_main import SharedMain
 NO_SHEEP = 5
 NO_DRONES = 3
 NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
-TIME_LIMIT = 50 # 50 sekunder for sauene å bevege seg maks 1000m
+TIME_LIMIT = 70 # 50 sekunder for sauene å bevege seg maks 1000m
 TARGET_FPS = 10 # Hastigheten på simuleringen
 FPS = 30
 TESTTYPES = ["cooperative_flock", "divided_flock", "lone_sheep", "right_angle"]
-DRONETYPES = ['our'] # ['our', 'polygon', 'circle', 'v']
+DRONETYPES = ['our', 'polygon', 'circle', 'v']
 PERCEPTIONS = [20, 30, 40]
 CAPTURE_TIMES = [x for x in range(0, TIME_LIMIT, 2)]
 THETA = 10 # Vinkel i grader mellom dronene for our_drone
@@ -78,9 +78,9 @@ def main():
     # Run all the different variations of the simulations
     for perception in PERCEPTIONS:
         df_circle = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
-        # df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
-        # df_polygon = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
-        # df_our = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
+        df_v = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
+        df_polygon = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
+        df_our = pd.DataFrame(columns = ['Testtype', 'Dronetype', 'Gjetetid', 'Suksessrate'])
 
         for dronetype in DRONETYPES:
             for testtype in TESTTYPES:
@@ -89,30 +89,30 @@ def main():
                     successrate, herdtime, reached_goal_times, reached_goal_number, collect_time, actual_herd_time = test(id, NO_SHEEP, NO_DRONES, FPS*NO_DRONES, dronetype, testtype, perception, dir_path)
                     if dronetype == 'circle':
                         df_circle = df_circle.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
-                    # if dronetype == 'v':
-                    #     df_v = df_v.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
-                    # if dronetype == 'polygon':
-                    #     df_polygon = df_polygon.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
-                    # if dronetype == 'our':
-                    #     df_our = df_our.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
+                    if dronetype == 'v':
+                        df_v = df_v.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
+                    if dronetype == 'polygon':
+                        df_polygon = df_polygon.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
+                    if dronetype == 'our':
+                        df_our = df_our.append({'Testtype': testtype, 'Dronetype': dronetype, 'Gjetetid':herdtime, 'Suksessrate':successrate, 'Oppsamlingstid':collect_time, 'Drivetid':actual_herd_time}, ignore_index = True)
                     
         df_circle_original = df_circle.copy()
-        # df_v_original = df_v.copy()
-        # df_polygon_original = df_polygon.copy()
-        # df_our_original = df_our.copy()
+        df_v_original = df_v.copy()
+        df_polygon_original = df_polygon.copy()
+        df_our_original = df_our.copy()
 
         # Make tables for all the data
         df_circle_original = df_circle_original.drop(columns=['Dronetype'])
         df_circle_original.to_csv('{path}/circle_{p}.csv'.format(path=dir_path, p=perception), index=False)
 
-        # df_v_original = df_v_original.drop(columns=['Dronetype'])
-        # df_v_original.to_csv('{path}/v_{p}.csv'.format(path=dir_path, p=perception), index=False)
+        df_v_original = df_v_original.drop(columns=['Dronetype'])
+        df_v_original.to_csv('{path}/v_{p}.csv'.format(path=dir_path, p=perception), index=False)
 
-        # df_polygon_original = df_polygon_original.drop(columns=['Dronetype'])
-        # df_polygon_original.to_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception), index=False)
+        df_polygon_original = df_polygon_original.drop(columns=['Dronetype'])
+        df_polygon_original.to_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception), index=False)
 
-        # df_our_original = df_our_original.drop(columns=['Dronetype'])
-        # df_our_original.to_csv('{path}/our_{p}.csv'.format(path=dir_path, p=perception), index=False)
+        df_our_original = df_our_original.drop(columns=['Dronetype'])
+        df_our_original.to_csv('{path}/our_{p}.csv'.format(path=dir_path, p=perception), index=False)
 
         # """Bar chart for average herd time from successful herding for all algorithms per test"""
         

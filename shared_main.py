@@ -80,7 +80,7 @@ class SharedMain:
 
 
     def capture_screenshot(self, clock_time, screen, capture_times):
-        time = int(round(clock_time, -1)) # Runder av tiden til nærmste 10'er
+        time = int(round(clock_time)) # Runder av tiden til nærmeste heltall
         # Take the screenshot every 10 simulation
         if self.id % 20 == 0 and time in capture_times: # Listen med 'tidspunkter' fastsettes i testen
 
