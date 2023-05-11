@@ -3,10 +3,10 @@ import sys
 import pygame, time
 import numpy as np
 from sheep import Sheep
-from our_drone_polygon import OurDronePolygon
-from our_drone_furthest import OurDroneFurthest
-from our_main_drone_furthest import OurMainDroneFurthest
-from our_main_drone_polygon import OurMainDronePolygon
+from dronetypes.our_drone_vpolygon import OurDroneVPolygon
+from dronetypes.our_drone_com import OurDroneCom
+from dronetypes.our_main_drone_com import OurMainDroneCom
+from dronetypes.our_main_drone_vpolygon import OurMainDroneVPolygon
 from goal import Goal
 from utils import Calculate
 
@@ -65,10 +65,10 @@ class Main:
             x = np.random.randint(200, 220)
             y = np.random.randint(200, 220)
             position = pygame.Vector2(x, y)
-            if self.collect_type == "polygon":
-                drone_list[i] = OurDronePolygon(i, position)
-            if self.collect_type == "furthest":
-                drone_list[i] = OurDroneFurthest(i, position)
+            if self.collect_type == "v_polygon":
+                drone_list[i] = OurDroneVPolygon(i, position)
+            if self.collect_type == "com":
+                drone_list[i] = OurDroneCom(i, position)
         return drone_list
     
 
@@ -111,10 +111,10 @@ class Main:
         
         our_main_drone = None
 
-        if self.collect_type == 'polygon':
-            our_main_drone = OurMainDronePolygon(screen, self.goal, drones, sheep, self.theta)
-        if self.collect_type == 'furthest':
-            our_main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta)
+        if self.collect_type == 'v_polygon':
+            our_main_drone = OurMainDroneVPolygon(screen, self.goal, drones, sheep, self.theta)
+        if self.collect_type == 'com':
+            our_main_drone = OurMainDroneCom(screen, self.goal, drones, sheep, self.theta)
 
 
         clock = pygame.time.Clock()

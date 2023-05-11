@@ -4,12 +4,12 @@ import sys
 import pygame, time
 import numpy as np
 from sheep import Sheep
-from circle_drone import CircleDrone
-from polygon_main_drone import PolygonMainDrone
-from polygon_drone import PolygonDrone
-from v_drone import VDrone
-from our_drone_furthest import OurDroneFurthest
-from our_main_drone_furthest import OurMainDroneFurthest
+from dronetypes.circle_drone import CircleDrone
+from dronetypes.polygon_main_drone import PolygonMainDrone
+from dronetypes.polygon_drone import PolygonDrone
+from dronetypes.v_drone import VDrone
+from dronetypes.our_drone_com import OurDroneCom
+from dronetypes.our_main_drone_com import OurMainDroneCom
 from goal import Goal
 from utils import Calculate
 
@@ -75,7 +75,7 @@ class SharedMain:
             if self.dronetype == "polygon":
                 drone_list[i] = PolygonDrone(i, position)
             if self.dronetype == "our":
-                drone_list[i] = OurDroneFurthest(i, position)
+                drone_list[i] = OurDroneCom(i, position)
         return drone_list
 
 
@@ -120,7 +120,7 @@ class SharedMain:
         if self.dronetype == 'polygon':
             main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
         if self.dronetype == 'our':
-            main_drone = OurMainDroneFurthest(screen, self.goal, drones, sheep, self.theta)
+            main_drone = OurMainDroneCom(screen, self.goal, drones, sheep, self.theta)
 
         clock = pygame.time.Clock()
         prev_time = time.time()

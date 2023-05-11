@@ -14,7 +14,7 @@ STEP_SIZE = 200
 
 AWAY_TARGET_ACTION = 2000
 
-class OurDroneFurthest:
+class OurDroneCom:
     def __init__(self, id, initial_position):
         self.id = id
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)

@@ -12,7 +12,7 @@ PERCEPTION = 100
 STEP_SIZE = 200
 
 
-class OurDronePolygon:
+class OurDroneVPolygon:
     def __init__(self, id, initial_position):
         self.id = id
         self.figure = pygame.Rect(0, 0, SIZE, SIZE)

@@ -10,7 +10,7 @@ TURNING_RADIUS = 5  # minimum turning radius of the drone (predefined?)
 SHEEP_RADIUS = 20 # 60  # the sheep's smallest circle during driving (predefined)
 
 
-class OurMainDronePolygon:
+class OurMainDroneVPolygon:
     def __init__(self, canvas, goal, drones, sheeps, theta):
         self.canvas = canvas
 
