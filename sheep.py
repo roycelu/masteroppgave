@@ -110,7 +110,7 @@ class Sheep:
         total = pygame.Vector2(0, 0)
         for drone in drones:
             distance = self.position-drone.position
-            if distance.magnitude() < self.perception and np.linalg.norm(distance) != 0:
+            if distance.magnitude() < GRAZE_PERCEPTION and np.linalg.norm(distance) != 0:
                 separation = distance / (np.linalg.norm(self.position-drone.position))**3
                 total += separation
         total /= len(drones)

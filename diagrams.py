@@ -5,7 +5,7 @@ import pandas as pd
 PERCEPTIONS = [20, 30, 40]
 ANGLE = [10, 15, 20, 25, 30]
 TESTTYPES = ["cooperative_flock", "divided_flock", "lone_sheep", "right_angle"]
-COLLECT_TYPE = ['polygon', 'furthest']
+COLLECT_TYPE = ['vpolygon', 'com']
 
 def average_time_existing(dir_path, df_circle, df_v, df_polygon, perception):
     """Bar chart for average herd time from successful herding for all algorithms per test"""
@@ -161,7 +161,7 @@ def succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception):
     ax.set_xlabel('Testscenarioer')
     ax.set_ylabel('Antall simuleringer')
     ax.set_xticks(ind)
-    ax.set_xticklabels(["Cooperative flock", "Lone sheep", "Divided flock", "Right angle"])
+    ax.set_xticklabels(["Cooperative flock", "Divided flock", "Lone sheep", "Right angle"])
 
     ax.set_title('Antall simuleringer som er suksess og mislykket, p={}'.format(perception))
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -268,8 +268,8 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     polygon_collect = ax_time.bar(ind+0.1, polygon_collect_time, width, label='Polygon: samletid = {}'.format(polygon_collect_time), color='mediumpurple')
     polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='indigo')
     
-    our_collect = ax_time.bar(ind+0.3, our_collect_time, width, label='Furthest: samletid = {}'.format(our_collect_time), color='lightcoral')
-    our_herd = ax_time.bar(ind+0.3, our_herd_time, width, bottom=our_collect_time, label='Furthest: drivetid = {}'.format(our_herd_time), color='crimson')
+    our_collect = ax_time.bar(ind+0.3, our_collect_time, width, label='Massesenter: samletid = {}'.format(our_collect_time), color='lightcoral')
+    our_herd = ax_time.bar(ind+0.3, our_herd_time, width, bottom=our_collect_time, label='Massesenter: drivetid = {}'.format(our_herd_time), color='crimson')
 
     ax_time.bar_label(circle_herd, circle_time, rotation=90, padding=5)
     ax_time.bar_label(v_herd, v_time, rotation=90, padding=5)
@@ -342,8 +342,8 @@ def successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
     polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='Polygon: mislykket', color='indigo')
 
-    our_1 = ax.bar(ind+0.3, our_success, width, label='Furthest: suksess', color='lightcoral')
-    our_2 = ax.bar(ind+0.3, our_failure, width, label='Furthest: mislykket', color='crimson')
+    our_1 = ax.bar(ind+0.3, our_success, width, label='Massesenter: suksess', color='lightcoral')
+    our_2 = ax.bar(ind+0.3, our_failure, width, label='Massesenter: mislykket', color='crimson')
 
     ax.bar_label(circle_1, padding=2)
     ax.bar_label(circle_2, padding=2)
@@ -563,24 +563,24 @@ def successrate_our(dir_path, df_furthest, df_polygon):
 
 
 def main():
-    dir_path = "./dummy_data/results"
+    dir_path = "./sim_results"
 
     for perception in PERCEPTIONS:
-        df_circle = pd.read_csv('./dummy_data/circle_{p}.csv'.format(p=perception))
-        df_v = pd.read_csv('./dummy_data/v_{p}.csv'.format(p=perception))
-        df_polygon = pd.read_csv('./dummy_data/polygon_{p}.csv'.format(p=perception))
-        # df_our = pd.read_csv('./dummy_data/our_{p}.csv'.format(p=perception))
+        df_circle = pd.read_csv('./sim_results/circle_{p}.csv'.format(p=perception))
+        df_v = pd.read_csv('./sim_results/v_{p}.csv'.format(p=perception))
+        df_polygon = pd.read_csv('./sim_results/polygon_{p}.csv'.format(p=perception))
+        df_our = pd.read_csv('./sim_results/our_{p}.csv'.format(p=perception))
 
         average_time_existing(dir_path, df_circle, df_v, df_polygon, perception)
         succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception)
-        #average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
-        #succsessrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
+        # average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
+        # successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
     
-    df_com = pd.read_csv('./dummy_data/com.csv')
-    df_v_polygon = pd.read_csv('./dummy_data/v_polygon.csv')
-    avg_time_our(dir_path, df_com, df_v_polygon)
-    successrate_our(dir_path, df_com, df_v_polygon)
-    lineplot_our(dir_path, df_com, df_v_polygon)
+    # df_com = pd.read_csv('./dummy_data/com.csv')
+    # df_v_polygon = pd.read_csv('./dummy_data/v_polygon.csv')
+    # avg_time_our(dir_path, df_com, df_v_polygon)
+    # successrate_our(dir_path, df_com, df_v_polygon)
+    # lineplot_our(dir_path, df_com, df_v_polygon)
 
 if __name__ == "__main__":
     main()
