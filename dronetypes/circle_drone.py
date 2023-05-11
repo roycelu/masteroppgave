@@ -47,6 +47,7 @@ class CircleDrone:
         # Move
         self.position += self.velocity * dt * target_fps
 
+        self.velocity = pygame.Vector2(0, 0)
         self.acceleration = pygame.Vector2(0, 0)
 
 

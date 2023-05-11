@@ -8,7 +8,7 @@ Code based on Kubo et al. A-sheep from "Herd guidance by multiple sheepdog agent
 SIZE = 3
 MAX_SPEED = 2.77
 GRAZE_SPEED = 0.13 # m/s 
-GRAZE_PERCEPTION = 50
+GRAZE_PERCEPTION = 30
 A_WEIGHT = 0.5
 C_WEIGHT = 2
 S_WEIGHT = 10
