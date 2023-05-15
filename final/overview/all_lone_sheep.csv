@@ -1,0 +1,13 @@
+Dronetype,Synsrekkevidde,Suksessrate,Gjennomsnitt,Standardavvik
+our,20,100.0,20.42,5.42
+our,30,100.0,19.72,2.59
+our,40,100.0,19.74,3.22
+polygon,20,100.0,31.67,6.71
+polygon,30,100.0,29.86,5.03
+polygon,40,100.0,30.94,7.36
+circle,20,0.0,,
+circle,30,0.0,,
+circle,40,0.0,,
+v,20,0.0,,
+v,30,0.0,,
+v,40,0.0,,
