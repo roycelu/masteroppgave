@@ -334,10 +334,11 @@ class OurMainDroneVPolygon:
                 self.fly_on_edge(drone, extended_vertices, convex_vertices, sheeps, dt, target_fps)
                 
         # Check if the sheep flock is gathered enough, if so, push them toward the goal
-        if gather_radius.contains(convex_hull) and self.toward_goal == False and self.on_edge == True:
-            self.toward_goal = True
-        else:
+        self.toward_goal = True
+        if not gather_radius.contains(convex_hull):
             self.toward_goal = False
+        else:
+            self.toward_goal = True
 
         if self.toward_goal == True and gather_radius.contains(convex_hull):
             steering = False
