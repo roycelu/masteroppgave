@@ -30,26 +30,15 @@ class PolygonDrone:
         self.figure.center = self.position
         pygame.draw.rect(canvas, pygame.Color("black"), self.figure)
 
-    def update(self, sheep, dt, target_fps):
-        #velocity_distance = np.linalg.norm(self.velocity)
-
-        # Make sure the drone does not move faster than max speed of the sheep
-        velocity_distance_sheep = 0
-        for s in sheep:
-            velocity_distance_sheep += np.linalg.norm(s.velocity)
-        velocity_distance_sheep /= len(sheep)
-
-        k = np.abs(np.linalg.norm(self.velocity)-velocity_distance_sheep)
-        self.velocity *= k
-        k=0
-
+    def update(self, sheep, dt, target_fps):    
+        # Drone should not move faster than max speed
         if np.linalg.norm(self.velocity) > MAX_SPEED:
             self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
 
         # If the drone is close to the sheep, make sure the drone does not move faster than the sheep
-        for s in sheep:
-            if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
-                self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
+        # for s in sheep:
+        #     if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
+        #         self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
         
         # Move
         self.position += self.velocity * dt * target_fps
@@ -60,5 +49,6 @@ class PolygonDrone:
     def move(self, goal, drones, sheep, canvas, dt, target_fps):
         self.update(sheep, dt, target_fps)
 
-    def fly_to_position(self, position):
+    def fly_to_position(self, position, sheep, dt, target_fps):
         self.velocity = (position - self.position)
+        self.update(sheep, dt, target_fps)

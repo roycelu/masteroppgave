@@ -40,9 +40,9 @@ class OurDroneVPolygon:
             self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
 
         # If drone is in close proximity to sheep they should not move faster than sheep
-        for s in sheep:
-            if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
-                self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
+        # for s in sheep:
+        #     if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
+        #         self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
 
         # Move
         self.position += self.velocity * dt * target_fps
