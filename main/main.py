@@ -105,9 +105,9 @@ class Main:
         
         our_main_drone = None
         if self.collect_type == 'v_polygon':
-            our_main_drone = OurMainDroneVPolygon(screen, self.goal, drones, sheep, self.theta)
+            our_main_drone = OurMainDroneVPolygon(screen, self.goal, self.theta)
         if self.collect_type == 'com':
-            our_main_drone = OurMainDroneCom(screen, self.goal, drones, sheep, self.theta)
+            our_main_drone = OurMainDroneCom(screen, self.goal, self.theta)
 
 
         clock = pygame.time.Clock()

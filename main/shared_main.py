@@ -113,11 +113,11 @@ class SharedMain:
         main_drone = None
         main_drone_name = ""
         if self.dronetype == 'polygon':
-            main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
+            main_drone = PolygonMainDrone(screen, self.goal)
             main_drone_name = "polygon"
 
         if self.dronetype == 'our':
-            main_drone = OurMainDroneCom(screen, self.goal, drones, sheep, self.theta)
+            main_drone = OurMainDroneCom(screen, self.goal, self.theta)
             main_drone_name = "our"
 
         clock = pygame.time.Clock()

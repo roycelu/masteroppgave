@@ -11,13 +11,11 @@ SHEEP_RADIUS = 20 # the sheep's smallest circle during driving (predefined)
 
 
 class OurMainDroneCom:
-    def __init__(self, canvas, goal, drones, sheeps, theta):
+    def __init__(self, canvas, goal, theta):
         self.canvas = canvas
 
         self.main_goal = goal
         self.goal = Goal(goal.position)
-        self.drones = drones
-        self.sheeps = sheeps
 
         self.centre_of_mass = pygame.Vector2(0, 0)
 
@@ -87,7 +85,7 @@ class OurMainDroneCom:
         # If there is only one group of sheep, herd them in a V-formation with all three drones
         if len(steering_sheep) == 0 or len(steering_sheep) == 1:
             for dro in drones:
-                dro.find_steering_point(self.sheeps, goal, com, self.theta, self.canvas, dt, target_fps)
+                dro.find_steering_point(sheep, goal, com, self.theta, self.canvas, dt, target_fps)
 
         # If there are two groups, send two drones to the group with the most sheep and one to the other
         elif len(steering_sheep) == 2:
@@ -120,7 +118,7 @@ class OurMainDroneCom:
             
             duplicate_index = np.where(pd.Series(steering_sheep).duplicated(keep=False))[0] # Duplicates [first_index, ..., last_index]
             for j in range(len(shortest_points)):
-                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, self.canvas, self.sheeps, dt, target_fps, [duplicate_index[0], duplicate_index[-1]])
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, self.canvas, sheep, dt, target_fps, [duplicate_index[0], duplicate_index[-1]])
 
         # If there are three groups, each drone moves to the one that makes for the shortest total travel distance
         elif len(steering_sheep) == 3:
@@ -134,7 +132,7 @@ class OurMainDroneCom:
                     shortest_points = i
             j = 0
             for i in shortest_points:
-                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, self.canvas, self.sheeps, dt, target_fps)
+                drones[shortest_points[j]].find_steering_point_gather_sheep(steering_sheep[j], com, self.theta, self.canvas, sheep, dt, target_fps)
                 j += 1
     
 

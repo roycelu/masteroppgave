@@ -10,15 +10,11 @@ SHEEP_RADIUS = 20 # the sheep's smallest circle during driving (predefined)
 
 
 class PolygonMainDrone:
-    def __init__(self, canvas, goal, drones, sheeps):
+    def __init__(self, canvas, goal):
         self.canvas = canvas
 
         self.main_goal = goal
         self.goal = Goal(goal.position)
-        self.drones = drones
-        self.sheeps = sheeps
-
-        self.centre_of_mass = pygame.Vector2(0, 0)
 
         self.on_edge = False
         self.toward_goal = False
@@ -46,7 +42,7 @@ class PolygonMainDrone:
 
         polygon = shp.Polygon([[v.x, v.y] for v in vertices]).buffer(DISTANCE, join_style=2, mitre_limit=1)
         polygon_list = polygon.exterior.coords
-        for i in range(len(polygon_list) - 1):
+        for i in range(len(polygon_list)- 1):
             point = pygame.Vector2(polygon_list[i][0], polygon_list[i][1])
             extended_hull.append(point)
             pygame.draw.circle(self.canvas, pygame.Color("red4"), point, 2)
@@ -55,7 +51,7 @@ class PolygonMainDrone:
         return extended_hull, figure
 
 
-    def fly_to_egde(self, drone, vertices):
+    def fly_to_egde(self, drone, vertices, sheep, dt, target_fps):
         # Make the drone fly to the extended hull
         closest_point = pygame.Vector2(0, 0)
         shortest_distance = np.inf
@@ -83,7 +79,6 @@ class PolygonMainDrone:
             else:
                 b = q - p
                 O = pygame.Vector2(vertices[j])
-            # (17)
 
             # Find the closest point on the extended hull
             if drone.position.distance_to(O) < shortest_distance:
@@ -93,14 +88,14 @@ class PolygonMainDrone:
                 edge_vertices[1] = pygame.Vector2(vertices[j + 1])
 
         drone.edge_point = closest_point
-        drone.fly_to_position(closest_point)
+        drone.fly_to_position(closest_point, sheep, dt, target_fps)
 
 
-    def fly_on_edge(self, drone, vertices, convex_vertices):
+    def fly_on_edge(self, drone, vertices, convex_vertices, sheep, dt, target_fps):
         # Make the drone fly along the extended hull
         if len(drone.travel_path) == 0:
             # BRAKE - stop the drone when it arrives at the final vertex
-            drone.fly_to_position(drone.steering_point)
+            drone.fly_to_position(drone.steering_point, sheep, dt, target_fps)
         else:
             # TRANSFER - arc trajectory to the steering point
             new = drone.travel_path.pop(0)
@@ -136,18 +131,18 @@ class PolygonMainDrone:
                 if not (convex_vertex - C_t).length() < TURNING_RADIUS:
                     if not np.sin(angle / 2) > 1 - (DISTANCE / TURNING_RADIUS):
                         if not angle > 2 * np.arcsin(1 - (DISTANCE / TURNING_RADIUS)):
-                            drone.fly_to_position(current_point)
+                            drone.fly_to_position(current_point, sheep, dt, target_fps)
             else:
-                drone.fly_to_position(new)
+                drone.fly_to_position(new, sheep, dt, target_fps)
                 if drone.direction_index == 0:
                     if drone.figure.collidepoint(F_1):
-                        drone.fly_to_position(F_2)
+                        drone.fly_to_position(F_2, sheep, dt, target_fps)
                 if drone.direction_index == 1:
                     if drone.figure.collidepoint(F_2):
-                        drone.fly_to_position(F_1)                      
+                        drone.fly_to_position(F_1, sheep, dt, target_fps) 
 
 
-    def allocate_steering_points(self, drones, vertices):
+    def allocate_steering_points(self, drones, vertices, centre_of_mass):
         # Find the optimal steering points for the drones on the extended hull
         allocated_steering_points = [pygame.Vector2(0, 0) for d in drones]
 
@@ -157,15 +152,25 @@ class PolygonMainDrone:
         copy_list = vertices
         for m in range(len(vertices)):
             for n in range(len(vertices) - m - 1):
-                d = self.centre_of_mass.distance_to(copy_list[n])
-                d2 = self.centre_of_mass.distance_to(copy_list[n + 1])
+                d = centre_of_mass.distance_to(copy_list[n])
+                d2 = centre_of_mass.distance_to(copy_list[n + 1])
                 if d > d2:
                     copy_list[n], copy_list[n + 1] = copy_list[n + 1], copy_list[n]
-        steering_points = copy_list[:len(drones):-1]
-
+        print('copylist', len(copy_list), copy_list)
+        #steering_points = copy_list[:len(drones):-1]
+        steering_points = copy_list[len(copy_list)-len(drones):]
+        steering_points.reverse()
+       
+        print('len drones', len(drones))
+        print('len copy list', len(copy_list))
+        print('len steering points', len(steering_points))
         # Calculate the drones' positions on the disconnected extended hull (z-axis)
         # The disconnected extended hull from the first drone's position [0, M]
-        initial = self.closest_vertex(drones[0].edge_point, vertices)
+        initial_drone = None
+        for drone in drones:
+            if drone.id == 0:
+                initial_drone = drone
+        initial = self.closest_vertex(initial_drone.position, vertices)
         line_segment = []  # line segment (z-axis): [0,M]
         temp = []
         for i in range(len(vertices)):
@@ -175,12 +180,11 @@ class PolygonMainDrone:
                 temp.append(vertices[i])
         line_segment.extend(temp)
 
-        # Convert the drones' extended hull positions to correspond to the disconnected extended hull (z-axis)
+        # Relabel the drone ids counterclockwise, so they won't collide. Returns the drones' closest point on the disconnected extended hull (z-axis)
+        corners = self.closest_vertex2(line_segment, drones)
         drone_positions = [0 for d in drones]
-        for drone in drones:
-            i = drones.index(drone)
-            vertex = self.closest_vertex(drone.position, vertices)  # TODO?
-            drone_positions[i] = line_segment.index(vertex)
+        for i in range(len(drones)):
+            drone_positions[i] = line_segment.index(corners[i])
 
         # Generate possible allocations for each drone
         for drone in drones:
@@ -191,7 +195,8 @@ class PolygonMainDrone:
 
         # Calculate the optimal steering points for the drones based on the travel distance
         for drone in drones:
-            i = drones.index(drone)
+            #i = drones.index(drone)
+            i = drone.id
             for el in drone.possible_allocations:
                 # Calculate the position on the disconnected extended hull and the travel distance
                 direction = el[0]  # direction index (z)
@@ -233,8 +238,8 @@ class PolygonMainDrone:
 
         # Remark 5: Each drone is allocated to each steering point, if there is enough of steering points to be allocated, or else the drone stand by
         x = 0
-        if len(steering_points) < len(drones):
-            x = len(drones) - len(steering_points) 
+        if len(steering_points) <= len(drones):
+            x = len(drones) - len(steering_points)
             if x < 0:
                 x = 0
 
@@ -265,16 +270,16 @@ class PolygonMainDrone:
 
             # Calculte the drone's path
             start_index = drone_positions[i]
-            end_index = line_segment.index(drone.steering_point)
+            end_index = line_segment.index(allocated_steering_points[i])
 
             for n in range(len(line_segment)):
-                if drone.direction_index == 0:
+                if drone.direction_index == 0: # clockwise movement
                     if end_index > start_index:  
                         drone.left_pass = 1
                     else:
                         drone.left_pass = 0
                     index = n - drone.left_pass * len(line_segment)  
-                if drone.direction_index == 1:
+                if drone.direction_index == 1: # counterclockwise movement
                     if end_index < start_index:  
                         drone.right_pass = 1
                     else:
@@ -285,30 +290,30 @@ class PolygonMainDrone:
                     drone.travel_path.append(line_segment[index])
 
 
-    def drive_to_goal(self, drones, goal, vertices, convex_vertices):
+    def drive_to_goal(self, drones, goal, vertices, convex_vertices, centre_of_mass, sheep, dt, target_fps):
         # Find the point behind the extended hull, between the centroid and the goal
         goal_point = pygame.Vector2(0, 0)  # A point between centroid and goal
 
         # Find the vector between center of mass and goal
-        com_to_goal = pygame.Vector2(self.centre_of_mass - goal.position)
+        com_to_goal = pygame.Vector2(centre_of_mass - goal.position)
 
         # Find the point furthest away from the centre of mass
         speed = -np.inf
         for v in vertices:
-            if speed < self.centre_of_mass.distance_to(v):
-                speed = self.centre_of_mass.distance_to(v)
+            if speed < centre_of_mass.distance_to(v):
+                speed = centre_of_mass.distance_to(v)
                 
         # Compute the point moving from centroid and the goal
-        goal_point = self.centre_of_mass + speed * (com_to_goal / com_to_goal.length())
+        goal_point = centre_of_mass + speed * (com_to_goal / com_to_goal.length())
 
         # The drone will move towards the goal, hopefully with the sheep flock in front
-        com_to_point = pygame.Vector2(self.centre_of_mass - goal_point)
+        com_to_point = pygame.Vector2(centre_of_mass - goal_point)
 
         circle_positions = []
         com_to_point.rotate_rad_ip(np.pi/2)
         for i in range(len(drones)+1):
             angle = np.pi/len(drones) * i
-            point = self.centre_of_mass + com_to_point.rotate_rad(angle)
+            point = centre_of_mass + com_to_point.rotate_rad(angle)
             circle_positions.append(point)
 
         for drone in drones:
@@ -327,7 +332,7 @@ class PolygonMainDrone:
             if not drone.figure.collidepoint(circle_positions[i+1]) and drone.steering_drive == 1:
                 drone.steering_point = circle_positions[i+1]
 
-            drone.fly_to_position(drone.steering_point)
+            drone.fly_to_position(drone.steering_point, sheep, dt, target_fps)
 
 
     def get_indices(self, current, max_length):
@@ -345,22 +350,181 @@ class PolygonMainDrone:
 
     def closest_vertex(self, point, vertices):
         shortest_distance = np.inf
-        closest_vertex = pygame.Vector2(0, 0)
-        for i in range(len(vertices)):
-            if point.distance_to(vertices[i]) < shortest_distance:
-                shortest_distance = point.distance_to(vertices[i])
-                closest_vertex = vertices[i]
-        return closest_vertex
+        corners = []
+        for i in range(len(vertices)-1):
+            q = pygame.Vector2(0, 0)
+            if i == len(vertices):
+                q = vertices[i] - vertices[0]
+                p = point - vertices[0]
+                o = ((1 / q.length()) * p.dot(q)) * (1 / q.length()) * q 
+                b = o - p
+                distance = np.linalg.norm(b)
+                if distance < shortest_distance:
+                    shortest_distance = distance
+                    corners = [vertices[i], vertices[0]]
+            else:
+                q = vertices[i] - vertices[i+1]
+                p = point - vertices[i+1]
+                o = ((1 / q.length()) * p.dot(q)) * (1 / q.length()) * q 
+                b = o - p
+                distance = np.linalg.norm(b)
+
+                if distance < shortest_distance:
+                    shortest_distance = distance
+                    corners = [vertices[i], vertices[i+1]]
+        
+        if corners[0].distance_to(point) < corners[1].distance_to(point):
+            return corners[0]
+        else:
+            return corners[1]
+        
+
+    def closest_vertex2(self, line_segment, drones):
+        shortest_distance0 = np.inf
+        shortest_distance1 = np.inf
+        shortest_distance2 = np.inf
+        corners0 = []
+        corners1 = []
+        corners2 = []
+        drone0_edge = 0
+        drone1_edge = 0
+        drone2_edge = 0
+        for i in range(len(line_segment)-1):
+            for drone in drones:
+                q = pygame.Vector2(0, 0)
+                if i == len(line_segment):
+                    q = line_segment[i] - line_segment[0]
+                    p = drone.position - line_segment[0]
+                    o = ((1 / q.length()) * p.dot(q)) * (1 / q.length()) * q 
+                    b = o - p
+                    distance = np.linalg.norm(b)
+
+                    if drone.id == 0:
+                        if distance < shortest_distance0:
+                            drone0_edge = i
+                            shortest_distance0 = distance
+                            corners0 = [line_segment[i], line_segment[0]]
+                    if drone.id == 1:
+                        if distance < shortest_distance1:
+                            drone1_edge = i
+                            shortest_distance1 = distance
+                            corners1 = [line_segment[i], line_segment[0]]
+                    if drone.id == 2:
+                        if distance < shortest_distance2:
+                            drone2_edge = i
+                            shortest_distance2 = distance
+                            corners2 = [line_segment[i], line_segment[0]]
+                else:
+                    q = line_segment[i] - line_segment[i+1]
+                    p = drone.position - line_segment[i+1]
+                    o = ((1 / q.length()) * p.dot(q)) * (1 / q.length()) * q 
+                    b = o - p
+                    distance = np.linalg.norm(b)
+                    
+                    if drone.id == 0:
+                        if distance < shortest_distance0:
+                            drone0_edge = i
+                            shortest_distance0 = distance
+                            corners0 = [line_segment[i], line_segment[i+1]]
+                    if drone.id == 1:
+                        if distance < shortest_distance1:
+                            drone1_edge = i
+                            shortest_distance1 = distance
+                            corners1 = [line_segment[i], line_segment[i+1]]
+                    if drone.id == 2:
+                        if distance < shortest_distance2:
+                            drone2_edge = i
+                            shortest_distance2 = distance
+                            corners2 = [line_segment[i], line_segment[i+1]]
+    
+        edge_list = [drone0_edge, drone1_edge, drone2_edge]
+        if edge_list[0] == edge_list[1] == edge_list[2]:
+            drone0_dist = [drones[0].position.distance_to(line_segment[0]), 0]
+            drone1_dist = [drones[1].position.distance_to(line_segment[0]), 1]
+            drone2_dist = [drones[2].position.distance_to(line_segment[0]), 2]
+            dist_list = [drone0_dist, drone1_dist, drone2_dist]
+            dist_list.sort(key=lambda x:x[0], reverse=True)
+            i = 0
+            for i in range(len(dist_list)):
+                drone_number = dist_list[i][1]
+                drones[drone_number].id = i
+                i += 1
+
+        elif edge_list[0] == edge_list[1]:
+            drone0_dist = [drones[0].position.distance_to(line_segment[0]), 0]
+            drone1_dist = [drones[1].position.distance_to(line_segment[0]), 1]
+            dist_list = [drone0_dist, drone1_dist]
+            dist_list.sort(key=lambda x:x[0], reverse=True) 
+            drones_list = [0, 1]
+            i = 0
+            for drone_id in drones_list:
+                drone_number = dist_list[i][1]
+                drones[drone_number].id = drone_id
+                i += 1
+            drones[2].id = 2
+
+        elif edge_list[0] == edge_list[2]:
+            drone0_dist = [drones[0].position.distance_to(line_segment[0]), 0]
+            drone2_dist = [drones[2].position.distance_to(line_segment[0]), 2]
+            dist_list = [drone0_dist, drone2_dist]
+            dist_list.sort(key=lambda x:x[0], reverse=True) 
+
+            drones_list = [0, 1]
+            i = 0
+            for drone_id in drones_list:
+                drone_number = dist_list[i][1]
+                drones[drone_number].id = drone_id
+                i+= 1
+            drones[1].id = 2
+
+        elif edge_list[1] == edge_list[2]:
+            drone1_dist = [drones[1].position.distance_to(line_segment[drone1_edge]), 1]
+            drone2_dist = [drones[2].position.distance_to(line_segment[drone2_edge]), 2]
+            dist_list = [drone1_dist, drone2_dist]
+            dist_list.sort(key=lambda x:x[0], reverse=True) 
+
+            drones_list = [1, 2]
+            i = 0
+            for drone_id in drones_list:
+                drone_number = dist_list[i][1]
+                drones[drone_number].id = drone_id
+                i += 1
+            drones[0].id = 0
+
+        else:
+            drones[0].id = 0
+            if drone1_edge > drone2_edge:
+                drones[1].id = 2
+                drones[2].id = 1
+            if drone1_edge < drone2_edge:
+                drones[1].id = 1
+                drones[2].id = 2
+        
+        corners = [0 for d in drones]
+        if corners0[0].distance_to(drones[0].position) < corners0[1].distance_to(drones[0].position):
+            corners[0] = corners0[0]
+        else:
+            corners[0] = corners0[1]
+
+        if corners1[0].distance_to(drones[1].position) < corners1[1].distance_to(drones[1].position):
+            corners[1] = corners1[0]
+        else:
+            corners[1] = corners1[1]
+            
+        if corners2[0].distance_to(drones[2].position) < corners2[1].distance_to(drones[2].position):
+            corners[2] = corners2[0]
+        else:
+            corners[2] = corners2[1]
+        return corners
+
 
 
     def run(self, drones, sheeps, goal, centre_of_mass, dt, target_fps):
-        self.centre_of_mass = centre_of_mass
-
         convex_vertices, convex_hull = self.convex_hull(sheeps)
         extended_vertices, extended_hull = self.extended_hull(convex_vertices)
 
         # The minimum distance of gathering, before the animals need to be driven to a designated location
-        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("palegreen3"), self.centre_of_mass, SHEEP_RADIUS, 1)
+        gather_radius = pygame.draw.circle(self.canvas, pygame.Color("palegreen3"), centre_of_mass, SHEEP_RADIUS, 1)
 
         # Wait until all the drones have arrived to the extended hull, before flying to their allocated steering points
         for drone in drones:
@@ -370,20 +534,19 @@ class PolygonMainDrone:
         # The drone will either fly TO the edge or along (ON) the edge
         if self.on_edge == False and self.toward_goal == False:
             for drone in drones:
-                self.fly_to_egde(drone, extended_vertices)
+                self.fly_to_egde(drone, extended_vertices, sheeps, dt, target_fps)
 
         # When the drones arrive at the edge of the sheep flock, begin to gather them more closer to each other
-        if self.on_edge == True and self.toward_goal == False and not gather_radius.contains(convex_hull):
-            self.allocate_steering_points(drones, extended_vertices)
+        if self.on_edge == True and self.toward_goal == False:
+            self.allocate_steering_points(drones, extended_vertices, centre_of_mass)
             for drone in drones:
-                self.fly_on_edge(drone, extended_vertices, convex_vertices)
-                
+                self.fly_on_edge(drone, extended_vertices, convex_vertices, sheeps, dt, target_fps)
+        
         # Check if the sheep flock is gathered enough, if so, push them toward the goal
-        if gather_radius.contains(convex_hull) and self.toward_goal == False and self.on_edge == True:
-            self.toward_goal = True
-        else:
+        if not gather_radius.contains(convex_hull):
             self.toward_goal = False
+        else:
+            self.toward_goal = True
 
         if self.toward_goal == True and gather_radius.contains(convex_hull):
-            self.drive_to_goal(drones, goal, extended_vertices, convex_vertices)
-        
+            self.drive_to_goal(drones, goal, extended_vertices, convex_vertices, centre_of_mass, sheeps, dt, target_fps)
