@@ -13,7 +13,7 @@ from constants import *
 CHASE_ACTION = 10
 AWAY_TARGET_ACTION = 200
 AWAY_GOAL = 8
-REPULSION = 3000
+REPULSION = 6000
 
 
 class CircleDrone:
