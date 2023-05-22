@@ -114,7 +114,8 @@ class SharedMain:
         main_drone_name = ""
         if self.dronetype == 'polygon':
             main_drone = PolygonMainDrone(screen, self.goal, drones, sheep)
-            print('true')
+            main_drone_name = "polygon"
+
         if self.dronetype == 'our':
             main_drone = OurMainDroneCom(screen, self.goal, drones, sheep, self.theta)
             main_drone_name = "our"
@@ -188,7 +189,7 @@ class SharedMain:
             # Make drones move
             for drone in drones:
                 drone.draw(screen, label_font)
-                if main_drone_name != "our":
+                if main_drone_name != "our" and main_drone_name != "polygon":
                     drone.move(self.goal, drones, sheep, screen, dt, target_fps)
         
 

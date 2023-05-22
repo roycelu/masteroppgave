@@ -26,7 +26,7 @@ def create_csv_angle(test, dronetypes, testtypes = TESTTYPES, angles = ANGLES):
                 data = df_results[(df_results[file_columns[0]] == testtype) & (df_results[file_columns[1]] == angle)]
                 
                 # Calculate the values
-                success = data[file_columns[3]].mean().round(2)
+                success = len(data[data[file_columns[3]] == 100])
 
                 # Calculate only herd time with 100% success
                 data = data[(data[file_columns[3]] == 100)]
@@ -57,7 +57,7 @@ def create_csv(test, dronetypes, perceptions = PERCEPTIONS, testtypes = TESTTYPE
 
                 # Retrieve the correct column by conditions from the CSV file
                 data = df_results[(df_results[file_columns[0]] == testtype)]
-                success = round(data[file_columns[2]].mean(), 2)
+                success = len(data[data[file_columns[2]] == 100])
 
                 # Calculate only herd time with 100% success
                 data = data[(data[file_columns[2]] == 100)]
