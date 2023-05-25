@@ -4,7 +4,7 @@ Dette prosjektet er utviklet i forbindelse med en masteroppgave om dronebasert s
 
 ## Implementerte metoder
 
-I forbindelse med masteroppgaven er det implementert totalt fem ulike metoder for å simulere sauesanking med droner. De tre førstnevnte er gjenskapninger av metoder fra den eksisterende litteraturen. Basert på en vurdering av resultatene har vi utviklet to varianter av vår egen metode, som forhåpentligvis er mer pålitelig og effektiv.
+I forbindelse med masteroppgaven er det implementert totalt fem ulike metoder for å simulere sauesanking med droner. De tre førstnevnte er gjenskapninger av metoder fra den eksisterende litteraturen. Basert på en vurdering av resultatene har vi utviklet to varianter av vår egen metode, i et forsøk på å lage en metode som er mer pålitelig og effektiv.
 
 1. Sirkelformasjonsmetoden (Kubo et al., 2021)
 1. V-formasjonsmetoden (Fujioka et al., 2022)
