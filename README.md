@@ -1,6 +1,6 @@
 # Dronebasert sanking av sau
 
-Dette prosjektet er utviklet i forbindelse med en masteroppgave om dronebasert sanking av sau, skrevet av Royce Lu og Moira Belsvik.
+Dette prosjektet er utviklet i forbindelse med en masteroppgave om dronebasert sanking av sau, skrevet av Royce Lu og Moira Charlotte Reinholdt Belsvik.
 
 ## Implementerte metoder
 
