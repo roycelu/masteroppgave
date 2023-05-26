@@ -3,13 +3,6 @@ import numpy as np
 from utils import Calculate
 from constants import *
 
-
-# SIZE = 10
-# MAX_SPEED = 19 # m/s
-# MAX_SPEED_SHEEP = 0.003 # m/s
-# DESIRED_SEPARATION_SHEEP = 15
-# PERCEPTION = 100
-
 CHASE_ACTION = 10
 AWAY_TARGET_ACTION = 200
 AWAY_GOAL = 8
@@ -32,7 +25,6 @@ class CircleDrone:
         self.velocity += self.acceleration * dt * target_fps
 
         # Make sure drones do not move faster than max speed
-        #velocity_distance = np.linalg.norm(self.velocity)
         if np.linalg.norm(self.velocity) > MAX_SPEED:
             self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
         

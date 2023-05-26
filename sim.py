@@ -7,17 +7,7 @@ from constants import *
 from main.shared_main import SharedMain
 
 
-# NO_SHEEP = 5
-# NO_DRONES = 3
-# NO_SIMULATIONS = 100 # Antall simuleringer per testtype per drone
-# TIME_LIMIT = 70 # 50 sekunder for sauene å bevege seg maks 1000m
-# TARGET_FPS = 10 # Hastigheten på simuleringen
-# FPS = 30
-# TESTTYPES = ["cooperative_flock", "divided_flock", "lone_sheep", "right_angle"]
-# DRONETYPES = ['our', 'polygon', 'circle', 'v']
-# PERCEPTIONS = [20, 30, 40]
-# CAPTURE_TIMES = [x for x in range(0, TIME_LIMIT, 2)]
-THETA = 15 # Vinkel i grader mellom dronene for our_drone
+THETA = 20 # Vinkel i grader mellom dronene for our_drone
 
 pd.set_option('display.precision', 2)   # Verdiene i tabellene runder av til to desimaler
 
@@ -112,7 +102,7 @@ def main():
         df_polygon_original.to_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception), index=False)
 
         df_our_original = df_our_original.drop(columns=['Dronetype'])
-        df_our_original.to_csv('{path}/our_{p}.csv'.format(path=dir_path, p=perception), index=False)
+        df_our_original.to_csv('{path}/our_{p}_{t}.csv'.format(path=dir_path, p=perception, t=THETA), index=False)
 
 
 if __name__ == "__main__":

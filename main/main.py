@@ -12,7 +12,7 @@ from utils import Calculate
 
 
 class Main:
-    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, testtype, theta, results_path):
+    def __init__(self, id, sheep_positions, no_drones, FPS, collect_type, testtype, theta, results_path, perception):
         self.id = id
         self.sheep_positions = sheep_positions
         self.no_drones = no_drones
@@ -23,7 +23,7 @@ class Main:
         self.goal = Goal(self.goal_vector)
         self.sheep_away = False
         self.theta = theta
-        self.perception = 40
+        self.perception = perception
         self.results_path = results_path
 
     
@@ -178,9 +178,6 @@ class Main:
             # Make drones move
             for drone in drones:
                 drone.draw(screen, label_font)
-                #if our_main_drone_name != 'our':
-                #    drone.move(self.goal, drones, sheep, screen, dt, target_fps)
-        
 
             count = 0
             for value in goal_count:
@@ -189,11 +186,9 @@ class Main:
                 else:
                     break
 
-
             # Screenshots at a given time
             self.capture_screenshot(seconds, screen, capture_times)
 
-            
             # If the test i "right angle", make new goal when first goal is reached
             # If the time limit is reached, stop the simulation
             if count == len(self.sheep_positions):

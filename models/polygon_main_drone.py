@@ -156,14 +156,10 @@ class PolygonMainDrone:
                 d2 = centre_of_mass.distance_to(copy_list[n + 1])
                 if d > d2:
                     copy_list[n], copy_list[n + 1] = copy_list[n + 1], copy_list[n]
-        print('copylist', len(copy_list), copy_list)
         #steering_points = copy_list[:len(drones):-1]
         steering_points = copy_list[len(copy_list)-len(drones):]
         steering_points.reverse()
-       
-        print('len drones', len(drones))
-        print('len copy list', len(copy_list))
-        print('len steering points', len(steering_points))
+
         # Calculate the drones' positions on the disconnected extended hull (z-axis)
         # The disconnected extended hull from the first drone's position [0, M]
         initial_drone = None
@@ -349,6 +345,7 @@ class PolygonMainDrone:
 
 
     def closest_vertex(self, point, vertices):
+        """Find the closest corner"""
         shortest_distance = np.inf
         corners = []
         for i in range(len(vertices)-1):
@@ -380,6 +377,7 @@ class PolygonMainDrone:
         
 
     def closest_vertex2(self, line_segment, drones):
+        """Find the closest corners for all the drones, and their position on the straight line segment"""
         shortest_distance0 = np.inf
         shortest_distance1 = np.inf
         shortest_distance2 = np.inf
@@ -389,6 +387,7 @@ class PolygonMainDrone:
         drone0_edge = 0
         drone1_edge = 0
         drone2_edge = 0
+        # Find the distance to the corners connected to the edge every drone is on
         for i in range(len(line_segment)-1):
             for drone in drones:
                 q = pygame.Vector2(0, 0)
@@ -438,7 +437,7 @@ class PolygonMainDrone:
                             corners2 = [line_segment[i], line_segment[i+1]]
     
         edge_list = [drone0_edge, drone1_edge, drone2_edge]
-        if edge_list[0] == edge_list[1] == edge_list[2]:
+        if edge_list[0] == edge_list[1] == edge_list[2]: # Check if all drones are on the same edge and update their id accordingly
             drone0_dist = [drones[0].position.distance_to(line_segment[0]), 0]
             drone1_dist = [drones[1].position.distance_to(line_segment[0]), 1]
             drone2_dist = [drones[2].position.distance_to(line_segment[0]), 2]
@@ -450,7 +449,7 @@ class PolygonMainDrone:
                 drones[drone_number].id = i
                 i += 1
 
-        elif edge_list[0] == edge_list[1]:
+        elif edge_list[0] == edge_list[1]: # Check if drone 0 and 1 are on the same edge and update their id accordingly
             drone0_dist = [drones[0].position.distance_to(line_segment[0]), 0]
             drone1_dist = [drones[1].position.distance_to(line_segment[0]), 1]
             dist_list = [drone0_dist, drone1_dist]
@@ -463,7 +462,7 @@ class PolygonMainDrone:
                 i += 1
             drones[2].id = 2
 
-        elif edge_list[0] == edge_list[2]:
+        elif edge_list[0] == edge_list[2]: # Check if drone 0 and 2 are on the same edge and update their id accordingly
             drone0_dist = [drones[0].position.distance_to(line_segment[0]), 0]
             drone2_dist = [drones[2].position.distance_to(line_segment[0]), 2]
             dist_list = [drone0_dist, drone2_dist]
@@ -477,7 +476,7 @@ class PolygonMainDrone:
                 i+= 1
             drones[1].id = 2
 
-        elif edge_list[1] == edge_list[2]:
+        elif edge_list[1] == edge_list[2]: # Check if drone 1 and 2 are on the same edge and update their id accordingly
             drone1_dist = [drones[1].position.distance_to(line_segment[drone1_edge]), 1]
             drone2_dist = [drones[2].position.distance_to(line_segment[drone2_edge]), 2]
             dist_list = [drone1_dist, drone2_dist]
@@ -500,6 +499,7 @@ class PolygonMainDrone:
                 drones[1].id = 1
                 drones[2].id = 2
         
+        # Set the closest corners
         corners = [0 for d in drones]
         if corners0[0].distance_to(drones[0].position) < corners0[1].distance_to(drones[0].position):
             corners[0] = corners0[0]

@@ -9,7 +9,7 @@ PERCEPTION = 100
 # SIMULATIONS
 NO_SHEEP = 5 # Amount of sheep
 NO_DRONES = 3 # Amount of drones
-NO_SIMULATIONS = 100
+NO_SIMULATIONS = 1 #00
 TIME_LIMIT = 70 # Time limit of simulation, seconds
 
 TARGET_FPS = 100 # Ønsket hastighet på simuleringen
@@ -19,5 +19,5 @@ OUR_DRONETYPES = ['com', 'v_polygon']
 DRONETYPES = ['our', 'polygon', 'circle', 'v']
 TESTTYPES =  ["cooperative_flock", "divided_flock", "lone_sheep", "right_angle"]
 ANGLES = [10, 15, 20, 25, 30]
-PERCEPTIONS = [40, 30, 20]
+PERCEPTIONS = [20, 30, 40]
 CAPTURE_TIMES = [x for x in range(0, TIME_LIMIT, 2)] # When to capture screenshots of simulations

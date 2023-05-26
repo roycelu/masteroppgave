@@ -2,12 +2,6 @@ import pygame
 import numpy as np
 from constants import *
 
-# SIZE = 10
-# MAX_SPEED = 19 # m/s
-# MAX_SPEED_SHEEP = 0.003 # m/s
-# DESIRED_SEPARATION_SHEEP = 15
-# PERCEPTION = 100
-
 
 class OurDroneVPolygon:
     def __init__(self, id, initial_position):
@@ -38,11 +32,6 @@ class OurDroneVPolygon:
         # Drone should not move faster than max speed
         if np.linalg.norm(self.velocity) > MAX_SPEED:
             self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
-
-        # If drone is in close proximity to sheep they should not move faster than sheep
-        # for s in sheep:
-        #     if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
-        #         self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
 
         # Move
         self.position += self.velocity * dt * target_fps

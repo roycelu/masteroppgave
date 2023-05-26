@@ -1,0 +1,11 @@
+Dronetype,Vinkel,Suksessrate,Gjennomsnitt,Standardavvik
+Massesenter,10,100,21.13,4.13
+Massesenter,15,99,21.97,6.52
+Massesenter,20,100,20.01,3.75
+Massesenter,25,100,19.23,1.0
+Massesenter,30,100,19.54,1.87
+V-polygon,10,87,45.22,10.15
+V-polygon,15,93,45.63,10.61
+V-polygon,20,95,42.91,11.34
+V-polygon,25,98,42.96,10.53
+V-polygon,30,97,39.94,11.16

@@ -2,11 +2,6 @@ import pygame
 import numpy as np
 from constants import *
 
-# SIZE = 10
-# MAX_SPEED = 19 # m/s
-# MAX_SPEED_SHEEP = 0.3 # m/s
-# DESIRED_SEPARATION_SHEEP = 25
-# PERCEPTION = 100
 AWAY_TARGET_ACTION = 2000
 
 class OurDroneCom:
@@ -48,11 +43,6 @@ class OurDroneCom:
         if np.linalg.norm(self.velocity) > MAX_SPEED:
             self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
 
-        # If drone is in close proximity to sheep they should not move faster than sheep
-        for s in sheep:
-            if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
-                self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
-        
         # Move
         self.position += self.velocity * dt * target_fps
 
@@ -61,10 +51,6 @@ class OurDroneCom:
 
     def fly_to_position(self, position):
         self.velocity = (position - self.position)
-
-    """def move(self, goal, drones, sheep, canvas, dt, target_fps):
-        #denne burde kalle på noe i main som kaller på find_steering_point vel?
-        self.update(sheep, dt, target_fps)"""
 
     def find_steering_point(self, sheep, goal, com, theta, canvas, dt, target_fps):
         goal = goal.position
@@ -106,6 +92,7 @@ class OurDroneCom:
         pygame.draw.circle(canvas, color='orange', center=P_center, radius=2)
         pygame.draw.circle(canvas, color='purple', center=P_left, radius=2)
         pygame.draw.circle(canvas, color='blue', center=P_right, radius=2)
+        
         # Fly between P_left -> P_center -> P_right -> ...
         if self.current_position == 'left' and self.figure.collidepoint(P_left):
             self.current_position = 'center'

@@ -3,13 +3,6 @@ import numpy as np
 from constants import *
 
 
-# SIZE = 10
-# MAX_SPEED = 19
-# MAX_SPEED_SHEEP = 0.003
-# PERCEPTION = 100
-# DESIRED_SEPARATION = 20
-
-
 class PolygonDrone:
     def __init__(self, id, initial_position):
         self.id = id
@@ -35,11 +28,6 @@ class PolygonDrone:
         if np.linalg.norm(self.velocity) > MAX_SPEED:
             self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED
 
-        # If the drone is close to the sheep, make sure the drone does not move faster than the sheep
-        # for s in sheep:
-        #     if (self.position-s.position).magnitude() <= (DESIRED_SEPARATION_SHEEP) and np.linalg.norm(self.velocity) != 0:
-        #         self.velocity = self.velocity / np.linalg.norm(self.velocity) * MAX_SPEED_SHEEP
-        
         # Move
         self.position += self.velocity * dt * target_fps
 
