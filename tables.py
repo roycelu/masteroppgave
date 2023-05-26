@@ -1,5 +1,7 @@
 import os
+import numpy as np
 import pandas as pd
+import scipy
 from constants import *
 
 PATH = "./final"
@@ -75,6 +77,33 @@ def create_csv(test, dronetypes, perceptions = PERCEPTIONS, testtypes = TESTTYPE
                 filename = "{}/overview/{}_{}.csv".format(PATH, test, testtype)
                 df.to_csv(filename, mode='a', index=False, header=False  if os.path.isfile(filename) else True)
 
+def p_value(path):
+    columns = ['Testtype', 'Dronetype', 'Synsrekkevidde', 'P-verdi']
+    df = pd.DataFrame(columns=columns)
+
+    for testtype in TESTTYPES:
+        df_results = pd.read_csv(path + '/all_{}.csv'.format(testtype))
+        for drone in DRONETYPES[1:]:
+            for perception in PERCEPTIONS:
+                # Find average and standard deviation for our method
+                our_data = df_results[(df_results['Dronetype'] == DRONENAMES[DRONETYPES[0]])]
+                our_data = our_data[(our_data['Synsrekkevidde'] == perception)]
+                our_mean = our_data['Gjennomsnitt'].to_numpy()[0]
+                our_std = our_data['Standardavvik'].to_numpy()[0]
+
+                # Find average and standard deviation for the other metods
+                data = df_results[(df_results['Dronetype'] == DRONENAMES[drone])]
+                data = data[(data['Synsrekkevidde'] == perception)]
+                mean = data['Gjennomsnitt'].to_numpy()[0]
+                std = data['Standardavvik'].to_numpy()[0]
+
+                # Only calculate p-value if the value is not NAN
+                if not np.isnan(mean) and not np.isnan(std):
+                    stat, p_value = scipy.stats.ttest_ind_from_stats(our_mean, our_std, NO_SIMULATIONS, mean, std, NO_SIMULATIONS)
+                    # Add the table row to a CSV file
+                    df.loc[len(df), df.columns] = testtype, drone, perception, round(p_value, 4)
+    filename = "{}/overview/p-value.csv".format(PATH)
+    df.to_csv(filename, index=False)
 
 def main():
     # NB! Remember to delete the CSV-files in the PATH before running the code!
@@ -83,14 +112,15 @@ def main():
     if not os.path.exists(path):
         os.mkdir(path)
 
-    # Existing methods
-    create_csv("existing", DRONETYPES[1:])
+    # # Existing methods
+    # create_csv("existing", DRONETYPES[1:])
 
     # # Our methods
     # create_csv_angle("our", OUR_DRONETYPES, PERCEPTION)
 
     # # All methods
     # create_csv("all", DRONETYPES)
+    p_value(path)
 
 if __name__ == "__main__":
     main()

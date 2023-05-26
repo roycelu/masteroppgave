@@ -9,7 +9,7 @@ PERCEPTION = 100
 # SIMULATIONS
 NO_SHEEP = 5 # Amount of sheep
 NO_DRONES = 3 # Amount of drones
-NO_SIMULATIONS = 1 #00
+NO_SIMULATIONS = 100
 TIME_LIMIT = 70 # Time limit of simulation, seconds
 
 TARGET_FPS = 100 # Ønsket hastighet på simuleringen
