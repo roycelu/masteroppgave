@@ -22,7 +22,7 @@ For å kjøre simuleringer av våre egne metoder, med variasjon på vinkelen mel
 
 ### Diagrammer
 
-Alle resultatene vises som CSV-filer. Om man ønsker å visualisere dataene i diagrammer, kan man kjøre følgende kommando: `python3 diagrams.py`. Da vil diverse søylediagrammer og linjediagrammer bli generert i samme mappe som CSV-filene ligger. 
+Alle resultatene vises som CSV-filer. Om man ønsker å visualisere dataene i diagrammer, kan man kjøre følgende kommando: `python3 diagrams.py`. Da vil diverse søylediagrammer og linjediagrammer bli generert i samme mappe som CSV-filene ligger. OBS! Husk å endre på `RESULTS_PATH`- eller `OUR_RESULTS_PATH`-variabelen i `constants.py`-filen for at riktig resultater blir brukt til å generere diagrammene og tabellene!
 
 ### Resultater
 
