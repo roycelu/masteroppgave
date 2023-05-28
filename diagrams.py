@@ -3,10 +3,6 @@ import numpy as np
 import pandas as pd
 from constants import *
 
-# PERCEPTIONS = [20, 30, 40]
-# ANGLE = [10, 15, 20, 25, 30]
-# TESTTYPES = ["cooperative_flock", "divided_flock", "lone_sheep", "right_angle"]
-# OUR_DRONETYPES = ['v_polygon', 'com']
 
 def average_time_existing(dir_path, df_circle, df_v, df_polygon, perception):
     """Bar chart for average herd time from successful herding for all algorithms per test"""
@@ -125,9 +121,6 @@ def average_time_existing(dir_path, df_circle, df_v, df_polygon, perception):
     fig_time.savefig("{path}/gjetetid_{p}.png".format(path=dir_path, p=perception), bbox_inches='tight')
     plt.close(fig_time)
 
-    # prices.plot(kind = "barh", y = "mean", legend = False, title = "Average Prices", xerr = "std")
-
-
 
 def succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception):
     """Bar chart for successful and unsuccessful herding for all drone algorithms and every testtype"""
@@ -192,7 +185,8 @@ def succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception):
 
     fig.savefig("{path}/suksessrate_{p}.png".format(path=dir_path, p=perception), bbox_inches='tight')
     plt.close(fig)
-    
+
+
 def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     """Bar chart for average herd time from successful herding for all algorithms per test"""
         
@@ -204,16 +198,24 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     circle_time = []
     circle_collect_time = []
     circle_herd_time = []
+
+    df_circle_error = df_circle_success.groupby(['Testtype'], as_index=False).aggregate({'Gjetetid': 'std'}).round(2)
+    circle_error = []
+
     for testt in TESTTYPES:
         if (df_avg_time_circle['Testtype'] == testt).any():
             circle_row = df_avg_time_circle.loc[(df_avg_time_circle['Testtype'] == testt)]
             circle_time.append(circle_row['Gjetetid'].iloc[0])
             circle_collect_time.append(circle_row['Oppsamlingstid'].iloc[0])
             circle_herd_time.append(circle_row['Drivetid'].iloc[0])
+
+            error = df_circle_error.loc[(df_circle_error['Testtype'] == testt)]
+            circle_error.append(error['Gjetetid'].iloc[0])
         else:
             circle_time.append(0)
             circle_collect_time.append(0)
             circle_herd_time.append(0)
+            circle_error.append(0)
     
     # V
     df_v_success = df_v.loc[df_v['Suksessrate'] == 100]
@@ -224,16 +226,23 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     v_collect_time = []
     v_herd_time = []
 
+    df_v_error = df_v_success.groupby(['Testtype'], as_index=False).aggregate({'Gjetetid': 'std'}).round(2)
+    v_error = []
+
     for testt in TESTTYPES:
         if (df_avg_time_v['Testtype'] == testt).any():
             v_row = df_avg_time_v.loc[(df_avg_time_v['Testtype'] == testt)]
             v_time.append(v_row['Gjetetid'].iloc[0])
             v_collect_time.append(v_row['Oppsamlingstid'].iloc[0])
             v_herd_time.append(v_row['Drivetid'].iloc[0])
+
+            error = df_v_error.loc[(df_v_error['Testtype'] == testt)]
+            v_error.append(error['Gjetetid'].iloc[0])
         else:
             v_time.append(0)
             v_collect_time.append(0)
             v_herd_time.append(0)
+            v_error.append(0)
 
 
     # Polygon
@@ -244,16 +253,24 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     polygon_time = []
     polygon_collect_time = []
     polygon_herd_time = []
+
+    df_polygon_error = df_polygon_success.groupby(['Testtype'], as_index=False).aggregate({'Gjetetid': 'std'}).round(2)
+    polygon_error = []
+
     for testt in TESTTYPES:
         if (df_avg_time_polygon['Testtype'] == testt).any():
             polygon_row = df_avg_time_polygon.loc[(df_avg_time_polygon['Testtype'] == testt)]
             polygon_time.append(polygon_row['Gjetetid'].iloc[0])
             polygon_collect_time.append(polygon_row['Oppsamlingstid'].iloc[0])
             polygon_herd_time.append(polygon_row['Drivetid'].iloc[0])
+
+            error = df_polygon_error.loc[(df_polygon_error['Testtype'] == testt)]
+            polygon_error.append(error['Gjetetid'].iloc[0])
         else:
             polygon_time.append(0)
             polygon_collect_time.append(0)
             polygon_herd_time.append(0)
+            polygon_error.append(0)
 
     # Our
     df_our_success = df_our.loc[df_our['Suksessrate'] == 100]
@@ -264,16 +281,23 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     our_collect_time = []
     our_herd_time = []
 
+    df_our_error = df_our_success.groupby(['Testtype'], as_index=False).aggregate({'Gjetetid': 'std'}).round(2)
+    our_error = []
+
     for testt in TESTTYPES:
         if (df_avg_time_our['Testtype'] == testt).any():
             our_row = df_avg_time_our.loc[(df_avg_time_our['Testtype'] == testt)]
             our_time.append(our_row['Gjetetid'].iloc[0])
             our_collect_time.append(our_row['Oppsamlingstid'].iloc[0])
             our_herd_time.append(our_row['Drivetid'].iloc[0])
+
+            error = df_our_error.loc[(df_our_error['Testtype'] == testt)]
+            our_error.append(error['Gjetetid'].iloc[0])
         else:
             our_time.append(0)
             our_collect_time.append(0)
             our_herd_time.append(0)
+            our_error.append(0)
     
     # Make figure
     N = 4
@@ -283,16 +307,16 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     fig_time, ax_time = plt.subplots()
 
     circle_collect = ax_time.bar(ind-0.3, circle_collect_time, width, label='Sirkel: samletid = {}'.format(circle_collect_time), color='moccasin')
-    circle_herd = ax_time.bar(ind-0.3, circle_herd_time, width, bottom=circle_collect_time, label='Sirkel: drivetid = {}'.format(circle_herd_time), color='orange')
+    circle_herd = ax_time.bar(ind-0.3, circle_herd_time, width, yerr=circle_error, bottom=circle_collect_time, label='Sirkel: drivetid = {}'.format(circle_herd_time), color='orange')
 
     v_collect = ax_time.bar(ind-0.1, v_collect_time, width, label='V: samletid = {}'.format(v_collect_time), color='lightgreen')
-    v_herd = ax_time.bar(ind-0.1, v_herd_time, width, bottom=v_collect_time, label='V: drivetid = {}'.format(v_herd_time), color='seagreen')
+    v_herd = ax_time.bar(ind-0.1, v_herd_time, width, yerr=v_error, bottom=v_collect_time, label='V: drivetid = {}'.format(v_herd_time), color='seagreen')
 
     polygon_collect = ax_time.bar(ind+0.1, polygon_collect_time, width, label='Polygon: samletid = {}'.format(polygon_collect_time), color='mediumpurple')
-    polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='rebeccapurple')
+    polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, yerr=polygon_error, bottom=polygon_collect_time, label='Polygon: drivetid = {}'.format(polygon_herd_time), color='rebeccapurple')
     
     our_collect = ax_time.bar(ind+0.3, our_collect_time, width, label='Massesenter: samletid = {}'.format(our_collect_time), color='lightcoral')
-    our_herd = ax_time.bar(ind+0.3, our_herd_time, width, bottom=our_collect_time, label='Massesenter: drivetid = {}'.format(our_herd_time), color='crimson')
+    our_herd = ax_time.bar(ind+0.3, our_herd_time, width, yerr=our_error, bottom=our_collect_time, label='Massesenter: drivetid = {}'.format(our_herd_time), color='crimson')
 
     ax_time.bar_label(circle_herd, circle_time, rotation=90, padding=5)
     ax_time.bar_label(v_herd, v_time, rotation=90, padding=5)
@@ -312,6 +336,7 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     fig_time.savefig("{path}/gjetetid_{p}_all.png".format(path=dir_path, p=perception), bbox_inches='tight')
     plt.close(fig_time)
     return
+
 
 def successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     """Bar chart for successful and unsuccessful herding for all drone algorithms and every testtype"""
@@ -355,17 +380,17 @@ def successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     
     fig, ax = plt.subplots()
 
-    circle_1 = ax.bar(ind-0.3, circle_success, width, label='Sirkel: suksess', color='moccasin')
-    circle_2 = ax.bar(ind-0.3, circle_failure, width, label='Sirkel: mislykket', color='orange')
+    circle_1 = ax.bar(ind-0.35, circle_success, width, label='Sirkel: suksess', color='moccasin')
+    circle_2 = ax.bar(ind-0.35, circle_failure, width, label='Sirkel: mislykket', color='orange')
 
-    v_1 = ax.bar(ind-0.1, v_success, width, label='V: suksess', color='lightgreen')
-    v_2 = ax.bar(ind-0.1, v_failure, width, label='V: mislykket', color='seagreen')
+    v_1 = ax.bar(ind-0.12, v_success, width, label='V: suksess', color='lightgreen')
+    v_2 = ax.bar(ind-0.12, v_failure, width, label='V: mislykket', color='seagreen')
 
-    polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
-    polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='Polygon: mislykket', color='rebeccapurple')
+    polygon_1 = ax.bar(ind+0.12, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
+    polygon_2 = ax.bar(ind+0.12, polygon_failure, width, label='Polygon: mislykket', color='rebeccapurple')
 
-    our_1 = ax.bar(ind+0.3, our_success, width, label='Massesenter: suksess', color='lightcoral')
-    our_2 = ax.bar(ind+0.3, our_failure, width, label='Massesenter: mislykket', color='crimson')
+    our_1 = ax.bar(ind+0.35, our_success, width, label='Massesenter: suksess', color='lightcoral')
+    our_2 = ax.bar(ind+0.35, our_failure, width, label='Massesenter: mislykket', color='crimson')
 
     ax.bar_label(circle_1, padding=2)
     ax.bar_label(circle_2, padding=2)
@@ -390,6 +415,7 @@ def successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     fig.savefig("{path}/suksessrate_{p}_all.png".format(path=dir_path, p=perception), bbox_inches='tight')
     plt.close(fig)
     return
+
 
 def lineplot_our(dir_path, df_com, df_polygon, perception):
     """Lineplot for average herd time from successful herding per test"""
@@ -453,6 +479,7 @@ def lineplot_our(dir_path, df_com, df_polygon, perception):
         plt.savefig('{path}/gjetetid_{t}{p}.png'.format(path=dir_path, t=type, p=perception), bbox_inches='tight')
         plt.close()
 
+
 def avg_time_our(dir_path, df_com, df_polygon, perception):
     """Bar chart for herd time"""
     df_com_success = df_com.loc[df_com['Suksessrate'] == 100]
@@ -475,6 +502,11 @@ def avg_time_our(dir_path, df_com, df_polygon, perception):
         com_collect_time = []
         com_herd_time = []
 
+        df_polygon_error = df_polygon_success.groupby(['Testtype'], as_index=False).aggregate({'Gjetetid': 'std'}).round(2)
+        df_com_error = df_com_success.groupby(['Testtype'], as_index=False).aggregate({'Gjetetid': 'std'}).round(2)
+        polygon_error = []
+        com_error = []
+
         N = len(ANGLES)
         ind = np.arange(N)
         width = 0.20
@@ -487,10 +519,14 @@ def avg_time_our(dir_path, df_com, df_polygon, perception):
                         polygon_time.append(p_row['Gjetetid'].iloc[0])
                         polygon_collect_time.append(p_row['Oppsamlingstid'].iloc[0])
                         polygon_herd_time.append(p_row['Drivetid'].iloc[0])
+                        
+                        error = df_polygon_error.loc[(df_polygon_error['Testtype'] == type)]
+                        polygon_error.append(error['Gjetetid'].iloc[0])
                     else:
                         polygon_time.append(0)
                         polygon_collect_time.append(0)
                         polygon_herd_time.append(0)
+                        polygon_error.append(0)
                     
                 if drone == "com":
                     if ((df_avg_time_com['Testtype'] == type) & (df_avg_time_com['Vinkel'] == a)).any():
@@ -498,16 +534,20 @@ def avg_time_our(dir_path, df_com, df_polygon, perception):
                         com_time.append(f_row['Gjetetid'].iloc[0])
                         com_collect_time.append(f_row['Oppsamlingstid'].iloc[0])
                         com_herd_time.append(f_row['Drivetid'].iloc[0])
+
+                        error = df_com_error.loc[(df_com_error['Testtype'] == type)]
+                        com_error.append(error['Gjetetid'].iloc[0])
                     else:
                         com_time.append(0)
                         com_collect_time.append(0)
                         com_herd_time.append(0)
+                        com_error.append(0)
 
         com_collect = ax_time.bar(ind-0.1, com_collect_time, width, label='Massesenter: samletid = {}'.format(com_collect_time), color='lightcoral')
-        com_herd = ax_time.bar(ind-0.1, com_herd_time, width, bottom=com_collect_time, label='Massesenter: drivetid = {}'.format(com_herd_time), color='crimson')
+        com_herd = ax_time.bar(ind-0.1, com_herd_time, width, yerr=com_error, bottom=com_collect_time, label='Massesenter: drivetid = {}'.format(com_herd_time), color='crimson')
 
         polygon_collect = ax_time.bar(ind+0.1, polygon_collect_time, width, label='V-polygon: samletid = {}'.format(polygon_collect_time), color='skyblue')
-        polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, bottom=polygon_collect_time, label='V-polygon: drivetid = {}'.format(polygon_herd_time), color='cornflowerblue')
+        polygon_herd = ax_time.bar(ind+0.1, polygon_herd_time, width, yerr=polygon_error, bottom=polygon_collect_time, label='V-polygon: drivetid = {}'.format(polygon_herd_time), color='cornflowerblue')
 
         ax_time.bar_label(com_herd, com_time, rotation=90, padding=5)
         ax_time.bar_label(polygon_herd, polygon_time, rotation=90, padding=5)
@@ -528,7 +568,7 @@ def avg_time_our(dir_path, df_com, df_polygon, perception):
 
 def successrate_our(dir_path, df_com, df_polygon, perception):
     """Bar chart for successful and unsuccessful herding for all drone algorithms and every testtype"""
-    for type in TESTTYPES:  
+    for type in TESTTYPES:
         f_success = 0
         f_failure = 0
         polygon_success = 0
@@ -558,13 +598,14 @@ def successrate_our(dir_path, df_com, df_polygon, perception):
         # Make figure
         fig, ax = plt.subplots()
 
-        com_1 = ax.bar(ind-0.1, f_success, width, label='Massesenter: suksess', color='lightcoral')
-        com_2 = ax.bar(ind-0.1, f_failure, width, label='Massesenter: mislykket', color='crimson')
+        com_1 = ax.bar(ind-0.12, f_success, width, label='Massesenter: suksess', color='lightcoral')
+        com_2 = ax.bar(ind-0.12, f_failure, width, label='Massesenter: mislykket', color='crimson')
 
-        polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='V-polygon: suksess', color='skyblue')
-        polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='V-polygon: mislykket', color='cornflowerblue')
+        polygon_1 = ax.bar(ind+0.12, polygon_success, width, label='V-polygon: suksess', color='skyblue')
+        polygon_2 = ax.bar(ind+0.12, polygon_failure, width, label='V-polygon: mislykket', color='cornflowerblue')
 
 
+        ax.margins(y=0.1)
         ax.bar_label(com_1, padding=2)
         ax.bar_label(com_2, padding=2)
         ax.bar_label(polygon_1, padding=2)
@@ -584,28 +625,31 @@ def successrate_our(dir_path, df_com, df_polygon, perception):
 
 
 def main():
-    dir_path = "./final/our"
+    
     angle = 20
 
-    # for perception in PERCEPTIONS:
-    #     df_circle = pd.read_csv('{path}/circle_{p}.csv'.format(path=dir_path, p=perception))
-    #     df_v = pd.read_csv('{path}/v_{p}.csv'.format(path=dir_path, p=perception))
-    #     df_polygon = pd.read_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception))
-    #     df_our = pd.read_csv('{path}/our_{p}_{a}.csv'.format(path=dir_path, p=perception, a=angle))
+    for perception in PERCEPTIONS:
+        dir_path = "./final"
 
-    #     average_time_existing(dir_path, df_circle, df_v, df_polygon, perception)
-    #     succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception)
-    #     average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
-    #     successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
-    
+        df_circle = pd.read_csv('{path}/circle_{p}.csv'.format(path=dir_path, p=perception))
+        df_v = pd.read_csv('{path}/v_{p}.csv'.format(path=dir_path, p=perception))
+        df_polygon = pd.read_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception))
+        df_our = pd.read_csv('{path}/our_{p}_{a}.csv'.format(path=dir_path, p=perception, a=angle))
 
-    perception = 20
+        average_time_existing(dir_path, df_circle, df_v, df_polygon, perception)
+        succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception)
+        average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
+        successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
 
-    df_com = pd.read_csv('{}/com_{}.csv'.format(dir_path, perception))
-    df_v_polygon = pd.read_csv('{}/v_polygon_{}.csv'.format(dir_path, perception))
-    avg_time_our(dir_path, df_com, df_v_polygon, perception)
-    successrate_our(dir_path, df_com, df_v_polygon, perception)
-    lineplot_our(dir_path, df_com, df_v_polygon, perception)
+
+        dir_path = "./final/our"
+
+        df_com = pd.read_csv('{}/com_{}.csv'.format(dir_path, perception))
+        df_v_polygon = pd.read_csv('{}/v_polygon_{}.csv'.format(dir_path, perception))
+        avg_time_our(dir_path, df_com, df_v_polygon, perception)
+        successrate_our(dir_path, df_com, df_v_polygon, perception)
+        lineplot_our(dir_path, df_com, df_v_polygon, perception)
+
 
 if __name__ == "__main__":
     main()
