@@ -73,7 +73,7 @@ class Main:
         if self.id % 20 == 0 and time in capture_times: # List of times is s in the test
 
             # Creates a directory to save the screenshots, if it not already exists
-            path = '{}/screenshots/{}_{}'.format(self.results_path, self.id, self.collect_type)
+            path = '{}/screenshots/{}_{}{}'.format(self.results_path, self.id, self.collect_type, self.perception)
             if not os.path.exists(path):
                 os.makedirs(path)
             

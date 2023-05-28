@@ -4,8 +4,6 @@ import pandas as pd
 from scipy import stats
 from constants import *
 
-PATH = "./final"
-PATH_OUR = "./final/our"
 DRONENAMES = {'our': 'Massesenter', 'polygon': 'Polygon', 'circle': 'Sirkel', 'v': 'V'}
 DRONENAMES_OUR = {'com': 'Massesenter', 'v_polygon': 'V-polygon'}
 BEST_ANGLE = 20
@@ -21,7 +19,7 @@ def create_csv_angle(test, dronetypes, perception, testtypes = TESTTYPES, angles
 
         for drone in dronetypes:
             # Read from CSV file for a drone
-            df_results = pd.read_csv("{path}/{d}_{p}.csv".format(path=PATH_OUR, d=drone, p=perception))
+            df_results = pd.read_csv("{path}/{d}_{p}.csv".format(path=OUR_RESULTS_PATH, d=drone, p=perception))
 
             for angle in angles:           
                 # Retrieve the correct column by conditions from the CSV file
@@ -39,7 +37,7 @@ def create_csv_angle(test, dronetypes, perception, testtypes = TESTTYPES, angles
                 df.loc[len(df), df.columns] = DRONENAMES_OUR[drone], angle, success, average, std
 
         # Save the dataframe as a CSV file
-        filename = "{}/overview/{}_{}{}.csv".format(PATH_OUR, test, testtype, perception)
+        filename = "{}/tables/{}_{}{}.csv".format(OUR_RESULTS_PATH, test, testtype, perception)
         df.to_csv(filename, index=False)
 
 
@@ -55,9 +53,9 @@ def create_csv(test, dronetypes, perceptions = PERCEPTIONS, testtypes = TESTTYPE
             for perception in perceptions:
                 # Read from CSV file for a drone and a perception
                 if drone == 'our':
-                    df_results = pd.read_csv("{path}/{d}_{p}_{a}.csv".format(path=PATH, d=drone, p=perception, a=BEST_ANGLE))
+                    df_results = pd.read_csv("{path}/{d}_{p}_{a}.csv".format(path=RESULTS_PATH, d=drone, p=perception, a=BEST_ANGLE))
                 else:
-                    df_results = pd.read_csv("{path}/{d}_{p}.csv".format(path=PATH, d=drone, p=perception))
+                    df_results = pd.read_csv("{path}/{d}_{p}.csv".format(path=RESULTS_PATH, d=drone, p=perception))
 
                 # Retrieve the correct column by conditions from the CSV file
                 data = df_results[(df_results[file_columns[0]] == testtype)]
@@ -72,7 +70,7 @@ def create_csv(test, dronetypes, perceptions = PERCEPTIONS, testtypes = TESTTYPE
                 df.loc[len(df), df.columns] = DRONENAMES[drone], perception, success, average, std
             
         # Save the dataframe as a CSV file
-        filename = "{}/overview/{}_{}.csv".format(PATH, test, testtype)
+        filename = "{}/tables/{}_{}.csv".format(RESULTS_PATH, test, testtype)
         df.to_csv(filename, index=False)
 
 def p_value(path):
@@ -102,17 +100,17 @@ def p_value(path):
                     df.loc[len(df), df.columns] = testtype, drone, perception, round(p_value, 4)
     
     # Save the dataframe as a CSV file
-    filename = "{}/overview/p-value.csv".format(PATH)
+    filename = "{}/p-value.csv".format(path)
     df.to_csv(filename, index=False)
 
 
 def main():
     # Make sure that the folders exist
-    path = PATH + '/overview'
+    path = RESULTS_PATH + '/tables'
     if not os.path.exists(path):
         os.mkdir(path)
 
-    path_our = PATH_OUR + '/overview'
+    path_our = OUR_RESULTS_PATH + '/tables'
     if not os.path.exists(path_our):
         os.mkdir(path_our)
 

@@ -1,3 +1,4 @@
+import os
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -625,30 +626,34 @@ def successrate_our(dir_path, df_com, df_polygon, perception):
 
 
 def main():
-    
     angle = 20
 
     for perception in PERCEPTIONS:
-        dir_path = "./final"
+        # Create a new folder to store the figures
+        dir_path = RESULTS_PATH + '/diagrams'
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
+        
+        dir_path_our = OUR_RESULTS_PATH + '/diagrams'
+        if not os.path.exists(dir_path_our):
+            os.mkdir(dir_path_our)
 
-        df_circle = pd.read_csv('{path}/circle_{p}.csv'.format(path=dir_path, p=perception))
-        df_v = pd.read_csv('{path}/v_{p}.csv'.format(path=dir_path, p=perception))
-        df_polygon = pd.read_csv('{path}/polygon_{p}.csv'.format(path=dir_path, p=perception))
-        df_our = pd.read_csv('{path}/our_{p}_{a}.csv'.format(path=dir_path, p=perception, a=angle))
+        # Create dataframes to store the results
+        df_circle = pd.read_csv('{path}/circle_{p}.csv'.format(path=RESULTS_PATH, p=perception))
+        df_v = pd.read_csv('{path}/v_{p}.csv'.format(path=RESULTS_PATH, p=perception))
+        df_polygon = pd.read_csv('{path}/polygon_{p}.csv'.format(path=RESULTS_PATH, p=perception))
+        df_our = pd.read_csv('{path}/our_{p}_{a}.csv'.format(path=RESULTS_PATH, p=perception, a=angle))
 
         average_time_existing(dir_path, df_circle, df_v, df_polygon, perception)
         succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception)
         average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
         successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception)
 
-
-        dir_path = "./final/our"
-
-        df_com = pd.read_csv('{}/com_{}.csv'.format(dir_path, perception))
-        df_v_polygon = pd.read_csv('{}/v_polygon_{}.csv'.format(dir_path, perception))
-        avg_time_our(dir_path, df_com, df_v_polygon, perception)
-        successrate_our(dir_path, df_com, df_v_polygon, perception)
-        lineplot_our(dir_path, df_com, df_v_polygon, perception)
+        df_com = pd.read_csv('{}/com_{}.csv'.format(OUR_RESULTS_PATH, perception))
+        df_v_polygon = pd.read_csv('{}/v_polygon_{}.csv'.format(OUR_RESULTS_PATH, perception))
+        avg_time_our(dir_path_our, df_com, df_v_polygon, perception)
+        successrate_our(dir_path_our, df_com, df_v_polygon, perception)
+        lineplot_our(dir_path_our, df_com, df_v_polygon, perception)
 
 
 if __name__ == "__main__":
