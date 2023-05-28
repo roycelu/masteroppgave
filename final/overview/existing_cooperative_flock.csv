@@ -1,0 +1,10 @@
+Dronetype,Synsrekkevidde,Suksessrate,Gjennomsnitt,Standardavvik
+Polygon,20,100,15.83,0.26
+Polygon,30,100,15.89,0.29
+Polygon,40,100,15.78,0.31
+Sirkel,20,40,28.49,19.78
+Sirkel,30,45,43.19,19.32
+Sirkel,40,75,45.98,13.9
+V,20,100,15.61,0.13
+V,30,100,15.93,0.2
+V,40,100,15.83,0.24
