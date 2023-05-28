@@ -6,9 +6,9 @@ Dette prosjektet er utviklet i forbindelse med en masteroppgave om dronebasert s
 
 I forbindelse med masteroppgaven er det implementert totalt fem ulike metoder for å simulere sauesanking med droner. De tre førstnevnte er gjenskapninger av metoder fra den eksisterende litteraturen. Basert på en vurdering av resultatene har vi utviklet to varianter av vår egen metode, i et forsøk på å lage en metode som er mer pålitelig og effektiv.
 
-1. Sirkelformasjonsmetoden (Kubo et al., 2021)
-1. V-formasjonsmetoden (Fujioka et al., 2022)
-1. Polygonformasjonsmetoden (Li et al., 2022)
+1. Sirkelformasjonsmetoden ([Kubo et al., 2021](https://doi.org/10.1007/s10015-021-00726-7))
+1. V-formasjonsmetoden ([Fujioka et al., 2022](https://doi.org/10.5687/iscie.31.21))
+1. Polygonformasjonsmetoden ([Li et al., 2022](https://doi.org/10.3390/drones6020029))
 1. Massesentermetoden
 1. V-polygonmetoden
 
