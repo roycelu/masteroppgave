@@ -114,7 +114,7 @@ def average_time_existing(dir_path, df_circle, df_v, df_polygon, perception):
     ax_time.set_xlabel('Testscenarioer')
     ax_time.set_ylabel('Gjennomsnittlig gjetetid')
     ax_time.set_xticks(ind)
-    ax_time.set_xticklabels(["Cooperative flock", "Divided flock", "Lone sheep", "Right angle"])
+    ax_time.set_xticklabels(TESTTYPES_NAME)
 
     ax_time.set_title('Gjenomsnittlig total gjetetid, p={}'.format(perception))
     ax_time.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -179,7 +179,7 @@ def succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception):
     ax.set_xlabel('Testscenarioer')
     ax.set_ylabel('Antall simuleringer')
     ax.set_xticks(ind)
-    ax.set_xticklabels(["Cooperative flock", "Divided flock", "Lone sheep", "Right angle"])
+    ax.set_xticklabels(TESTTYPES_NAME)
 
     ax.set_title('Antall simuleringer som er suksess og mislykket, p={}'.format(perception))
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -329,7 +329,7 @@ def average_time_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     ax_time.set_xlabel('Testscenarioer')
     ax_time.set_ylabel('Gjennomsnittlig gjetetid')
     ax_time.set_xticks(ind)
-    ax_time.set_xticklabels(["Cooperative flock", "Divided flock", "Lone sheep", "Right angle"])
+    ax_time.set_xticklabels(TESTTYPES_NAME)
 
     ax_time.set_title('Gjenomsnittlig total gjetetid, p={}'.format(perception))
     ax_time.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -408,7 +408,7 @@ def successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     ax.set_xlabel('Testscenarioer')
     ax.set_ylabel('Antall simuleringer')
     ax.set_xticks(ind)
-    ax.set_xticklabels(["Cooperative flock", "Divided flock", "Lone sheep", "Right angle"])
+    ax.set_xticklabels(TESTTYPES_NAME)
 
     ax.set_title('Antall simuleringer som er suksess og mislykket, p={}'.format(perception))
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
