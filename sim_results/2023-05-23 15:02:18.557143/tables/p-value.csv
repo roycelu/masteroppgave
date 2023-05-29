@@ -1,25 +1,25 @@
 Testtype,Dronetype,Synsrekkevidde,P-verdi
-cooperative_flock,polygon,20,0.0
-cooperative_flock,polygon,30,0.0
-cooperative_flock,polygon,40,0.0
-cooperative_flock,circle,20,0.0
-cooperative_flock,circle,30,0.0
-cooperative_flock,circle,40,0.0
-cooperative_flock,v,20,0.3688
-cooperative_flock,v,30,0.0
-cooperative_flock,v,40,0.0
-divided_flock,polygon,20,0.0
-divided_flock,polygon,30,0.0
-divided_flock,polygon,40,0.0
-lone_sheep,polygon,20,0.0
-lone_sheep,polygon,30,0.0
-lone_sheep,polygon,40,0.0
-right_angle,polygon,20,0.1513
-right_angle,polygon,30,0.0
-right_angle,polygon,40,0.0
-right_angle,circle,20,0.0
-right_angle,circle,30,0.0
-right_angle,circle,40,0.0
-right_angle,v,20,0.4673
-right_angle,v,30,0.0
-right_angle,v,40,0.0
+Kooperativ flokk,Polygon,20,0.0
+Kooperativ flokk,Polygon,30,0.0
+Kooperativ flokk,Polygon,40,0.0
+Kooperativ flokk,Sirkel,20,0.0
+Kooperativ flokk,Sirkel,30,0.0
+Kooperativ flokk,Sirkel,40,0.0
+Kooperativ flokk,V,20,0.3688
+Kooperativ flokk,V,30,0.0
+Kooperativ flokk,V,40,0.0
+Delt flokk,Polygon,20,0.0
+Delt flokk,Polygon,30,0.0
+Delt flokk,Polygon,40,0.0
+Enslig sau,Polygon,20,0.0
+Enslig sau,Polygon,30,0.0
+Enslig sau,Polygon,40,0.0
+Nytt mål,Polygon,20,0.1513
+Nytt mål,Polygon,30,0.0
+Nytt mål,Polygon,40,0.0
+Nytt mål,Sirkel,20,0.0
+Nytt mål,Sirkel,30,0.0
+Nytt mål,Sirkel,40,0.0
+Nytt mål,V,20,0.4673
+Nytt mål,V,30,0.0
+Nytt mål,V,40,0.0

@@ -97,7 +97,7 @@ def p_value(path):
                 if not np.isnan(mean) and not np.isnan(std):
                     stat, p_value = stats.ttest_ind_from_stats(our_mean, our_std, NO_SIMULATIONS, mean, std, NO_SIMULATIONS)
                     # Add the table row to a CSV file
-                    df.loc[len(df), df.columns] = testtype, drone, perception, round(p_value, 4)
+                    df.loc[len(df), df.columns] = TESTTYPES_NAME[TESTTYPES.index(testtype)], DRONENAMES[drone], perception, round(p_value, 4)
     
     # Save the dataframe as a CSV file
     filename = "{}/p-value.csv".format(path)

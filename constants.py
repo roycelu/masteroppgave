@@ -12,7 +12,7 @@ OUR_RESULTS_PATH = './our_sim_results/2023-05-23 15:08:48.771652'
 # SIMULATIONS
 NO_SHEEP = 5 # Amount of sheep
 NO_DRONES = 3 # Amount of drones
-NO_SIMULATIONS = 1
+NO_SIMULATIONS = 100
 TIME_LIMIT = 70 # Time limit of simulation, seconds
 
 TARGET_FPS = 100 # Ønsket hastighet på simuleringen

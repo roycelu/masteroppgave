@@ -166,14 +166,14 @@ def succsessrate_existing(dir_path, df_circle, df_v, df_polygon, perception):
     polygon_1 = ax.bar(ind+0.25, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
     polygon_2 = ax.bar(ind+0.25, polygon_failure, width, label='Polygon: mislykket', color='rebeccapurple')
 
-    ax.bar_label(circle_1, padding=2)
-    ax.bar_label(circle_2, padding=2)
-    ax.bar_label(v_1, padding=2)
-    ax.bar_label(v_2, padding=2)
-    ax.bar_label(polygon_1, padding=2)
-    ax.bar_label(polygon_2, padding=2)
+    ax.bar_label(circle_1, rotation=90, padding=2)
+    ax.bar_label(circle_2, rotation=90, padding=2)
+    ax.bar_label(v_1, rotation=90, padding=2)
+    ax.bar_label(v_2, rotation=90, padding=2)
+    ax.bar_label(polygon_1, rotation=90, padding=2)
+    ax.bar_label(polygon_2, rotation=90, padding=2)
 
-    ax.margins(y=0.1)
+    ax.margins(y=0.2)
 
     ax.axhline(0, color='grey', linewidth=0.8)
     ax.set_xlabel('Testscenarioer')
@@ -381,28 +381,28 @@ def successrate_all(dir_path, df_circle, df_v, df_polygon, df_our, perception):
     
     fig, ax = plt.subplots()
 
-    circle_1 = ax.bar(ind-0.35, circle_success, width, label='Sirkel: suksess', color='moccasin')
-    circle_2 = ax.bar(ind-0.35, circle_failure, width, label='Sirkel: mislykket', color='orange')
+    circle_1 = ax.bar(ind-0.3, circle_success, width, label='Sirkel: suksess', color='moccasin')
+    circle_2 = ax.bar(ind-0.3, circle_failure, width, label='Sirkel: mislykket', color='orange')
 
-    v_1 = ax.bar(ind-0.12, v_success, width, label='V: suksess', color='lightgreen')
-    v_2 = ax.bar(ind-0.12, v_failure, width, label='V: mislykket', color='seagreen')
+    v_1 = ax.bar(ind-0.1, v_success, width, label='V: suksess', color='lightgreen')
+    v_2 = ax.bar(ind-0.1, v_failure, width, label='V: mislykket', color='seagreen')
 
-    polygon_1 = ax.bar(ind+0.12, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
-    polygon_2 = ax.bar(ind+0.12, polygon_failure, width, label='Polygon: mislykket', color='rebeccapurple')
+    polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='Polygon: suksess', color='mediumpurple')
+    polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='Polygon: mislykket', color='rebeccapurple')
 
-    our_1 = ax.bar(ind+0.35, our_success, width, label='Massesenter: suksess', color='lightcoral')
-    our_2 = ax.bar(ind+0.35, our_failure, width, label='Massesenter: mislykket', color='crimson')
+    our_1 = ax.bar(ind+0.3, our_success, width, label='Massesenter: suksess', color='lightcoral')
+    our_2 = ax.bar(ind+0.3, our_failure, width, label='Massesenter: mislykket', color='crimson')
 
-    ax.bar_label(circle_1, padding=2)
-    ax.bar_label(circle_2, padding=2)
-    ax.bar_label(v_1, padding=2)
-    ax.bar_label(v_2, padding=2)
-    ax.bar_label(polygon_1, padding=2)
-    ax.bar_label(polygon_2, padding=2)
-    ax.bar_label(our_1, padding=2)
-    ax.bar_label(our_2, padding=2)
+    ax.bar_label(circle_1, rotation=90, padding=2)
+    ax.bar_label(circle_2, rotation=90, padding=2)
+    ax.bar_label(v_1, rotation=90, padding=2)
+    ax.bar_label(v_2, rotation=90, padding=2)
+    ax.bar_label(polygon_1, rotation=90, padding=2)
+    ax.bar_label(polygon_2, rotation=90, padding=2)
+    ax.bar_label(our_1, rotation=90, padding=2)
+    ax.bar_label(our_2, rotation=90, padding=2)
 
-    ax.margins(y=0.1)
+    ax.margins(y=0.2)
 
     ax.axhline(0, color='grey', linewidth=0.8)
     ax.set_xlabel('Testscenarioer')
@@ -599,18 +599,18 @@ def successrate_our(dir_path, df_com, df_polygon, perception):
         # Make figure
         fig, ax = plt.subplots()
 
-        com_1 = ax.bar(ind-0.12, f_success, width, label='Massesenter: suksess', color='lightcoral')
-        com_2 = ax.bar(ind-0.12, f_failure, width, label='Massesenter: mislykket', color='crimson')
+        com_1 = ax.bar(ind-0.1, f_success, width, label='Massesenter: suksess', color='lightcoral')
+        com_2 = ax.bar(ind-0.1, f_failure, width, label='Massesenter: mislykket', color='crimson')
 
-        polygon_1 = ax.bar(ind+0.12, polygon_success, width, label='V-polygon: suksess', color='skyblue')
-        polygon_2 = ax.bar(ind+0.12, polygon_failure, width, label='V-polygon: mislykket', color='cornflowerblue')
+        polygon_1 = ax.bar(ind+0.1, polygon_success, width, label='V-polygon: suksess', color='skyblue')
+        polygon_2 = ax.bar(ind+0.1, polygon_failure, width, label='V-polygon: mislykket', color='cornflowerblue')
 
 
-        ax.margins(y=0.1)
-        ax.bar_label(com_1, padding=2)
-        ax.bar_label(com_2, padding=2)
-        ax.bar_label(polygon_1, padding=2)
-        ax.bar_label(polygon_2, padding=2)
+        ax.margins(y=0.2)
+        ax.bar_label(com_1, rotation=90, padding=2)
+        ax.bar_label(com_2, rotation=90, padding=2)
+        ax.bar_label(polygon_1, rotation=90, padding=2)
+        ax.bar_label(polygon_2, rotation=90, padding=2)
 
         ax.axhline(0, color='grey', linewidth=0.8)
         ax.set_xlabel('Vinkler')
